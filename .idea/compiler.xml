@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="interaction" />
         <module name="server" />
+        <module name="bot" />
+        <module name="interaction" />
         <module name="client" />
         <module name="logic" />
-        <module name="bot" />
         <module name="statistics" />
       </profile>
     </annotationProcessing>
