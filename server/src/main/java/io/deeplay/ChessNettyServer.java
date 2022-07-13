@@ -10,13 +10,13 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Logger;
 
 public class ChessNettyServer {
     private static final int PORT = 8189;
     private static final int MAX_MESSAGE_SIZE = 1024 * 100;
-    private static final Logger LOG = LoggerFactory.getLogger(ChessNettyServer.class);
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyServer.class);
 
     public void run() throws Exception {
         //Пул потоков для обработки подключений клиентов
@@ -40,13 +40,13 @@ public class ChessNettyServer {
                     });
             //Запуск сервера
             ChannelFuture channelFuture = serverBootstrap.bind(PORT).sync();
-            LOG.info("Сервер запущен на порту " + PORT);
+            logger.info("Сервер запущен на порту " + PORT);
             //Ожидание завершения работы сервера
             channelFuture.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully(); //Останавливаем потоки подключения клиентов
             workerGroup.shutdownGracefully(); //Останавливаем потоки обработки сообщений
-            LOG.info("Сервер остановлен");
+            logger.info("Сервер остановлен");
         }
     }
 
