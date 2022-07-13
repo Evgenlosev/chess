@@ -2,7 +2,7 @@ package io.deeplay;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.slf4j.Logger;
+import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class InboundClientHandler extends SimpleChannelInboundHandler<String> {
-    private static final Logger LOG = LoggerFactory.getLogger(InboundClientHandler.class);
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(InboundClientHandler.class);
     @Override
     //Обработка события: подключение нового клиента
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 //        super.channelActive(ctx);
-        LOG.info("Клиент подключился");
+        logger.info("Клиент подключился");
 
         new Thread(() -> {
             try {
@@ -23,7 +23,7 @@ public class InboundClientHandler extends SimpleChannelInboundHandler<String> {
                 while (true) {
                     String text = br.readLine();
                     ctx.writeAndFlush(text);
-                    LOG.info("Отправлено сообщение клиенту: " + text);
+                    logger.info("Отправлено сообщение клиенту: " + text);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -35,14 +35,13 @@ public class InboundClientHandler extends SimpleChannelInboundHandler<String> {
     @Override
     //Обработка события: входящее сообщение от клиента
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
-        LOG.info("Получено сообщение от клиента: " + s);
+        logger.info("Получено сообщение от клиента: " + s);
     }
 
     @Override
     //Перехватчик исключений
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-//        cause.printStackTrace();
-        LOG.error("Ошибка:", cause);
+        logger.error("Ошибка:", cause);
         ctx.close();
     }
 }

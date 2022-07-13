@@ -2,7 +2,7 @@ package io.deeplay;
 
 import io.netty.handler.codec.serialization.ObjectDecoderInputStream;
 import io.netty.handler.codec.serialization.ObjectEncoderOutputStream;
-import org.slf4j.Logger;
+import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
@@ -10,8 +10,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class TestClient {
-    private static final Logger LOG = LoggerFactory.getLogger(TestClient.class);
+public class TemporaryClient {
+    private static final Logger logger = (Logger) LoggerFactory.getLogger(TemporaryClient.class);
     private static final int PORT = 8189;
     private static final String HOST = "localhost";
     private Socket socket = null;
@@ -20,18 +20,18 @@ public class TestClient {
 
     private void start() {
         try {
-            LOG.info("Попытка подключения к серверу");
+            logger.info("Попытка подключения к серверу");
             socket = new Socket(HOST, PORT);
-            LOG.info("Успешно подключено к серверу");
+            logger.info("Успешно подключено к серверу");
         } catch (IOException e) {
-            LOG.error("Connection failed", e);
+            logger.error("Connection failed", e);
         }
 
         try {
             input = new ObjectDecoderInputStream(socket.getInputStream());
             output = new ObjectEncoderOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            LOG.error("Connection failed", e);
+            logger.error("Connection failed", e);
             shutDown();
         }
 
@@ -51,10 +51,10 @@ public class TestClient {
             try {
                 while (true) {
                     String inputMessage = (String) input.readObject();
-                    LOG.info("Получено сообщение от сервера: " + inputMessage);
+                    logger.info("Получено сообщение от сервера: " + inputMessage);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                LOG.error("Ошибка", e);
+                logger.error("Ошибка", e);
             }
         }).start();
     }
@@ -71,21 +71,21 @@ public class TestClient {
                 }
             }
         } catch (IOException e) {
-            LOG.error("Ошибка", e);
+            logger.error("Ошибка", e);
         }
     }
 
     private void sendMessage(String message) {
         try {
             output.writeObject(message);
-            LOG.info("Отправлено сообщение серверу: " + message);
+            logger.info("Отправлено сообщение серверу: " + message);
         } catch (IOException e) {
-            LOG.error("Ошибка при отправке сообщения на сервер: " + e);
+            logger.error("Ошибка при отправке сообщения на сервер: " + e);
         }
     }
 
 
     public static void main(String[] args) {
-        new TestClient().start();
+        new TemporaryClient().start();
     }
 }
