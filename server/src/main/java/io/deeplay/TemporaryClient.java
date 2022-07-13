@@ -44,7 +44,6 @@ public class TemporaryClient {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }).start();
 
         new Thread(() -> {
