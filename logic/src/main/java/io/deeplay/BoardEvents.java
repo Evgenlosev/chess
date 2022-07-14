@@ -1,7 +1,6 @@
 package io.deeplay;
 
 import io.deeplay.model.ChessBoard;
-import io.deeplay.settings.BoardSettings;
 
 public interface BoardEvents {
 
