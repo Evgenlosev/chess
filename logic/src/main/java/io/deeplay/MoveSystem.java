@@ -11,49 +11,44 @@ public interface MoveSystem {
     /**
      * @param board
      * @param fromCellIndex изначальная позиция пешки
-     * @param side
      * @return возвращает все возможные конечные клетки для хода пешки
      */
-    Set<Integer> getPawnMoves(ChessBoard board, int fromCellIndex, Side side);
+    Set<Integer> getPawnMoves(ChessBoard board, int fromCellIndex);
 
     /**
      * @param board
      * @param fromCellIndex изначальная позиция коня
-     * @param side
      * @return возвращает все возможные конечные клетки для хода коня
      */
-    Set<Integer> getKnightMoves(ChessBoard board, int fromCellIndex, Side side);
+    Set<Integer> getKnightMoves(ChessBoard board, int fromCellIndex);
 
     /**
      * @param board
      * @param fromCellIndex изначальная позиция слона
-     * @param side
      * @return возвращает все возможные конечные клетки для хода слона
      */
-    Set<Integer> getBishopMoves(ChessBoard board, int fromCellIndex, Side side);
+    Set<Integer> getBishopMoves(ChessBoard board, int fromCellIndex);
 
     /**
      * @param board
      * @param fromCellIndex изначальная позиция ладьи
-     * @param side
      * @return возвращает все возможные конечные клетки для хода ладьи
      */
-    Set<Integer> getRookMoves(ChessBoard board, int fromCellIndex, Side side);
+    Set<Integer> getRookMoves(ChessBoard board, int fromCellIndex);
 
     /**
      * @param board
      * @param fromCellIndex изначальная позиция королевы
-     * @param side
      * @return возвращает все возможные конечные клетки для хода королевы
      */
-    Set<Integer> getQueenMoves(ChessBoard board, int fromCellIndex, Side side);
+    Set<Integer> getQueenMoves(ChessBoard board, int fromCellIndex);
 
     /**
      * @param board
-     * @param side
+     * @param fromCellIndex изначальная позиция короля
      * @return возвращает все возможные конечные клетки для хода короля
      */
-    Set<Integer> getKingMoves(ChessBoard board, Side side);
+    Set<Integer> getKingMoves(ChessBoard board, int fromCellIndex);
 
     /**
      * @param board
