@@ -69,11 +69,4 @@ public interface MoveSystem {
      */
     boolean isCheck(ChessBoard board, Side side);
 
-    /**
-     * @param board
-     * @param side
-     * @return true если есть фигуры которые могут спасти короля side от мата
-     */
-    boolean hasKingCoverMoves(ChessBoard board, Side side);
-
 }
