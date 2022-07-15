@@ -4,7 +4,6 @@ import com.google.common.collect.Multimap;
 import io.deeplay.model.ChessBoard;
 import io.deeplay.model.Side;
 
-import java.util.List;
 import java.util.Set;
 
 public interface MoveSystem {
@@ -68,14 +67,7 @@ public interface MoveSystem {
      * @param side
      * @return true если королю side поставлен шах
      */
-    boolean isKingUnderAttack(ChessBoard board, Side side);
-
-    /**
-     * @param board
-     * @param side
-     * @return true если король side не может походить
-     */
-    boolean isKingCantMove(ChessBoard board, Side side); // getKingMoves(...) == 0
+    boolean isCheck(ChessBoard board, Side side);
 
     /**
      * @param board
