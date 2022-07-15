@@ -36,12 +36,12 @@ public interface GameInfo {
      * @param side
      * @return все фигуры на доске, для выбранной стороны
      */
-    Multimap<PieceType, Integer> getSidesAlivePieces(int clientId, Side side);
+    Multimap<PieceType, Integer> getSideAlivePieces(int clientId, Side side);
 
     /**
      * @param clientId
      * @param side
      * @return все фигуры на доске, для выбранной стороны
      */
-    Multimap<PieceType, Integer> getSidesLostPieces(int clientId, Side side);
+    Multimap<PieceType, Integer> getSideLostPieces(int clientId, Side side);
 }
