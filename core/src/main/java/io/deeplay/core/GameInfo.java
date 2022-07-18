@@ -1,9 +1,9 @@
-package io.deeplay;
+package io.deeplay.core;
 
 import com.google.common.collect.Multimap;
-import io.deeplay.model.GameStatus;
-import io.deeplay.model.PieceType;
-import io.deeplay.model.Side;
+import io.deeplay.core.model.GameStatus;
+import io.deeplay.core.model.PieceType;
+import io.deeplay.core.model.Side;
 
 public interface GameInfo {
 
