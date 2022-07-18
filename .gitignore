@@ -16,6 +16,8 @@ buildNumber.properties
 *.iml
 *.ipr
 
+checkstyle.xml
+
 # Eclipse m2e generated files
 # Eclipse Core
 .project
