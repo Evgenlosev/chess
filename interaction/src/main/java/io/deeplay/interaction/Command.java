@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.interaction;
 
 public abstract class Command {
     private final CommandType commandType;

@@ -1,7 +1,7 @@
-package io.deeplay.clientToServer;
+package io.deeplay.interaction.clientToServer;
 
-import io.deeplay.Command;
-import io.deeplay.CommandType;
+import io.deeplay.interaction.Command;
+import io.deeplay.interaction.CommandType;
 
 public class MoveRequest extends Command {
     private final int moveFrom;

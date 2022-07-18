@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.interaction;
 
 /**
  * Возможные типы команд
