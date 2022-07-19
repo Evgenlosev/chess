@@ -1,8 +1,8 @@
 package io.deeplay;
 
 import com.google.common.collect.Multimap;
-import io.deeplay.model.ChessBoard;
-import io.deeplay.model.Side;
+import io.deeplay.logic.board.ChessBoard;
+import io.deeplay.core.model.Side;
 
 import java.util.Set;
 
