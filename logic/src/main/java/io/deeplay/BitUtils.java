@@ -237,10 +237,15 @@ public class BitUtils {
      *
      * @param bitboard The bitboard which should be output.
      */
-    public static void printBitboardAsBinaryString(long bitboard) {
+    public static String printBitboardAsBinaryString(long bitboard) {
         String result = String.format("%" + Long.SIZE + "s", Long.toBinaryString(bitboard)).replace(' ', '0');
         System.out.println(result);
+        return result;
     }
 
+    public static String getBitboardAsBinaryString(long bitboard) {
+        String result = String.format("%" + Long.SIZE + "s", Long.toBinaryString(bitboard)).replace(' ', '0');
+        return result;
+    }
 
 }

@@ -14,21 +14,21 @@ public class TestRookBitboardHandler {
     @Test
     public void testRookInCornerPositions() {
         long occupied =     0b0010000000000000000000000000000000010001000000000010000100000000L;
-        long rookBitboard = 0b0000000000000000000000000000000000000000000000000000000100000000L;
-        BitUtils.printBitboard(occupied);
+        int rookPosition = 8;
 
-//        BitUtils.printBitboard(BitboardHandler.getRookMoves(8, occupied));
-        assertEquals(8, BitUtils.bitCount(BitboardHandler.getRookMoves(8, occupied)));
+        long expectedBitboard = 0b0000000000000000000000000000000000000001000000010011111000000001L;
+        assertEquals(BitUtils.getBitboardAsBinaryString(expectedBitboard),
+                BitUtils.getBitboardAsBinaryString(BitboardHandler.getRookMoves(rookPosition, occupied)));
     }
 
     @Test
     public void testRookInMiddlePosition() {
         long occupied =     0b0010000000000000000000000000000000011000000000000001000100000000L;
-        long rookBitboard = 0b0000000000000000000000000000000000000000000000000000000100000000L;
-        BitUtils.printBitboard(occupied);
+        int rookPosition = 28;
 
-//        BitUtils.printBitboard(BitboardHandler.getRookMoves(28, occupied));
-        assertEquals(10, BitUtils.bitCount(BitboardHandler.getRookMoves(28, occupied)));
+        long expectedBitboard = 0b0001000000010000000100000001000011101000000100000001000000000000L;
+        assertEquals(BitUtils.getBitboardAsBinaryString(expectedBitboard),
+                BitUtils.getBitboardAsBinaryString(BitboardHandler.getRookMoves(rookPosition, occupied)));
     }
 
 }
