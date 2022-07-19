@@ -2,11 +2,6 @@ package io.deeplay;
 
 public class BitUtils {
 
-
-    //-------------------------------------------------
-    // Squares
-    //-------------------------------------------------
-
     /*
       Little endian rank file mapping of each square.
       Position A1 is the least signficant bit (LSB), bit 0, of the 64 bit number and H8 is the
@@ -116,10 +111,6 @@ public class BitUtils {
             A8, B8, C8, D8, E8, F8, G8, H8
     };
 
-    //-------------------------------------------------
-    // Squares Bit Index
-    //-------------------------------------------------
-
     /**
      * Returns the bit index for a given square (Little endian rank-file (LERF) mapping) bitboard
      * (for example square E4 => returns bit index 28).
@@ -136,10 +127,6 @@ public class BitUtils {
         NO_SQUARE
     }
 
-    //-------------------------------------------------
-    // Files && Ranks
-    //-------------------------------------------------
-
     /**
      * A vertical line on the chessboard.
      */
@@ -155,10 +142,6 @@ public class BitUtils {
         RANK_1, RANK_2, RANK_3, RANK_4,
         RANK_5, RANK_6, RANK_7, RANK_8
     }
-
-    //-------------------------------------------------
-    // Utils
-    //-------------------------------------------------
 
     /**
      * Get the square bitboard for a given {@link BitIndex}.
