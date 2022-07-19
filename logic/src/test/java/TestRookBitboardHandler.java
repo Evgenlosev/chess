@@ -2,6 +2,8 @@ import io.deeplay.BitUtils;
 import io.deeplay.BitboardHandler;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 public class TestRookBitboardHandler {
     // TODO: "закрепленная" за своим королем ладья должна ходить только по линии атаки "зажимающей" фигуры
     //  по сути надо сделать && битборда атаки с битбородом атаки фигуры, угрожающей королю
@@ -15,7 +17,8 @@ public class TestRookBitboardHandler {
         long rookBitboard = 0b0000000000000000000000000000000000000000000000000000000100000000L;
         BitUtils.printBitboard(occupied);
 
-        BitUtils.printBitboard(BitboardHandler.getRookMoves(8, occupied));
+//        BitUtils.printBitboard(BitboardHandler.getRookMoves(8, occupied));
+        assertEquals(8, BitUtils.bitCount(BitboardHandler.getRookMoves(8, occupied)));
     }
 
     @Test
@@ -24,7 +27,8 @@ public class TestRookBitboardHandler {
         long rookBitboard = 0b0000000000000000000000000000000000000000000000000000000100000000L;
         BitUtils.printBitboard(occupied);
 
-        BitUtils.printBitboard(BitboardHandler.getRookMoves(28, occupied));
+//        BitUtils.printBitboard(BitboardHandler.getRookMoves(28, occupied));
+        assertEquals(10, BitUtils.bitCount(BitboardHandler.getRookMoves(28, occupied)));
     }
 
 }
