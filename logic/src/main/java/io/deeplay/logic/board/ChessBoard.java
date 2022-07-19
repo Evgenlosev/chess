@@ -77,22 +77,22 @@ public class ChessBoard {
                         sb.append("  ");
                         break;
                     case B_KING:
-                        sb.append("K ");
+                        sb.append("k ");
                         break;
                     case B_BISHOP:
-                        sb.append("B ");
+                        sb.append("b ");
                         break;
                     case B_KNIGHT:
-                        sb.append("N ");
+                        sb.append("n ");
                         break;
                     case B_ROOK:
-                        sb.append("R ");
+                        sb.append("r ");
                         break;
                     case B_PAWN:
-                        sb.append("P ");
+                        sb.append("p ");
                         break;
                     case B_QUEEN:
-                        sb.append("Q ");
+                        sb.append("q ");
                         break;
                     case W_KING:
                         sb.append("K ");
@@ -117,6 +117,6 @@ public class ChessBoard {
             sb.append("\n");
         }
 
-        return sb.toString();
+        return sb.reverse().toString();
     }
 }

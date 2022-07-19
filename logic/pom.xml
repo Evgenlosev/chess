@@ -42,11 +42,6 @@
             <version>1.7.36</version>
         </dependency>
 
-        <dependency>
-            <groupId>io.deeplay.client</groupId>
-            <artifactId>client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 
