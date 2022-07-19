@@ -3,62 +3,64 @@ package io.deeplay;
 import com.google.common.collect.Multimap;
 import io.deeplay.logic.board.ChessBoard;
 import io.deeplay.core.model.Side;
+import io.deeplay.logic.board.Coord;
+import io.deeplay.logic.board.MoveInfo;
 
 import java.util.Set;
 
 public interface MoveSystem {
 
     /**
-     * @param board
-     * @param fromCellIndex изначальная позиция пешки
-     * @return возвращает все возможные конечные клетки для хода пешки
+     * @param board текущее состояние шахмтной доски
+     * @param from изначальная позиция пешки
+     * @return возвращает все возможные ходы пешки
      */
-    Set<Integer> getPawnMoves(ChessBoard board, int fromCellIndex);
+    Set<MoveInfo> getPawnMoves(ChessBoard board, Coord from);
 
     /**
-     * @param board
-     * @param fromCellIndex изначальная позиция коня
-     * @return возвращает все возможные конечные клетки для хода коня
+     * @param board текущее состояние шахмтной доски
+     * @param from изначальная позиция коня
+     * @return возвращает все возможные ходы коня
      */
-    Set<Integer> getKnightMoves(ChessBoard board, int fromCellIndex);
+    Set<MoveInfo> getKnightMoves(ChessBoard board, Coord from);
 
     /**
-     * @param board
-     * @param fromCellIndex изначальная позиция слона
-     * @return возвращает все возможные конечные клетки для хода слона
+     * @param board текущее состояние шахмтной доски
+     * @param from изначальная позиция слона
+     * @return возвращает все возможные ходы слона
      */
-    Set<Integer> getBishopMoves(ChessBoard board, int fromCellIndex);
+    Set<MoveInfo> getBishopMoves(ChessBoard board, Coord from);
 
     /**
-     * @param board
-     * @param fromCellIndex изначальная позиция ладьи
-     * @return возвращает все возможные конечные клетки для хода ладьи
+     * @param board текущее состояние шахмтной доски
+     * @param from изначальная позиция ладьи
+     * @return возвращает все возможные ходы ладьи
      */
-    Set<Integer> getRookMoves(ChessBoard board, int fromCellIndex);
+    Set<MoveInfo> getRookMoves(ChessBoard board, Coord from);
 
     /**
-     * @param board
-     * @param fromCellIndex изначальная позиция королевы
-     * @return возвращает все возможные конечные клетки для хода королевы
+     * @param board текущее состояние шахмтной доски
+     * @param from изначальная позиция ферзя
+     * @return возвращает все возможные ходы ферзя
      */
-    Set<Integer> getQueenMoves(ChessBoard board, int fromCellIndex);
+    Set<MoveInfo> getQueenMoves(ChessBoard board, Coord from);
 
     /**
-     * @param board
-     * @param fromCellIndex изначальная позиция короля
-     * @return возвращает все возможные конечные клетки для хода короля
+     * @param board текущее состояние шахмтной доски
+     * @param from изначальная позиция короля
+     * @return возвращает все возможные ходы короля
      */
-    Set<Integer> getKingMoves(ChessBoard board, int fromCellIndex);
+    Set<MoveInfo> getKingMoves(ChessBoard board, Coord from);
 
     /**
-     * @param board
+     * @param board текущее состояние шахмтной доски
      * @param side
-     * @return key - изначальная позиция фигуры, value - конечные позиции
+     * @return key - изначальная позиция фигуры, value - все возможные ходы
      */
-    Multimap<Integer, Integer> getAllPossibleMoves(ChessBoard board, Side side);
+    Multimap<Coord, MoveInfo> getAllPossibleMoves(ChessBoard board, Side side);
 
     /**
-     * @param board
+     * @param board текущее состояние шахмтной доски
      * @param side
      * @return true если королю side поставлен шах
      */
