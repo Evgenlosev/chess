@@ -3,7 +3,7 @@ package io.deeplay;
 public class MagicBoard {
 
     /**
-     * Битборд содержащий все клекти, которые могут блокировать линейноходящие фигуры
+     * блокируемая маска содержащий все клетки, которые могут блокировать линейноходящие фигуры
      * A bitboard containing all squares that can block a rook or a bishop.
      */
     public long blockerMask;
