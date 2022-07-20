@@ -67,8 +67,6 @@ public class ChessBitboard {
             if (allPiecesCharacterRepresentation.contains(currentChar)) {
                 piecesBitboard.put(currentChar,
                         piecesBitboard.get(currentChar) | (1L << (lastIndex - (rowCount * BOARD_WIDTH + backwardPrinting))));
-                BitUtils.printBitboardAsBinaryString(piecesBitboard.get(currentChar));
-                System.out.println(currentChar + ": " + (lastIndex - (rowCount * BOARD_WIDTH + backwardPrinting)));
             }
             if (countBoard == from) {
                 this.mySide = Character.isLowerCase(currentChar) ? Side.BLACK : Side.WHITE;
@@ -82,7 +80,7 @@ public class ChessBitboard {
             if (currentChar == '/') {
                 backwardPrinting = 7;
                 rowCount++;
-                countBoard = 63 - rowCount * BOARD_WIDTH - 7;
+                countBoard = lastIndex - rowCount * BOARD_WIDTH - 7;
             }
             currentChar = parseBoard.charAt(count);
         }
