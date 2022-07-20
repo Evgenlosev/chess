@@ -8,9 +8,8 @@ import java.util.Set;
 
 // TODO: implements MoveSystem
 public class BitboardHandler {
-    Set<MoveInfo> getRookMoves(ChessBoard board, Coord from) {
-        String fen = ""; // TODO: get fen notation from ChessBoard
-        ChessBitboard chessBitboard = new ChessBitboard(fen);
+    public static Set<MoveInfo> getRookMoves(ChessBoard board, Coord from) {
+        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
         MagicBoard magic = BitboardPatternsInitializer.rookMagicBoards[from.getIndexAsOneDimension()];
 
         long allPossibleMoves = magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
@@ -18,13 +17,15 @@ public class BitboardHandler {
         Set<MoveInfo> movesInfo = new HashSet<>();
         Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK;
 
+        long notMyPieces = ~chessBitboard.getMyPieces();
+        long notOpponentPieces = ~chessBitboard.getOpponentPieces();
         for (long possibleMove : BitUtils.segregatePositions(allPossibleMoves)) {
-            if ( (possibleMove & chessBitboard.getOpponentPieces()) != 0 )
-                movesInfo.add( new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
-                        MoveType.USUAL_ATTACK, figure) );
-            if ( (possibleMove & chessBitboard.getMyPieces()) == 0 ) // нужно ли учитывать фигуры оппонента?
-                movesInfo.add( new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
-                        MoveType.USUAL_MOVE, figure) );
+            if ((possibleMove & chessBitboard.getOpponentPieces()) != 0)
+                movesInfo.add(new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
+                        MoveType.USUAL_ATTACK, figure));
+            if ((possibleMove & notMyPieces & notOpponentPieces) != 0)
+                movesInfo.add(new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
+                        MoveType.USUAL_MOVE, figure));
         }
         return movesInfo;
     }
@@ -33,10 +34,12 @@ public class BitboardHandler {
         MagicBoard magic = BitboardPatternsInitializer.bishopMagicBoards[from];
         return magic.moveBoards[(int) ((allPieces & magic.blockerMask) * BitboardPatternsInitializer.BISHOP_MAGIC_NUMBERS[from] >>> magic.shift)];
     }
+/*
 
     public static long getQueenMoves(int from, long allPieces) {
         return getRookMoves(from, allPieces) | getBishopMoves(from, allPieces);
     }
+*/
 
 
     /*

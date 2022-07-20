@@ -2,9 +2,20 @@ package io.deeplay;
 
 import io.deeplay.core.model.Side;
 
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 // TODO: здесь автоматически определяется сторона по координатам фигуры(которая должна походить),
 //  а так же просмотром в строковое представление, если с маленькой буквы - то чёрные
 public class ChessBitboard {
+    private static final int BOARD_WIDTH = 8;
+    private static final int BOARD_HEIGHT = 8;
+    // Маленькие буквы - фигуры черных, большие - белых
+    private static final Set<Character> allPiecesCharacterRepresentation =
+            Stream.of('p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R', 'Q', 'K')
+                    .collect(Collectors.toUnmodifiableSet());
+
     private Side mySide;
     private long myPawns;
     private long myKnights;
@@ -26,12 +37,111 @@ public class ChessBitboard {
     private long occupied;
     private long empty;
 
-    // TODO: конструктор по нотации FEN
+    // from нужен чтобы определить сторону, т.к. она не передается
+    public ChessBitboard(final String fenNotation, int from) {
+        Map<Character, Long> piecesBitboard = new HashMap<>();
+        String parseBoard = fenNotation.trim();
 
+        boolean sideNotDetermined = true;
+        // счёт для обращения к строке
+        int count = 0;
+        // т.к. нужно знать индекс фигуры для битборда, нужно так же считать пустые клетки нотации FEN
+        int countBoard = 63 - 8;
+        int backwardPrinting = 7;
+        int rowCount = 0; // считаем начиная с верхней строки
+        final int lastIndex = 63;
+        char currentChar = parseBoard.charAt(count);
+        for (char ch : allPiecesCharacterRepresentation) {
+            piecesBitboard.putIfAbsent(ch, 0L);
+        }
 
-    public ChessBitboard(String fen) {
+        int skip;
+        boolean isDigit;
+        while (currentChar != ' ') {
+            isDigit = Character.isDigit(currentChar);
+            if (isDigit) {
+                skip = currentChar - '0'; // widening casting
+                countBoard += skip;
+                backwardPrinting -= skip;
+            }
+            if (allPiecesCharacterRepresentation.contains(currentChar)) {
+                piecesBitboard.put(currentChar,
+                        piecesBitboard.get(currentChar) | (1L << (lastIndex - (rowCount * BOARD_WIDTH + backwardPrinting))));
+                System.out.println(currentChar + ": " + (lastIndex - (rowCount * BOARD_WIDTH + backwardPrinting)));
+            }
+            if (countBoard == from) {
+                this.mySide = Character.isLowerCase(currentChar) ? Side.BLACK : Side.WHITE;
+                sideNotDetermined = false;
+            }
+            count++;
+            if (currentChar != '/' && !isDigit) {
+                countBoard++;
+                backwardPrinting--;
+            }
+            if (currentChar == '/') {
+                backwardPrinting = 7;
+                rowCount++;
+                countBoard -= 8 + 7;
+            }
+            currentChar = parseBoard.charAt(count);
+        }
+        if (sideNotDetermined) {
+            // TODO: До первого пробела извлекаем charAt и считаем '/' а так же количество свободных фигур
+            //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
+            // currentChar > 8
+            // исключение, логирование
+        }
 
+        // TODO: разжевать оставшуюся часть FEN (в цикле до, нужно сохранить индекс пробела)
+
+        if (Side.otherSide(mySide) == Side.BLACK)
+            setOpponentsBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isLowerCase(x.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        if (Side.otherSide(mySide) == Side.WHITE)
+            setOpponentsBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isUpperCase(x.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
+        if (mySide == Side.BLACK)
+            setMyBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isLowerCase(x.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        if (mySide == Side.WHITE)
+            setMyBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isUpperCase(x.getKey()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        setCommonBitboards();
     }
+
+    private void setOpponentsBitboards(Map<Character, Long> piecesBitboard) {
+        String piecesCharacterRepresentation = "pnbrqk";
+        if (Side.otherSide(mySide) == Side.WHITE)
+            piecesCharacterRepresentation = piecesCharacterRepresentation.toUpperCase();
+        this.opponentPawns = piecesBitboard.get(piecesCharacterRepresentation.charAt(0));
+        this.opponentKnights = piecesBitboard.get(piecesCharacterRepresentation.charAt(1));
+        this.opponentBishops = piecesBitboard.get(piecesCharacterRepresentation.charAt(2));
+        this.opponentRooks = piecesBitboard.get(piecesCharacterRepresentation.charAt(3));
+        this.opponentQueens = piecesBitboard.get(piecesCharacterRepresentation.charAt(4));
+        this.opponentKing = piecesBitboard.get(piecesCharacterRepresentation.charAt(5));
+    }
+
+    private void setMyBitboards(Map<Character, Long> piecesBitboard) {
+        String piecesCharacterRepresentation = "pnbrqk";
+        if (mySide == Side.WHITE)
+            piecesCharacterRepresentation = piecesCharacterRepresentation.toUpperCase();
+        this.myPawns = piecesBitboard.get(piecesCharacterRepresentation.charAt(0));
+        this.myKnights = piecesBitboard.get(piecesCharacterRepresentation.charAt(1));
+        this.myBishops = piecesBitboard.get(piecesCharacterRepresentation.charAt(2));
+        this.myRooks = piecesBitboard.get(piecesCharacterRepresentation.charAt(3));
+        this.myQueens = piecesBitboard.get(piecesCharacterRepresentation.charAt(4));
+        this.myKing = piecesBitboard.get(piecesCharacterRepresentation.charAt(5));
+    }
+
+    private void setCommonBitboards() {
+        this.opponentPieces = opponentPawns | opponentKnights | opponentBishops | opponentRooks | opponentQueens
+                | opponentKing;
+        this.myPieces = myPawns | myKnights | myBishops | myRooks | myQueens | myKing;
+        this.occupied = opponentPieces | myPieces;
+        this.empty = ~occupied;
+    }
+
 
     public Side getMySide() {
         return mySide;
@@ -167,5 +277,28 @@ public class ChessBitboard {
 
     public void setEmpty(long empty) {
         this.empty = empty;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBitboard{" +
+                "mySide=" + mySide +
+                ", myPawns=" + myPawns +
+                ", myKnights=" + myKnights +
+                ", myBishops=" + myBishops +
+                ", myRooks=" + myRooks +
+                ", myQueens=" + myQueens +
+                ", myKing=" + myKing +
+                ", opponentPawns=" + opponentPawns +
+                ", opponentKnights=" + opponentKnights +
+                ", opponentBishops=" + opponentBishops +
+                ", opponentRooks=" + opponentRooks +
+                ", opponentQueens=" + opponentQueens +
+                ", opponentKing=" + opponentKing +
+                ", opponentPieces=" + opponentPieces +
+                ", myPieces=" + myPieces +
+                ", occupied=" + occupied +
+                ", empty=" + empty +
+                '}';
     }
 }

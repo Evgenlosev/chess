@@ -190,19 +190,20 @@ public class BitUtils {
      * Пример
      * 0110 - все 1 это возможные позиции
      * метод вернет {0010, 0100}
-     * @param allPossiblePositions
-     * @return
+     *
+     * @param allPossiblePositions битборд со всеми возможными позициями (1 - возможная позиция)
+     * @return возвращает разделенные возможные позиции
      */
-    public static List<Long> segregatePositions(final long allPossiblePositions){
+    public static List<Long> segregatePositions(final long allPossiblePositions) {
         List<Long> positions = new ArrayList<>();
         long allLeftToSegregatePositions = allPossiblePositions;
-        long possibility=allLeftToSegregatePositions&~(allLeftToSegregatePositions-1);
+        long possibility = allLeftToSegregatePositions & ~(allLeftToSegregatePositions - 1);
         positions.add(possibility);
         // проходимя по каждому включенному биту
         while (possibility != 0) {
-            allLeftToSegregatePositions&=~possibility;
-            possibility=allLeftToSegregatePositions&~(allLeftToSegregatePositions-1);
-            if(possibility != 0)
+            allLeftToSegregatePositions &= ~possibility;
+            possibility = allLeftToSegregatePositions & ~(allLeftToSegregatePositions - 1);
+            if (possibility != 0)
                 positions.add(possibility);
         }
         return positions;
@@ -310,8 +311,7 @@ public class BitUtils {
     }
 
     public static String getBitboardAsBinaryString(long bitboard) {
-        String result = String.format("%" + Long.SIZE + "s", Long.toBinaryString(bitboard)).replace(' ', '0');
-        return result;
+        return String.format("%" + Long.SIZE + "s", Long.toBinaryString(bitboard)).replace(' ', '0');
     }
 
 }

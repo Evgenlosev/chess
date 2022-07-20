@@ -111,10 +111,10 @@ public class BitboardPatternsInitializer {
         for (int square = 0; square < 64; square++) {
             long squareBitboard = BitUtils.SQUARES[square];
             long mask =
-                    (((squareBitboard <<  6) | (squareBitboard >>> 10)) & BitUtils.CLEAR_FILE_GH) |
+                    (((squareBitboard << 6) | (squareBitboard >>> 10)) & BitUtils.CLEAR_FILE_GH) |
                             (((squareBitboard << 15) | (squareBitboard >>> 17)) & BitUtils.CLEAR_FILE_H) |
                             (((squareBitboard << 17) | (squareBitboard >>> 15)) & BitUtils.CLEAR_FILE_A) |
-                            (((squareBitboard << 10) | (squareBitboard >>>  6)) & BitUtils.CLEAR_FILE_AB);
+                            (((squareBitboard << 10) | (squareBitboard >>> 6)) & BitUtils.CLEAR_FILE_AB);
 
             knightMoveBitboards[square] = mask;
         }
@@ -293,6 +293,7 @@ public class BitboardPatternsInitializer {
         return list;
     }
 */
+
     /**
      * Предварительно вычисляем блокирующие маски для любого цвета ладьи
      */
@@ -602,8 +603,8 @@ public class BitboardPatternsInitializer {
     /**
      * Производим предварительные рассчеты по тому как много битов сдвигаются вправо.
      * <p>
-     *     Например ладье на A1 нужна 12-ти битная база данных, поэтому нам необходимо сделать
-     *     сдвиг вправо на 52 бита, оставляя индекс в пределах [0 - 4095].
+     * Например ладье на A1 нужна 12-ти битная база данных, поэтому нам необходимо сделать
+     * сдвиг вправо на 52 бита, оставляя индекс в пределах [0 - 4095].
      * For example, a rook on a1 requires a 12-bit database and we therefore have to shift right with 52 bits,
      * leaving an index in the range [0 - 4095].
      */
