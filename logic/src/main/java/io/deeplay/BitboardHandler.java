@@ -74,6 +74,7 @@ public class BitboardHandler {
 
 /*
 // TODO:
+    public static long getPawnMoves(int from, long allPieces)
     public static long getBishopMoves(int from, long allPieces)
     public static long getQueenMoves(int from, long allPieces)
 */
