@@ -37,7 +37,7 @@ public class ChessBitboard {
     private long occupied;
     private long empty;
 
-    // from нужен чтобы определить сторону, т.к. она не передается
+    // From нужен, чтобы определить сторону, т.к. она не передается
     public ChessBitboard(final String fenNotation, int from) {
         Map<Character, Long> piecesBitboard = new HashMap<>();
         String parseBoard = fenNotation.trim();
