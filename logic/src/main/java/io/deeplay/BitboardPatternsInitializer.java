@@ -42,11 +42,18 @@ public class BitboardPatternsInitializer {
             0x0001000042304105L, 0x0010008830412a00L, 0x2520081090008908L, 0x40102000a0a60140L,
     };
 
+
+    public static final long[] kingMoveBitboards;
+
+    public static final long[] knightMoveBitboards;
     public static final MagicBoard[] rookMagicBoards;
 
     public static final MagicBoard[] bishopMagicBoards;
 
     static {
+        kingMoveBitboards = calcKingMoveBitboards();
+        knightMoveBitboards = calcKnightMoveBitboards();
+
         /*
             Rook on e4:
             -----------
@@ -82,6 +89,210 @@ public class BitboardPatternsInitializer {
         calcBishopMoveBoards(bishopBlockerBoards);
     }
 
+    private static long[] calcKingMoveBitboards() {
+        long[] kingMoveBitboards = new long[64];
+
+        for (int square = 0; square < 64; square++) {
+            long squareBitboard = BitUtils.SQUARES[square];
+            long mask =
+                    (((squareBitboard >>> 1) | (squareBitboard << 7) | (squareBitboard >>> 9)) & BitUtils.CLEAR_FILE_H) |
+                            (((squareBitboard << 1) | (squareBitboard << 9) | (squareBitboard >>> 7)) & BitUtils.CLEAR_FILE_A) |
+                            (squareBitboard << 8) | (squareBitboard >>> 8);
+
+            kingMoveBitboards[square] = mask;
+        }
+
+        return kingMoveBitboards;
+    }
+
+    private static long[] calcKnightMoveBitboards() {
+        long[] knightMoveBitboards = new long[64];
+
+        for (int square = 0; square < 64; square++) {
+            long squareBitboard = BitUtils.SQUARES[square];
+            long mask =
+                    (((squareBitboard <<  6) | (squareBitboard >>> 10)) & BitUtils.CLEAR_FILE_GH) |
+                            (((squareBitboard << 15) | (squareBitboard >>> 17)) & BitUtils.CLEAR_FILE_H) |
+                            (((squareBitboard << 17) | (squareBitboard >>> 15)) & BitUtils.CLEAR_FILE_A) |
+                            (((squareBitboard << 10) | (squareBitboard >>>  6)) & BitUtils.CLEAR_FILE_AB);
+
+            knightMoveBitboards[square] = mask;
+        }
+
+        return knightMoveBitboards;
+    }
+
+    // TODO:
+    /*
+    public static String possibleWP(long WP,long BP,long EP) {
+        String list="";
+        //x1,y1,x2,y2
+        long PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&~RANK_8&~FILE_A;//capture right
+        long possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8+1)+(index%8-1)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&~RANK_8&~FILE_H;//capture left
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8+1)+(index%8+1)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>8)&EMPTY&~RANK_8;//move 1 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8+1)+(index%8)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>16)&EMPTY&(EMPTY>>8)&RANK_4;//move 2 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8+2)+(index%8)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        //y1,y2,Promotion Type,"P"
+        PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&RANK_8&~FILE_A;//pawn promotion by capture right
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8-1)+(index%8)+"QP"+(index%8-1)+(index%8)+"RP"+(index%8-1)+(index%8)+"BP"+(index%8-1)+(index%8)+"NP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&RANK_8&~FILE_H;//pawn promotion by capture left
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8+1)+(index%8)+"QP"+(index%8+1)+(index%8)+"RP"+(index%8+1)+(index%8)+"BP"+(index%8+1)+(index%8)+"NP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(WP>>8)&EMPTY&RANK_8;//pawn promotion by move 1 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8)+(index%8)+"QP"+(index%8)+(index%8)+"RP"+(index%8)+(index%8)+"BP"+(index%8)+(index%8)+"NP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        //y1,y2,"WE"
+        //en passant right
+        possibility = (WP << 1)&BP&RANK_5&~FILE_A&EP;//shows piece to remove, not the destination
+        if (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8-1)+(index%8)+"WE";
+        }
+        //en passant left
+        possibility = (WP >> 1)&BP&RANK_5&~FILE_H&EP;//shows piece to remove, not the destination
+        if (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8+1)+(index%8)+"WE";
+        }
+        return list;
+    }
+    public static String possibleBP(long BP,long WP,long EP) {
+        String list="";
+        //x1,y1,x2,y2
+        long PAWN_MOVES=(BP<<7)&NOT_MY_PIECES&OCCUPIED&~RANK_1&~FILE_H;//capture right
+        long possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8-1)+(index%8+1)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(BP<<9)&NOT_MY_PIECES&OCCUPIED&~RANK_1&~FILE_A;//capture left
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8-1)+(index%8-1)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(BP<<8)&EMPTY&~RANK_1;//move 1 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8-1)+(index%8)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(BP<<16)&EMPTY&(EMPTY<<8)&RANK_5;//move 2 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index/8-2)+(index%8)+(index/8)+(index%8);
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        //y1,y2,Promotion Type,"P"
+        PAWN_MOVES=(BP<<7)&NOT_MY_PIECES&OCCUPIED&RANK_1&~FILE_H;//pawn promotion by capture right
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8+1)+(index%8)+"qP"+(index%8+1)+(index%8)+"rP"+(index%8+1)+(index%8)+"bP"+(index%8+1)+(index%8)+"nP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(BP<<9)&NOT_MY_PIECES&OCCUPIED&RANK_1&~FILE_A;//pawn promotion by capture left
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8-1)+(index%8)+"qP"+(index%8-1)+(index%8)+"rP"+(index%8-1)+(index%8)+"bP"+(index%8-1)+(index%8)+"nP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        PAWN_MOVES=(BP<<8)&EMPTY&RANK_1;//pawn promotion by move 1 forward
+        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        while (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8)+(index%8)+"qP"+(index%8)+(index%8)+"rP"+(index%8)+(index%8)+"bP"+(index%8)+(index%8)+"nP";
+            PAWN_MOVES&=~possibility;
+            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
+        }
+        //y1,y2,"BE"
+        //en passant right
+        possibility = (BP >> 1)&WP&RANK_4&~FILE_H&EP;//shows piece to remove, not the destination
+        if (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8+1)+(index%8)+"BE";
+        }
+        //en passant left
+        possibility = (BP << 1)&WP&RANK_4&~FILE_A&EP;//shows piece to remove, not the destination
+        if (possibility != 0)
+        {
+            int index=Long.numberOfTrailingZeros(possibility);
+            list+=""+(index%8-1)+(index%8)+"BE";
+        }
+        return list;
+    }
+*/
     /**
      * Предварительно вычисляем блокирующие маски для любого цвета ладьи
      */

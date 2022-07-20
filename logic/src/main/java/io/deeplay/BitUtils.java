@@ -1,5 +1,8 @@
 package io.deeplay;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BitUtils {
 
     /*
@@ -142,6 +145,69 @@ public class BitUtils {
         RANK_1, RANK_2, RANK_3, RANK_4,
         RANK_5, RANK_6, RANK_7, RANK_8
     }
+
+    public static final long MASK_RANK_1 = A1 | B1 | C1 | D1 | E1 | F1 | G1 | H1;
+    public static final long MASK_RANK_2 = A2 | B2 | C2 | D2 | E2 | F2 | G2 | H2;
+    public static final long MASK_RANK_3 = A3 | B3 | C3 | D3 | E3 | F3 | G3 | H3;
+    public static final long MASK_RANK_4 = A4 | B4 | C4 | D4 | E4 | F4 | G4 | H4;
+    public static final long MASK_RANK_5 = A5 | B5 | C5 | D5 | E5 | F5 | G5 | H5;
+    public static final long MASK_RANK_6 = A6 | B6 | C6 | D6 | E6 | F6 | G6 | H6;
+    public static final long MASK_RANK_7 = A7 | B7 | C7 | D7 | E7 | F7 | G7 | H7;
+    public static final long MASK_RANK_8 = A8 | B8 | C8 | D8 | E8 | F8 | G8 | H8;
+
+    public static final long MASK_FILE_A = A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8;
+    public static final long MASK_FILE_B = B1 | B2 | B3 | B4 | B5 | B6 | B7 | B8;
+    public static final long MASK_FILE_C = C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8;
+    public static final long MASK_FILE_D = D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8;
+    public static final long MASK_FILE_E = E1 | E2 | E3 | E4 | E5 | E6 | E7 | E8;
+    public static final long MASK_FILE_F = F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8;
+    public static final long MASK_FILE_G = G1 | G2 | G3 | G4 | G5 | G6 | G7 | G8;
+    public static final long MASK_FILE_H = H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8;
+
+    public static final long CLEAR_RANK_1 = ~MASK_RANK_1;
+    public static final long CLEAR_RANK_2 = ~MASK_RANK_2;
+    public static final long CLEAR_RANK_3 = ~MASK_RANK_3;
+    public static final long CLEAR_RANK_4 = ~MASK_RANK_4;
+    public static final long CLEAR_RANK_5 = ~MASK_RANK_5;
+    public static final long CLEAR_RANK_6 = ~MASK_RANK_6;
+    public static final long CLEAR_RANK_7 = ~MASK_RANK_7;
+    public static final long CLEAR_RANK_8 = ~MASK_RANK_8;
+
+    public static final long CLEAR_FILE_A = ~MASK_FILE_A;
+    public static final long CLEAR_FILE_B = ~MASK_FILE_B;
+    public static final long CLEAR_FILE_C = ~MASK_FILE_C;
+    public static final long CLEAR_FILE_D = ~MASK_FILE_D;
+    public static final long CLEAR_FILE_E = ~MASK_FILE_E;
+    public static final long CLEAR_FILE_F = ~MASK_FILE_F;
+    public static final long CLEAR_FILE_G = ~MASK_FILE_G;
+    public static final long CLEAR_FILE_H = ~MASK_FILE_H;
+
+    public static final long CLEAR_FILE_AB = CLEAR_FILE_A & CLEAR_FILE_B;
+    public static final long CLEAR_FILE_GH = CLEAR_FILE_G & CLEAR_FILE_H;
+
+    /**
+     * Разделяет битборд со всеми позициями на битборды с каждой отдельной позицией
+     * Пример
+     * 0110 - все 1 это возможные позиции
+     * метод вернет {0010, 0100}
+     * @param allPossiblePositions
+     * @return
+     */
+    public static List<Long> segregatePositions(final long allPossiblePositions){
+        List<Long> positions = new ArrayList<>();
+        long allLeftToSegregatePositions = allPossiblePositions;
+        long possibility=allLeftToSegregatePositions&~(allLeftToSegregatePositions-1);
+        positions.add(possibility);
+        // проходимя по каждому включенному биту
+        while (possibility != 0) {
+            allLeftToSegregatePositions&=~possibility;
+            possibility=allLeftToSegregatePositions&~(allLeftToSegregatePositions-1);
+            if(possibility != 0)
+                positions.add(possibility);
+        }
+        return positions;
+    }
+
 
     /**
      * Get the square bitboard for a given {@link BitIndex}.
