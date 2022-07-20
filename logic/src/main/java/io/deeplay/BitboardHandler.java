@@ -19,10 +19,10 @@ public class BitboardHandler {
         Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK;
 
         for (long possibleMove : BitUtils.segregatePositions(allPossibleMoves)) {
-            if ((possibleMove & chessBitboard.getOpponentPieces()) != 0)
+            if ( (possibleMove & chessBitboard.getOpponentPieces()) != 0 )
                 movesInfo.add( new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
                         MoveType.USUAL_ATTACK, figure) );
-            if ( (possibleMove & chessBitboard.getMyPieces()) == 0L ) // нужно ли учитывать фигуры оппонента?
+            if ( (possibleMove & chessBitboard.getMyPieces()) == 0 ) // нужно ли учитывать фигуры оппонента?
                 movesInfo.add( new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
                         MoveType.USUAL_MOVE, figure) );
         }
