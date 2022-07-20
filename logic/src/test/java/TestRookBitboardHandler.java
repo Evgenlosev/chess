@@ -72,17 +72,20 @@ public class TestRookBitboardHandler {
 
         Set<MoveInfo> expectedBlackMoveInfoSet = Stream.of( // черная ладья H3 - 23 клетка
                         new MoveInfo(new Coord(23), new Coord(20), MoveType.USUAL_MOVE, Figure.B_ROOK),
-                        new MoveInfo(new Coord(23), new Coord(63), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(7), MoveType.USUAL_MOVE, Figure.B_ROOK),
+
                         new MoveInfo(new Coord(23), new Coord(47), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(55), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(15), MoveType.USUAL_MOVE, Figure.B_ROOK),
+
                         new MoveInfo(new Coord(23), new Coord(39), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(31), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(22), MoveType.USUAL_MOVE, Figure.B_ROOK),
+
                         new MoveInfo(new Coord(23), new Coord(21), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(19), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(18), MoveType.USUAL_MOVE, Figure.B_ROOK),
+
                         new MoveInfo(new Coord(23), new Coord(17), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(16), MoveType.USUAL_ATTACK, Figure.B_ROOK))
                 .collect(Collectors.toSet());
