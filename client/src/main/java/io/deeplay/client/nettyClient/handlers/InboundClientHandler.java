@@ -12,9 +12,7 @@ import java.io.InputStreamReader;
 public class InboundClientHandler extends SimpleChannelInboundHandler<String> {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(InboundClientHandler.class);
     @Override
-    //Обработка события: подключение нового клиента
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-//        super.channelActive(ctx);
         logger.info("Подключились к серверу");
 
         new Thread(() -> {
@@ -33,7 +31,7 @@ public class InboundClientHandler extends SimpleChannelInboundHandler<String> {
     }
 
     @Override
-    //Обработка события: входящее сообщение от клиента
+    //Обработка события: входящее сообщение от сервера
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, String s) throws Exception {
         logger.info("Получено сообщение от клиента: " + s);
     }
