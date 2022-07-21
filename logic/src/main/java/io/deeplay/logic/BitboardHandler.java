@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.logic;
 
 import io.deeplay.core.model.Side;
 import io.deeplay.logic.board.*;

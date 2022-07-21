@@ -1,6 +1,6 @@
-import io.deeplay.BitUtils;
-import io.deeplay.BitboardHandler;
-import io.deeplay.ChessBoard;
+import io.deeplay.logic.BitUtils;
+import io.deeplay.logic.BitboardHandler;
+import io.deeplay.logic.ChessBoard;
 import io.deeplay.logic.board.Coord;
 import io.deeplay.logic.board.Figure;
 import io.deeplay.logic.board.MoveInfo;
