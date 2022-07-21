@@ -1,3 +1,5 @@
+package logic;
+
 import io.deeplay.logic.BitUtils;
 import io.deeplay.api.BitboardHandler;
 import io.deeplay.logic.ChessBoard;
