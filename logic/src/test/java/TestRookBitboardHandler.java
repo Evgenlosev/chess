@@ -1,6 +1,6 @@
-import io.deeplay.BitUtils;
-import io.deeplay.BitboardHandler;
-import io.deeplay.ChessBoard;
+import io.deeplay.logic.BitUtils;
+import io.deeplay.logic.BitboardHandler;
+import io.deeplay.logic.ChessBoard;
 import io.deeplay.logic.board.Coord;
 import io.deeplay.logic.board.Figure;
 import io.deeplay.logic.board.MoveInfo;
@@ -18,6 +18,7 @@ public class TestRookBitboardHandler {
     // TODO: связанная за своим королем ладья должна ходить только по линии атаки связывающей фигуры
     //  по сути надо сделать && битборда атаки с битбородом атаки фигуры, угрожающей королю
 
+    // TODO: тест на невозможность походить из изначальной позиции
     // TODO: тест когда фигура связана и не может ходить
     // TODO: тест когда фигура связана и не может ходить, но есть возможность срубить НЕ связывающую фигуру
     // TODO: тест когда фигура связана и может срубить связывающую фигуру
@@ -35,7 +36,6 @@ public class TestRookBitboardHandler {
                         new MoveInfo(new Coord(52), new Coord(53), MoveType.USUAL_ATTACK, Figure.W_ROOK))
                 .collect(Collectors.toSet());
 
-
         assertEquals(expectedMoveInfoSet, BitboardHandler.getRookMoves(chessBoard, new Coord(BitUtils.BitIndex.E7_IDX.ordinal())));
     }
 
@@ -47,7 +47,6 @@ public class TestRookBitboardHandler {
                         new MoveInfo(new Coord(53), new Coord(45), MoveType.USUAL_ATTACK, Figure.B_ROOK),
                         new MoveInfo(new Coord(53), new Coord(52), MoveType.USUAL_ATTACK, Figure.B_ROOK))
                 .collect(Collectors.toSet());
-
 
         assertEquals(expectedMoveInfoSet, BitboardHandler.getRookMoves(chessBoard, new Coord(BitUtils.BitIndex.F7_IDX.ordinal())));
     }
@@ -73,19 +72,15 @@ public class TestRookBitboardHandler {
         Set<MoveInfo> expectedBlackMoveInfoSet = Stream.of( // черная ладья H3 - 23 клетка
                         new MoveInfo(new Coord(23), new Coord(20), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(7), MoveType.USUAL_MOVE, Figure.B_ROOK),
-
                         new MoveInfo(new Coord(23), new Coord(47), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(55), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(15), MoveType.USUAL_MOVE, Figure.B_ROOK),
-
                         new MoveInfo(new Coord(23), new Coord(39), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(31), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(22), MoveType.USUAL_MOVE, Figure.B_ROOK),
-
                         new MoveInfo(new Coord(23), new Coord(21), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(19), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(18), MoveType.USUAL_MOVE, Figure.B_ROOK),
-
                         new MoveInfo(new Coord(23), new Coord(17), MoveType.USUAL_MOVE, Figure.B_ROOK),
                         new MoveInfo(new Coord(23), new Coord(16), MoveType.USUAL_ATTACK, Figure.B_ROOK))
                 .collect(Collectors.toSet());

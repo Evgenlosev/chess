@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.logic;
 
 import java.util.HashMap;
 import java.util.Map;

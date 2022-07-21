@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.logic;
 
 import io.deeplay.core.model.Side;
 
@@ -6,8 +6,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO: здесь автоматически определяется сторона по координатам фигуры(которая должна походить),
-//  а так же просмотром в строковое представление, если с маленькой буквы - то чёрные
 public class ChessBitboard {
     private static final int BOARD_WIDTH = 8;
     private static final int BOARD_HEIGHT = 8;
@@ -43,53 +41,55 @@ public class ChessBitboard {
         String parseBoard = fenNotation.trim();
 
         boolean sideNotDetermined = true;
+        final int lastIndex = 63;
         // счёт для обращения к строке
         int count = 0;
         // т.к. нужно знать индекс фигуры для битборда, нужно так же считать пустые клетки нотации FEN
-        int countBoard = 63 - 8;
-        int backwardPrinting = 7;
+        int countCharactersAndSkips = lastIndex - (BOARD_WIDTH - 1);
+        int backwardPrinting = BOARD_WIDTH - 1;
         int rowCount = 0; // считаем начиная с верхней строки
-        final int lastIndex = 63;
         char currentChar = parseBoard.charAt(count);
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.putIfAbsent(ch, 0L);
         }
 
         int skip;
-        boolean isDigit;
         while (currentChar != ' ') {
-            isDigit = Character.isDigit(currentChar);
-            if (isDigit) {
+            if (Character.isDigit(currentChar)) {
                 skip = currentChar - '0'; // widening casting
-                countBoard += skip;
+                countCharactersAndSkips += skip;
                 backwardPrinting -= skip;
             }
             if (allPiecesCharacterRepresentation.contains(currentChar)) {
                 piecesBitboard.put(currentChar,
                         piecesBitboard.get(currentChar) | (1L << (lastIndex - (rowCount * BOARD_WIDTH + backwardPrinting))));
             }
-            if (countBoard == from) {
+            if (Character.isLetter(currentChar) && countCharactersAndSkips == from) {
                 this.mySide = Character.isLowerCase(currentChar) ? Side.BLACK : Side.WHITE;
                 sideNotDetermined = false;
             }
             count++;
-            if (currentChar != '/' && !isDigit) {
+            if (Character.isLetter(currentChar)) {
                 backwardPrinting--;
-                countBoard++;
+                countCharactersAndSkips++;
             }
             if (currentChar == '/') {
-                backwardPrinting = 7;
+                backwardPrinting = BOARD_WIDTH - 1;
                 rowCount++;
-                countBoard = lastIndex - rowCount * BOARD_WIDTH - 7;
+                countCharactersAndSkips = lastIndex - rowCount * BOARD_WIDTH - (BOARD_WIDTH - 1);
             }
             currentChar = parseBoard.charAt(count);
         }
         if (sideNotDetermined) {
+            // Если сторона не определена, то есть возможность, что дали не верную позицию фигуры
+            throw new NullPointerException("Side is not determined!");
             // TODO: До первого пробела извлекаем charAt и считаем '/' а так же количество свободных фигур
             //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
             // currentChar > 8
             // исключение, логирование
         }
+        // TODO: проверка то что символ в условии совпадения from совпадает с символом в мапе
+        //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка)
 
         // TODO: разжевать оставшуюся часть FEN (в цикле до, нужно сохранить индекс пробела)
 

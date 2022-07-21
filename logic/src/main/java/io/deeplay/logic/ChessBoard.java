@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.logic;
 
 public class ChessBoard {
 

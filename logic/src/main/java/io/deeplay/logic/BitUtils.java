@@ -1,4 +1,4 @@
-package io.deeplay;
+package io.deeplay.logic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,7 +199,7 @@ public class BitUtils {
         long allLeftToSegregatePositions = allPossiblePositions;
         long possibility = allLeftToSegregatePositions & ~(allLeftToSegregatePositions - 1);
         positions.add(possibility);
-        // проходимя по каждому включенному биту
+        // проходимся по каждому включенному биту
         while (possibility != 0) {
             allLeftToSegregatePositions &= ~possibility;
             possibility = allLeftToSegregatePositions & ~(allLeftToSegregatePositions - 1);
