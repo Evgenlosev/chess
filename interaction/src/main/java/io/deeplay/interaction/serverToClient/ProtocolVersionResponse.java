@@ -1,32 +1,37 @@
 package io.deeplay.interaction.serverToClient;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 
 @JsonTypeName("ProtocolVersionResponse")
 public class ProtocolVersionResponse extends Command {
-    private final boolean versionMatch;
+    private final boolean isVersionMatch;
     private String errorMessage;
 
-    public ProtocolVersionResponse(final boolean versionMatch) {
+    public ProtocolVersionResponse(final boolean isVersionMatch) {
         super(CommandType.PROTOCOL_VERSION_RESPONSE);
-        this.versionMatch = versionMatch;
+        this.isVersionMatch = isVersionMatch;
     }
-
-    public ProtocolVersionResponse(final boolean versionMatch, final String errorMessage) {
+    @JsonCreator
+    public ProtocolVersionResponse(
+            @JsonProperty("isVersionMatch") final boolean isVersionMatch,
+            @JsonProperty("errorMessage") final String errorMessage) {
         super(CommandType.PROTOCOL_VERSION_RESPONSE);
-        this.versionMatch = versionMatch;
+        this.isVersionMatch = isVersionMatch;
         this.errorMessage = errorMessage;
     }
 
     public ProtocolVersionResponse() {
         super(CommandType.PROTOCOL_VERSION_RESPONSE);
-        this.versionMatch = false;
+        this.isVersionMatch = false;
     }
 
+    @JsonProperty("isVersionMatch")
     public boolean isVersionMatch() {
-        return versionMatch;
+        return isVersionMatch;
     }
 
     public String getErrorMessage() {
@@ -41,7 +46,7 @@ public class ProtocolVersionResponse extends Command {
     public String toString() {
         return "ProtocolVersionResponse{" +
                 "commandType='" + super.getCommandType() + '\'' +
-                ", versionMatch=" + versionMatch +
+                ", isVersionMatch=" + isVersionMatch +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';
     }
