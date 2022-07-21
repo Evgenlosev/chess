@@ -1,4 +1,4 @@
-package io.deeplay.server.utils;
+package io.deeplay.interaction.utils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import io.deeplay.interaction.Command;
