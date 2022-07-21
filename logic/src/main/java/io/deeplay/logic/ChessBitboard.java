@@ -41,7 +41,16 @@ public class ChessBitboard {
     // From нужен, чтобы определить сторону, т.к. она не передается
     public ChessBitboard(final String fenNotation, int from) {
         Map<Character, Long> piecesBitboard = new HashMap<>();
-        String parseBoard = fenNotation.trim();
+        final List<String> parseFenNotation = List.of(fenNotation.split(" "));
+
+        if (parseFenNotation.size() != 6)
+            throw new NullPointerException("Не верная либо неполная нотация");
+        final String parsePiecePlacementData = parseFenNotation.get(0);
+        final String parseTurnSide = parseFenNotation.get(1);
+        final String parseCastlingRights = parseFenNotation.get(2);
+        final String parseEnPassantTargetSquare = parseFenNotation.get(3);
+        final String parseHalfmoveClock = parseFenNotation.get(4);
+        final String parseFullmove = parseFenNotation.get(5);
 
         boolean sideNotDetermined = true;
         final int lastIndex = 63;
@@ -51,13 +60,13 @@ public class ChessBitboard {
         int countCharactersAndSkips = lastIndex - (BOARD_WIDTH - 1);
         int backwardPrinting = BOARD_WIDTH - 1;
         int rowCount = 0; // считаем начиная с верхней строки
-        char currentChar = parseBoard.charAt(count);
+        // char currentChar = parseBoard.charAt(count);
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.putIfAbsent(ch, 0L);
         }
 
         int skip;
-        while (currentChar != ' ') {
+        for (char currentChar : parsePiecePlacementData.toCharArray()) {
             if (Character.isDigit(currentChar)) {
                 skip = currentChar - '0'; // widening casting
                 countCharactersAndSkips += skip;
@@ -81,11 +90,10 @@ public class ChessBitboard {
                 rowCount++;
                 countCharactersAndSkips = lastIndex - rowCount * BOARD_WIDTH - (BOARD_WIDTH - 1);
             }
-            currentChar = parseBoard.charAt(count);
         }
         if (sideNotDetermined) {
             // Если сторона не определена, то есть возможность, что дали не верную позицию фигуры
-            throw new NullPointerException("Side is not determined!");
+            throw new NullPointerException("Сторона не определена");
             // TODO: До первого пробела извлекаем charAt и считаем '/' а так же количество свободных фигур
             //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
             // currentChar > 8
