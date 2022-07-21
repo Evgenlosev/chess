@@ -4,6 +4,7 @@ import io.deeplay.core.model.Side;
 import io.deeplay.logic.board.*;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 // TODO: если наш ход и король противника под шахом (при том что он не зажат), такое невозможно либо исключение либо мат
@@ -30,19 +31,19 @@ public class BitboardHandler {
     }
 
     private static long getRookAllPossibleMovesBitboard(final ChessBitboard chessBitboard, final Coord from) {
-        MagicBoard magic = BitboardPatternsInitializer.rookMagicBoards[from.getIndexAsOneDimension()];
+        final MagicBoard magic = BitboardPatternsInitializer.rookMagicBoards[from.getIndexAsOneDimension()];
         return magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
                 BitboardPatternsInitializer.ROOK_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
     }
 
     private static long getBishopAllPossibleMovesBitboard(final ChessBitboard chessBitboard, final Coord from) {
-        MagicBoard magic = BitboardPatternsInitializer.bishopMagicBoards[from.getIndexAsOneDimension()];
+        final MagicBoard magic = BitboardPatternsInitializer.bishopMagicBoards[from.getIndexAsOneDimension()];
         return magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
                 BitboardPatternsInitializer.BISHOP_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
     }
 
     public static Set<MoveInfo> getRookMoves(final ChessBoard board, final Coord from) {
-        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = getRookAllPossibleMovesBitboard(chessBitboard, from);
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK;
@@ -51,7 +52,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getQueenMoves(final ChessBoard board, final Coord from) {
-        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves =
                 getRookAllPossibleMovesBitboard(chessBitboard, from) | getBishopAllPossibleMovesBitboard(chessBitboard, from);
@@ -61,7 +62,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getBishopMoves(final ChessBoard board, final Coord from) {
-        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = getBishopAllPossibleMovesBitboard(chessBitboard, from);
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_BISHOP : Figure.B_BISHOP;
@@ -70,7 +71,7 @@ public class BitboardHandler {
     }
 
     Set<MoveInfo> getKnightMoves(final ChessBoard board, final Coord from) {
-        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = BitboardPatternsInitializer.knightMoveBitboards[from.getIndexAsOneDimension()];
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_KNIGHT : Figure.B_KNIGHT;
@@ -79,7 +80,7 @@ public class BitboardHandler {
     }
 
     Set<MoveInfo> getKingMoves(final ChessBoard board, final Coord from) {
-        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = BitboardPatternsInitializer.kingMoveBitboards[from.getIndexAsOneDimension()];
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_KING : Figure.B_KING;
@@ -88,12 +89,20 @@ public class BitboardHandler {
     }
 
     Set<MoveInfo> getPawnMoves(final ChessBoard board, final Coord from) {
-        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
-        final long allPossibleMoves = ; //
+        final Map<MoveType, Long> allPossibleMoves = chessBitboard.getMySide() == Side.WHITE
+                ? BitboardDynamicPatterns.possibleWhitePawnMoves(chessBitboard, from)
+                : BitboardDynamicPatterns.possibleBlackPawnMoves(chessBitboard, from);
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN;
+        Set<MoveInfo> movesInfo = new HashSet<>();
 
-        return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
+        for (MoveType moveType : allPossibleMoves.keySet())
+            for (long possibleMove : BitUtils.segregatePositions(allPossibleMoves.get(moveType)))
+                movesInfo.add(new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
+                            moveType, figure));
+
+        return movesInfo;
     }
 
 /*
