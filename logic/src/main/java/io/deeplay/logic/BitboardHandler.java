@@ -70,7 +70,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    Set<MoveInfo> getKnightMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getKnightMoves(final ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = BitboardPatternsInitializer.knightMoveBitboards[from.getIndexAsOneDimension()];
@@ -79,7 +79,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    Set<MoveInfo> getKingMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getKingMoves(final ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = BitboardPatternsInitializer.kingMoveBitboards[from.getIndexAsOneDimension()];
@@ -88,7 +88,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    Set<MoveInfo> getPawnMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getPawnMoves(final ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final Map<MoveType, Long> allPossibleMoves = chessBitboard.getMySide() == Side.WHITE
@@ -97,18 +97,17 @@ public class BitboardHandler {
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN;
         Set<MoveInfo> movesInfo = new HashSet<>();
 
-        for (MoveType moveType : allPossibleMoves.keySet())
-            for (long possibleMove : BitUtils.segregatePositions(allPossibleMoves.get(moveType)))
-                movesInfo.add(new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
-                            moveType, figure));
+        for (MoveType moveType : allPossibleMoves.keySet()) {
+            for (long possibleMove : BitUtils.segregatePositions(allPossibleMoves.get(moveType))) {
+                if(possibleMove != 0L)
+                    movesInfo.add(new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
+                        moveType, figure));
+            }
+        }
 
         return movesInfo;
     }
 
-/*
-// TODO:
-    public static long getPawnMoves(int from, long allPieces)
-*/
     // TODO: Multimap<Coord, MoveInfo> getAllPossibleMoves(ChessBoard board, Side side);
     // TODO: boolean isCheck(ChessBoard board, Side side);
 

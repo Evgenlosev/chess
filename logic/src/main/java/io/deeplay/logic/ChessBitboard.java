@@ -94,7 +94,7 @@ public class ChessBitboard {
         // TODO: проверка то что символ в условии совпадения from совпадает с символом в мапе
         //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка)
 
-        // TODO: разжевать оставшуюся часть FEN (в цикле до, нужно сохранить индекс пробела)
+        // TODO: String.split(fen)
 
         if (Side.otherSide(mySide) == Side.BLACK)
             setOpponentsBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isLowerCase(x.getKey()))
