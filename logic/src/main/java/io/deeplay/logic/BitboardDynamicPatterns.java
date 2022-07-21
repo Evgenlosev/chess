@@ -53,12 +53,12 @@ public class BitboardDynamicPatterns {
         // TODO:
         if (isEnPassant) {
             //en passant right
-            satisfyingMoves = (pawnToMoveBitboard >>> 1) & opponentPawns & MASK_RANK_5 & ~MASK_FILE_A & enPassantFile;//shows piece to remove, not the destination
+            satisfyingMoves = (pawnToMoveBitboard << 9) & (opponentPawns << 8) & MASK_RANK_6 & ~MASK_FILE_A & enPassantFile;
             if (satisfyingMoves != 0) {
                 moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
             }
             //en passant left
-            satisfyingMoves = (pawnToMoveBitboard << 1) & opponentPawns & MASK_RANK_5 & ~MASK_FILE_H & enPassantFile;//shows piece to remove, not the destination
+            satisfyingMoves = (pawnToMoveBitboard << 7) & (opponentPawns << 8) & MASK_RANK_6 & ~MASK_FILE_H & enPassantFile;
             if (satisfyingMoves != 0) {
                 moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
             }
@@ -111,13 +111,13 @@ public class BitboardDynamicPatterns {
         // TODO:
         if (isEnPassant) {
             //en passant right
-            satisfyingMoves = (pawnToMoveBitboard << 1) & opponentPawns & MASK_RANK_4 & ~MASK_FILE_H & enPassantFile;//shows piece to remove, not the destination
+            satisfyingMoves = (pawnToMoveBitboard >>> 9) & (opponentPawns >>> 8) & MASK_RANK_3 & ~MASK_FILE_H & enPassantFile;//shows piece to remove, not the destination
             if (satisfyingMoves != 0) {
                 possibleMoves |= satisfyingMoves;
                 moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
             }
             //en passant left
-            satisfyingMoves = (pawnToMoveBitboard >>> 1) & opponentPawns & MASK_RANK_4 & ~MASK_FILE_A & enPassantFile;//shows piece to remove, not the destination
+            satisfyingMoves = (pawnToMoveBitboard >>> 7) & (opponentPawns >>> 8) & MASK_RANK_3 & ~MASK_FILE_A & enPassantFile;//shows piece to remove, not the destination
             if (satisfyingMoves != 0) {
                 possibleMoves |= satisfyingMoves;
                 moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);

@@ -17,8 +17,6 @@ import static org.junit.Assert.assertEquals;
 
 public class TestPawnBitboardHandler {
 
-    // TODO: тест когда 2 фигуры походили на 2 клетки, но только 1 походила на 2 вперед прошлым ходом
-    // en passant у краев доски за обе стороны
     @Test
     public void testPawnAtStartPositionClassic() {
         ChessBoard chessBoard = new ChessBoard("rnbqkbnr/ppp1p1pp/8/3p1p2/4P3/1P6/P1PP1PPP/RNBQKBNR b KQkq - 0 1");
@@ -109,6 +107,42 @@ public class TestPawnBitboardHandler {
 
         assertEquals(expectedMoveInfoSet, BitboardHandler.getPawnMoves(chessBoard, new Coord(BitUtils.BitIndex.H2_IDX.ordinal())));
 
+    }
+
+    @Test
+    public void testPawnEnPassant() {
+        ChessBoard chessBoard = new ChessBoard("rnbqkbnr/ppp1pppp/8/2PpP3/8/8/PP1P1PPP/RNBQKBNR w KQkq d6 0 1");
+        // Взятие на проходе атака вправо, для белых
+        Set<MoveInfo> expectedMoveInfoSet = Stream.of(
+                        new MoveInfo(new Coord(34), new Coord(43), MoveType.PAWN_ON_GO_ATTACK, Figure.W_PAWN),
+                        new MoveInfo(new Coord(34), new Coord(42), MoveType.USUAL_MOVE, Figure.W_PAWN))
+                .collect(Collectors.toSet());
+
+        assertEquals(expectedMoveInfoSet, BitboardHandler.getPawnMoves(chessBoard, new Coord(BitUtils.BitIndex.C5_IDX.ordinal())));
+
+        // Взятие на проходе атака влево, для белых
+        expectedMoveInfoSet = Stream.of(
+                        new MoveInfo(new Coord(36), new Coord(43), MoveType.PAWN_ON_GO_ATTACK, Figure.W_PAWN),
+                        new MoveInfo(new Coord(36), new Coord(44), MoveType.USUAL_MOVE, Figure.W_PAWN))
+                .collect(Collectors.toSet());
+
+        assertEquals(expectedMoveInfoSet, BitboardHandler.getPawnMoves(chessBoard, new Coord(BitUtils.BitIndex.E5_IDX.ordinal())));
+
+        chessBoard = new ChessBoard("rnbqkbnr/ppp1p1pp/8/8/3pPp2/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+        // Взятие на проходе атака влево, для чёрных
+        expectedMoveInfoSet = Stream.of(
+                        new MoveInfo(new Coord(27), new Coord(20), MoveType.PAWN_ON_GO_ATTACK, Figure.B_PAWN),
+                        new MoveInfo(new Coord(27), new Coord(19), MoveType.USUAL_MOVE, Figure.B_PAWN))
+                .collect(Collectors.toSet());
+
+        assertEquals(expectedMoveInfoSet, BitboardHandler.getPawnMoves(chessBoard, new Coord(BitUtils.BitIndex.D4_IDX.ordinal())));
+        // Взятие на проходе атака вправо, для чёрных
+        expectedMoveInfoSet = Stream.of(
+                        new MoveInfo(new Coord(29), new Coord(20), MoveType.PAWN_ON_GO_ATTACK, Figure.B_PAWN),
+                        new MoveInfo(new Coord(29), new Coord(21), MoveType.USUAL_MOVE, Figure.B_PAWN))
+                .collect(Collectors.toSet());
+
+        assertEquals(expectedMoveInfoSet, BitboardHandler.getPawnMoves(chessBoard, new Coord(BitUtils.BitIndex.F4_IDX.ordinal())));
     }
 
 }

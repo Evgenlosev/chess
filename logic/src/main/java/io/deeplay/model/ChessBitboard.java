@@ -6,6 +6,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.deeplay.logic.BitUtils.*;
+import static java.util.Map.entry;
+
 public class ChessBitboard {
     private static final int BOARD_WIDTH = 8;
     private static final int BOARD_HEIGHT = 8;
@@ -13,6 +16,18 @@ public class ChessBitboard {
     private static final Set<Character> allPiecesCharacterRepresentation =
             Stream.of('p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R', 'Q', 'K')
                     .collect(Collectors.toUnmodifiableSet());
+
+    private static final Map<Character, Long> fileCharToBitboardRepresentation =
+            Map.ofEntries(
+                    entry('a', MASK_FILE_A),
+                    entry('b', MASK_FILE_B),
+                    entry('c', MASK_FILE_C),
+                    entry('d', MASK_FILE_D),
+                    entry('e', MASK_FILE_E),
+                    entry('f', MASK_FILE_F),
+                    entry('g', MASK_FILE_G),
+                    entry('h', MASK_FILE_H)
+            );
 
     private Side mySide;
     private long myPawns;
@@ -61,7 +76,6 @@ public class ChessBitboard {
         int countCharactersAndSkips = lastIndex - (BOARD_WIDTH - 1);
         int backwardPrinting = BOARD_WIDTH - 1;
         int rowCount = 0; // считаем начиная с верхней строки
-        // char currentChar = parseBoard.charAt(count);
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.putIfAbsent(ch, 0L);
         }
@@ -101,9 +115,11 @@ public class ChessBitboard {
             // исключение, логирование
         }
         // TODO: проверка то что символ в условии совпадения from совпадает с символом в мапе
-        //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка)
+        //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка, тогда не нужно проверять на фигуру)
 
-        // TODO: String.split(fen)
+        this.enPassantFile = fileCharToBitboardRepresentation.getOrDefault(parseEnPassantTargetSquare.charAt(0), 0L);
+        if(enPassantFile != 0L)
+            this.isEnPassant = true;
 
         if (Side.otherSide(mySide) == Side.BLACK)
             setOpponentsBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isLowerCase(x.getKey()))
