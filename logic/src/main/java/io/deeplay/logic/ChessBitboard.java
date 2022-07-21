@@ -64,7 +64,7 @@ public class ChessBitboard {
                 piecesBitboard.put(currentChar,
                         piecesBitboard.get(currentChar) | (1L << (lastIndex - (rowCount * BOARD_WIDTH + backwardPrinting))));
             }
-            if (countCharactersAndSkips == from) {
+            if (Character.isLetter(currentChar) && countCharactersAndSkips == from) {
                 this.mySide = Character.isLowerCase(currentChar) ? Side.BLACK : Side.WHITE;
                 sideNotDetermined = false;
             }
@@ -81,12 +81,15 @@ public class ChessBitboard {
             currentChar = parseBoard.charAt(count);
         }
         if (sideNotDetermined) {
+            // Если сторона не определена, то есть возможность, что дали не верную позицию фигуры
             throw new NullPointerException("Side is not determined!");
             // TODO: До первого пробела извлекаем charAt и считаем '/' а так же количество свободных фигур
             //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
             // currentChar > 8
             // исключение, логирование
         }
+        // TODO: проверка то что символ в условии совпадения from совпадает с символом в мапе
+        //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка)
 
         // TODO: разжевать оставшуюся часть FEN (в цикле до, нужно сохранить индекс пробела)
 

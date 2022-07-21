@@ -8,6 +8,7 @@ import java.util.Set;
 
 // TODO: если наш ход и король противника под шахом (при том что он не зажат), такое невозможно либо исключение либо мат
 // TODO: implements MoveSystem
+// TODO: изменить логику определения фигур
 public class BitboardHandler {
 
     private static Set<MoveInfo> wrapUpMoves(final ChessBitboard chessBitboard,
