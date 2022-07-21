@@ -1,5 +1,6 @@
 package io.deeplay.server.utils;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.AuthRequest;
 import io.deeplay.interaction.clientToServer.MoveRequest;
@@ -28,7 +29,7 @@ public class CommandSerializatorTest {
         String str = "Java";
         byte[] bytes = str.getBytes();
 
-        Assert.assertThrows(IOException.class, () -> {
+        Assert.assertThrows(JsonParseException.class, () -> {
             CommandSerializator.deserializeByteArray(bytes);
         });
     }
