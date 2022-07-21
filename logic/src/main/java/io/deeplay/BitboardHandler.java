@@ -10,7 +10,10 @@ import java.util.Set;
 // TODO: implements MoveSystem
 public class BitboardHandler {
 
-    private static Set<MoveInfo> wrapUpMoves(ChessBitboard chessBitboard, Coord from, long allPossibleMoves, Figure figure) {
+    private static Set<MoveInfo> wrapUpMoves(final ChessBitboard chessBitboard,
+                                             final Coord from,
+                                             final long allPossibleMoves,
+                                             final Figure figure) {
         Set<MoveInfo> movesInfo = new HashSet<>();
         long notMyPieces = ~chessBitboard.getMyPieces();
         long notOpponentPieces = ~chessBitboard.getOpponentPieces();
@@ -25,18 +28,29 @@ public class BitboardHandler {
         return movesInfo;
     }
 
-    public static Set<MoveInfo> getRookMoves(ChessBoard board, Coord from) {
+    public static Set<MoveInfo> getRookMoves(final ChessBoard board, final Coord from) {
         ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
         MagicBoard magic = BitboardPatternsInitializer.rookMagicBoards[from.getIndexAsOneDimension()];
 
-        long allPossibleMoves = magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
+        final long allPossibleMoves = magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
                 BitboardPatternsInitializer.ROOK_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
         Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK;
 
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    Set<MoveInfo> getKnightMoves(ChessBoard board, Coord from) {
+    public static Set<MoveInfo> getBishopMoves(final ChessBoard board, final Coord from) {
+        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+        MagicBoard magic = BitboardPatternsInitializer.bishopMagicBoards[from.getIndexAsOneDimension()];
+
+        final long allPossibleMoves = magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
+                BitboardPatternsInitializer.BISHOP_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
+        Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_BISHOP : Figure.B_BISHOP;
+
+        return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
+    }
+
+    Set<MoveInfo> getKnightMoves(final ChessBoard board, final Coord from) {
         ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         long allPossibleMoves = BitboardPatternsInitializer.knightMoveBitboards[from.getIndexAsOneDimension()];
@@ -45,7 +59,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    Set<MoveInfo> getKingMoves(ChessBoard board, Coord from) {
+    Set<MoveInfo> getKingMoves(final ChessBoard board, final Coord from) {
         ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         long allPossibleMoves = BitboardPatternsInitializer.kingMoveBitboards[from.getIndexAsOneDimension()];
@@ -58,7 +72,6 @@ public class BitboardHandler {
 /*
 // TODO:
     public static long getPawnMoves(int from, long allPieces)
-    public static long getBishopMoves(int from, long allPieces)
     public static long getQueenMoves(int from, long allPieces)
 */
     // TODO: Multimap<Coord, MoveInfo> getAllPossibleMoves(ChessBoard board, Side side);
