@@ -29,13 +29,13 @@ public class BitboardHandler {
         return movesInfo;
     }
 
-    private static long getRookPossibleMoves(final ChessBitboard chessBitboard, final Coord from) {
+    private static long getRookAllPossibleMovesBitboard(final ChessBitboard chessBitboard, final Coord from) {
         MagicBoard magic = BitboardPatternsInitializer.rookMagicBoards[from.getIndexAsOneDimension()];
         return magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
                 BitboardPatternsInitializer.ROOK_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
     }
 
-    private static long getBishopPossibleMoves(final ChessBitboard chessBitboard, final Coord from) {
+    private static long getBishopAllPossibleMovesBitboard(final ChessBitboard chessBitboard, final Coord from) {
         MagicBoard magic = BitboardPatternsInitializer.bishopMagicBoards[from.getIndexAsOneDimension()];
         return magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
                 BitboardPatternsInitializer.BISHOP_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
@@ -44,7 +44,7 @@ public class BitboardHandler {
     public static Set<MoveInfo> getRookMoves(final ChessBoard board, final Coord from) {
         ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
-        final long allPossibleMoves = getRookPossibleMoves(chessBitboard, from);
+        final long allPossibleMoves = getRookAllPossibleMovesBitboard(chessBitboard, from);
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK;
 
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
@@ -54,7 +54,7 @@ public class BitboardHandler {
         ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves =
-                getRookPossibleMoves(chessBitboard, from) | getBishopPossibleMoves(chessBitboard, from);
+                getRookAllPossibleMovesBitboard(chessBitboard, from) | getBishopAllPossibleMovesBitboard(chessBitboard, from);
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN;
 
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
@@ -63,7 +63,7 @@ public class BitboardHandler {
     public static Set<MoveInfo> getBishopMoves(final ChessBoard board, final Coord from) {
         ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
-        final long allPossibleMoves = getBishopPossibleMoves(chessBitboard, from);
+        final long allPossibleMoves = getBishopAllPossibleMovesBitboard(chessBitboard, from);
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_BISHOP : Figure.B_BISHOP;
 
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
@@ -87,6 +87,14 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
+    Set<MoveInfo> getPawnMoves(final ChessBoard board, final Coord from) {
+        ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
+
+        final long allPossibleMoves = ; //
+        final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN;
+
+        return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
+    }
 
 /*
 // TODO:

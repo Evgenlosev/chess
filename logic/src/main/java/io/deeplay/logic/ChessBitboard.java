@@ -29,6 +29,9 @@ public class ChessBitboard {
     private long opponentQueens;
     private long opponentKing;
 
+    private long enPassantFile;
+    private boolean isEnPassant;
+
     // Получается из комбинации полей выше
     private long opponentPieces;
     private long myPieces;
@@ -141,6 +144,21 @@ public class ChessBitboard {
         this.empty = ~occupied;
     }
 
+    public long getEnPassantFile() {
+        return enPassantFile;
+    }
+
+    public void setEnPassantFile(long enPassantFile) {
+        this.enPassantFile = enPassantFile;
+    }
+
+    public boolean isEnPassant() {
+        return isEnPassant;
+    }
+
+    public void setEnPassant(boolean enPassant) {
+        isEnPassant = enPassant;
+    }
 
     public Side getMySide() {
         return mySide;
@@ -294,6 +312,8 @@ public class ChessBitboard {
                 ", opponentRooks=" + opponentRooks +
                 ", opponentQueens=" + opponentQueens +
                 ", opponentKing=" + opponentKing +
+                ", enPassantFile=" + enPassantFile +
+                ", isEnPassant=" + isEnPassant +
                 ", opponentPieces=" + opponentPieces +
                 ", myPieces=" + myPieces +
                 ", occupied=" + occupied +

@@ -3,6 +3,9 @@ package io.deeplay.logic;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * В начале работы класс инициализирует паттерны передвижений фигур, после чего не производит никаких вычислений
+ */
 public class BitboardPatternsInitializer {
     public static final long[] ROOK_MAGIC_NUMBERS = {
             0x0A8002C000108020L, 0x06C00049B0002001L, 0x0100200010090040L, 0x2480041000800801L,
@@ -122,178 +125,6 @@ public class BitboardPatternsInitializer {
         return knightMoveBitboards;
     }
 
-    // TODO:
-    /*
-    public static String possibleWP(long WP,long BP,long EP) {
-        String list="";
-        //x1,y1,x2,y2
-        long PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&~RANK_8&~FILE_A;//capture right
-        long possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8+1)+(index%8-1)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&~RANK_8&~FILE_H;//capture left
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8+1)+(index%8+1)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>8)&EMPTY&~RANK_8;//move 1 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8+1)+(index%8)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>16)&EMPTY&(EMPTY>>8)&RANK_4;//move 2 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8+2)+(index%8)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        //y1,y2,Promotion Type,"P"
-        PAWN_MOVES=(WP>>7)&NOT_MY_PIECES&OCCUPIED&RANK_8&~FILE_A;//pawn promotion by capture right
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8-1)+(index%8)+"QP"+(index%8-1)+(index%8)+"RP"+(index%8-1)+(index%8)+"BP"+(index%8-1)+(index%8)+"NP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>9)&NOT_MY_PIECES&OCCUPIED&RANK_8&~FILE_H;//pawn promotion by capture left
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8+1)+(index%8)+"QP"+(index%8+1)+(index%8)+"RP"+(index%8+1)+(index%8)+"BP"+(index%8+1)+(index%8)+"NP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(WP>>8)&EMPTY&RANK_8;//pawn promotion by move 1 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8)+(index%8)+"QP"+(index%8)+(index%8)+"RP"+(index%8)+(index%8)+"BP"+(index%8)+(index%8)+"NP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        //y1,y2,"WE"
-        //en passant right
-        possibility = (WP << 1)&BP&RANK_5&~FILE_A&EP;//shows piece to remove, not the destination
-        if (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8-1)+(index%8)+"WE";
-        }
-        //en passant left
-        possibility = (WP >> 1)&BP&RANK_5&~FILE_H&EP;//shows piece to remove, not the destination
-        if (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8+1)+(index%8)+"WE";
-        }
-        return list;
-    }
-    public static String possibleBP(long BP,long WP,long EP) {
-        String list="";
-        //x1,y1,x2,y2
-        long PAWN_MOVES=(BP<<7)&NOT_MY_PIECES&OCCUPIED&~RANK_1&~FILE_H;//capture right
-        long possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8-1)+(index%8+1)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(BP<<9)&NOT_MY_PIECES&OCCUPIED&~RANK_1&~FILE_A;//capture left
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8-1)+(index%8-1)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(BP<<8)&EMPTY&~RANK_1;//move 1 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8-1)+(index%8)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(BP<<16)&EMPTY&(EMPTY<<8)&RANK_5;//move 2 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index/8-2)+(index%8)+(index/8)+(index%8);
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        //y1,y2,Promotion Type,"P"
-        PAWN_MOVES=(BP<<7)&NOT_MY_PIECES&OCCUPIED&RANK_1&~FILE_H;//pawn promotion by capture right
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8+1)+(index%8)+"qP"+(index%8+1)+(index%8)+"rP"+(index%8+1)+(index%8)+"bP"+(index%8+1)+(index%8)+"nP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(BP<<9)&NOT_MY_PIECES&OCCUPIED&RANK_1&~FILE_A;//pawn promotion by capture left
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8-1)+(index%8)+"qP"+(index%8-1)+(index%8)+"rP"+(index%8-1)+(index%8)+"bP"+(index%8-1)+(index%8)+"nP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        PAWN_MOVES=(BP<<8)&EMPTY&RANK_1;//pawn promotion by move 1 forward
-        possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        while (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8)+(index%8)+"qP"+(index%8)+(index%8)+"rP"+(index%8)+(index%8)+"bP"+(index%8)+(index%8)+"nP";
-            PAWN_MOVES&=~possibility;
-            possibility=PAWN_MOVES&~(PAWN_MOVES-1);
-        }
-        //y1,y2,"BE"
-        //en passant right
-        possibility = (BP >> 1)&WP&RANK_4&~FILE_H&EP;//shows piece to remove, not the destination
-        if (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8+1)+(index%8)+"BE";
-        }
-        //en passant left
-        possibility = (BP << 1)&WP&RANK_4&~FILE_A&EP;//shows piece to remove, not the destination
-        if (possibility != 0)
-        {
-            int index=Long.numberOfTrailingZeros(possibility);
-            list+=""+(index%8-1)+(index%8)+"BE";
-        }
-        return list;
-    }
-*/
-
     /**
      * Предварительно вычисляем блокирующие маски для любого цвета ладьи
      */
@@ -392,8 +223,8 @@ public class BitboardPatternsInitializer {
     */
 
     /**
-     * Генерирует уникальную блокирующую доску, по полученному индексу (0..2^(количество вкоюченных битов))
-     * и блокирующая маска
+     * Генерирует уникальную блокирующую доску, по полученному индексу (0..2^(количество включенных битов))
+     * и блокирующую маску
      * Generate a unique blocker board, given an index (0..2^bits) and the blocker mask.
      *
      * @param index       An index (0..2^bits).
