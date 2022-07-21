@@ -62,29 +62,37 @@ public class TestQueenBitboardHandler {
 
     @Test
     public void testQueensInCornersPosition() {
-        ChessBoard chessBoard = new ChessBoard("7k/8/8/8/8/8/7b/B3K3 b - - 0 1"); // 0 - белый (в углу), 15 - черный (у одного края)
+        // 31 - белый (у одного края), 0 - черный (в углу)
+        ChessBoard chessBoard = new ChessBoard("rnb1kbnr/1p2p1pp/3p4/p1p5/5p1Q/4P3/2PP1PPP/qNB1KBNR w Kkq a6 0 1");
         Set<MoveInfo> expectedWhiteMoveInfoSet = Stream.of( // белая королева A1 - 0 клетка
-                        new MoveInfo(new Coord(0), new Coord(9), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                        new MoveInfo(new Coord(0), new Coord(18), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                        new MoveInfo(new Coord(0), new Coord(27), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                        new MoveInfo(new Coord(0), new Coord(36), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                        new MoveInfo(new Coord(0), new Coord(45), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                        new MoveInfo(new Coord(0), new Coord(54), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                        new MoveInfo(new Coord(0), new Coord(63), MoveType.USUAL_ATTACK, Figure.W_QUEEN))
+                        new MoveInfo(new Coord(31), new Coord(22), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(30), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(39), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(23), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(29), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(52), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(55), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(47), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(38), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                        new MoveInfo(new Coord(31), new Coord(45), MoveType.USUAL_MOVE, Figure.W_QUEEN))
                 .collect(Collectors.toSet());
-        assertEquals(expectedWhiteMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.A1_IDX.ordinal())));
+        assertEquals(expectedWhiteMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.H4_IDX.ordinal())));
 
         Set<MoveInfo> expectedBlackMoveInfoSet = Stream.of( // черная королева H2 - 15 клетка
-                        new MoveInfo(new Coord(15), new Coord(6), MoveType.USUAL_MOVE, Figure.B_QUEEN),
-                        new MoveInfo(new Coord(15), new Coord(22), MoveType.USUAL_MOVE, Figure.B_QUEEN),
-                        new MoveInfo(new Coord(15), new Coord(29), MoveType.USUAL_MOVE, Figure.B_QUEEN),
-                        new MoveInfo(new Coord(15), new Coord(36), MoveType.USUAL_MOVE, Figure.B_QUEEN),
-                        new MoveInfo(new Coord(15), new Coord(43), MoveType.USUAL_MOVE, Figure.B_QUEEN),
-                        new MoveInfo(new Coord(15), new Coord(50), MoveType.USUAL_MOVE, Figure.B_QUEEN),
-                        new MoveInfo(new Coord(15), new Coord(57), MoveType.USUAL_MOVE, Figure.B_QUEEN))
+                        new MoveInfo(new Coord(0), new Coord(1), MoveType.USUAL_ATTACK, Figure.B_QUEEN),
+                        new MoveInfo(new Coord(0), new Coord(24), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+                        new MoveInfo(new Coord(0), new Coord(45), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+
+                        new MoveInfo(new Coord(0), new Coord(27), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+                        new MoveInfo(new Coord(0), new Coord(36), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+                        new MoveInfo(new Coord(0), new Coord(9), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+
+                        new MoveInfo(new Coord(0), new Coord(18), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+                        new MoveInfo(new Coord(0), new Coord(8), MoveType.USUAL_MOVE, Figure.B_QUEEN),
+                        new MoveInfo(new Coord(0), new Coord(16), MoveType.USUAL_MOVE, Figure.B_QUEEN))
                 .collect(Collectors.toSet());
 
-        assertEquals(expectedBlackMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.H2_IDX.ordinal())));
+        assertEquals(expectedBlackMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.A1_IDX.ordinal())));
     }
     
 }

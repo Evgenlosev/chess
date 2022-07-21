@@ -45,7 +45,7 @@ public class ChessBitboard {
         // счёт для обращения к строке
         int count = 0;
         // т.к. нужно знать индекс фигуры для битборда, нужно так же считать пустые клетки нотации FEN
-        int countCharactersAndSkips = lastIndex - BOARD_WIDTH;
+        int countCharactersAndSkips = lastIndex - (BOARD_WIDTH - 1);
         int backwardPrinting = BOARD_WIDTH - 1;
         int rowCount = 0; // считаем начиная с верхней строки
         char currentChar = parseBoard.charAt(count);
@@ -76,7 +76,7 @@ public class ChessBitboard {
             if (currentChar == '/') {
                 backwardPrinting = BOARD_WIDTH - 1;
                 rowCount++;
-                countCharactersAndSkips = lastIndex - rowCount * BOARD_WIDTH - 7;
+                countCharactersAndSkips = lastIndex - rowCount * BOARD_WIDTH - (BOARD_WIDTH - 1);
             }
             currentChar = parseBoard.charAt(count);
         }
