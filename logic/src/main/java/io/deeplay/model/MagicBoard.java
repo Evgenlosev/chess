@@ -1,4 +1,4 @@
-package io.deeplay.logic;
+package io.deeplay.model;
 
 public class MagicBoard {
 

@@ -1,4 +1,4 @@
-package io.deeplay.logic;
+package io.deeplay.model;
 
 import io.deeplay.core.model.Side;
 
@@ -38,13 +38,14 @@ public class ChessBitboard {
     private long occupied;
     private long empty;
 
+
     // From нужен, чтобы определить сторону, т.к. она не передается
-    public ChessBitboard(final String fenNotation, int from) {
+    public ChessBitboard(final String fenNotation, final int from) {
         Map<Character, Long> piecesBitboard = new HashMap<>();
         final List<String> parseFenNotation = List.of(fenNotation.split(" "));
 
         if (parseFenNotation.size() != 6)
-            throw new NullPointerException("Не верная либо неполная нотация");
+            throw new NullPointerException("Не верная либо неполная нотация, количество элементов в нотации не равно 6");
         final String parsePiecePlacementData = parseFenNotation.get(0);
         final String parseTurnSide = parseFenNotation.get(1);
         final String parseCastlingRights = parseFenNotation.get(2);

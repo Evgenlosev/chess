@@ -1,10 +1,10 @@
 import io.deeplay.logic.BitUtils;
-import io.deeplay.logic.BitboardHandler;
+import io.deeplay.api.BitboardHandler;
 import io.deeplay.logic.ChessBoard;
-import io.deeplay.logic.board.Coord;
-import io.deeplay.logic.board.Figure;
-import io.deeplay.logic.board.MoveInfo;
-import io.deeplay.logic.board.MoveType;
+import io.deeplay.model.Coord;
+import io.deeplay.model.Figure;
+import io.deeplay.model.MoveInfo;
+import io.deeplay.model.MoveType;
 import org.junit.Test;
 
 import java.util.Set;
@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 public class TestPawnBitboardHandler {
 
+    // TODO: тест когда 2 фигуры походили на 2 клетки, но только 1 походила на 2 вперед прошлым ходом
     // en passant у краев доски за обе стороны
     @Test
     public void testPawnAtStartPositionClassic() {

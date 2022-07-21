@@ -1,7 +1,9 @@
-package io.deeplay.logic;
+package io.deeplay.api;
 
 import io.deeplay.core.model.Side;
-import io.deeplay.logic.board.*;
+import io.deeplay.logic.*;
+import io.deeplay.logic.ChessBoard;
+import io.deeplay.model.*;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class BitboardHandler {
                 BitboardPatternsInitializer.BISHOP_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
     }
 
-    public static Set<MoveInfo> getRookMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getRookMoves(final io.deeplay.logic.ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = getRookAllPossibleMovesBitboard(chessBitboard, from);
@@ -51,7 +53,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getQueenMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getQueenMoves(final io.deeplay.logic.ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves =
@@ -61,7 +63,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getBishopMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getBishopMoves(final io.deeplay.logic.ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = getBishopAllPossibleMovesBitboard(chessBitboard, from);
@@ -70,7 +72,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getKnightMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getKnightMoves(final io.deeplay.logic.ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = BitboardPatternsInitializer.knightMoveBitboards[from.getIndexAsOneDimension()];
@@ -79,7 +81,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getKingMoves(final ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getKingMoves(final io.deeplay.logic.ChessBoard board, final Coord from) {
         final ChessBitboard chessBitboard = new ChessBitboard(board.getFenNotation(), from.getIndexAsOneDimension());
 
         final long allPossibleMoves = BitboardPatternsInitializer.kingMoveBitboards[from.getIndexAsOneDimension()];
@@ -99,9 +101,9 @@ public class BitboardHandler {
 
         for (MoveType moveType : allPossibleMoves.keySet()) {
             for (long possibleMove : BitUtils.segregatePositions(allPossibleMoves.get(moveType))) {
-                if(possibleMove != 0L)
+                if (possibleMove != 0L)
                     movesInfo.add(new MoveInfo(from, new Coord(Long.numberOfTrailingZeros(possibleMove)),
-                        moveType, figure));
+                            moveType, figure));
             }
         }
 

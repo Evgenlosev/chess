@@ -1,5 +1,7 @@
 package io.deeplay.logic;
 
+import io.deeplay.model.MagicBoard;
+
 import java.util.HashMap;
 import java.util.Map;
 

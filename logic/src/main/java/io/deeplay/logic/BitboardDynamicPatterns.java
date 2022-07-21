@@ -1,8 +1,9 @@
 package io.deeplay.logic;
 
 import io.deeplay.core.model.Side;
-import io.deeplay.logic.board.Coord;
-import io.deeplay.logic.board.MoveType;
+import io.deeplay.model.ChessBitboard;
+import io.deeplay.model.Coord;
+import io.deeplay.model.MoveType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,17 +16,16 @@ import static io.deeplay.logic.BitUtils.*;
  */
 public class BitboardDynamicPatterns {
 
-    // TODO: тест когда 2 фигуры походили на 2 клетки, но только 1 походила на 2 вперед прошлым ходом
     public static Map<MoveType, Long> possibleWhitePawnMoves(final ChessBitboard chessBitboard, final Coord from) {
-        if(chessBitboard.getMySide() != Side.WHITE)
+        if (chessBitboard.getMySide() != Side.WHITE)
             throw new IllegalArgumentException("Подсчёт ходов для белых пешек невозможен для чёрных пешек.");
         final long pawnToMoveBitboard = 1L << from.getIndexAsOneDimension();
         final long notMyPieces = chessBitboard.getOpponentPieces();
         final long opponentPawns = chessBitboard.getOpponentPawns();
         final long occupied = chessBitboard.getOccupied();
         final long empty = chessBitboard.getEmpty();
-        final boolean isEnPassant = chessBitboard.isEnPassant();// TODO: true, если в нотации что то написано, это нужно узнавать из нотации FEN
-        final long enPassantFile = chessBitboard.getEnPassantFile(); // FILE(вертикаль) с единицами на котором возможно взятие на проходе
+        final boolean isEnPassant = chessBitboard.isEnPassant();
+        final long enPassantFile = chessBitboard.getEnPassantFile();
 
         Map<MoveType, Long> moveTypes = new HashMap<>();
         long satisfyingMoves = (pawnToMoveBitboard << 9) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_A; // capture right
@@ -51,7 +51,7 @@ public class BitboardDynamicPatterns {
         moveTypes.putIfAbsent(MoveType.PAWN_TO_FIGURE, satisfyingMoves);
 
         // TODO:
-        if(isEnPassant) {
+        if (isEnPassant) {
             //en passant right
             satisfyingMoves = (pawnToMoveBitboard >>> 1) & opponentPawns & MASK_RANK_5 & ~MASK_FILE_A & enPassantFile;//shows piece to remove, not the destination
             if (satisfyingMoves != 0) {
@@ -67,7 +67,7 @@ public class BitboardDynamicPatterns {
     }
 
     public static Map<MoveType, Long> possibleBlackPawnMoves(final ChessBitboard chessBitboard, final Coord from) {
-        if(chessBitboard.getMySide() != Side.BLACK)
+        if (chessBitboard.getMySide() != Side.BLACK)
             throw new IllegalArgumentException("Подсчёт ходов для чёрных пешек невозможен для белых пешек.");
         final long pawnToMoveBitboard = 1L << from.getIndexAsOneDimension();
         final long notMyPieces = chessBitboard.getOpponentPieces();
@@ -109,7 +109,7 @@ public class BitboardDynamicPatterns {
         moveTypes.putIfAbsent(MoveType.PAWN_TO_FIGURE, satisfyingMoves);
 
         // TODO:
-        if(isEnPassant) {
+        if (isEnPassant) {
             //en passant right
             satisfyingMoves = (pawnToMoveBitboard << 1) & opponentPawns & MASK_RANK_4 & ~MASK_FILE_H & enPassantFile;//shows piece to remove, not the destination
             if (satisfyingMoves != 0) {
