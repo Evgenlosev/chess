@@ -36,6 +36,7 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("Клиент отключился", cause);
+        logger.error("Соединение с клиентом прервано", cause);
+        ctx.close();
     }
 }

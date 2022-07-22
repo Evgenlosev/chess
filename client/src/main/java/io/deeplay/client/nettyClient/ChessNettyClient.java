@@ -19,7 +19,7 @@ import java.net.InetSocketAddress;
 public class ChessNettyClient implements ChessClient {
     private final String host;
     private final int port;
-    private static final String PROTOCOL_VERSION = "1.0";
+    private static final String PROTOCOL_VERSION = "1.1";
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyClient.class);
 
     public ChessNettyClient(final String host, final int port) {

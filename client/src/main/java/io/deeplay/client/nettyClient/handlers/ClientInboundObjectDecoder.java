@@ -24,6 +24,7 @@ public class ClientInboundObjectDecoder extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) {
         logger.info("Успешно подключено к серверу");
         ctx.writeAndFlush(new ProtocolVersionRequest(ChessNettyClient.getProtocolVersion()));
+        logger.info("Ожидаем от сервера подтверждения версии протокола");
     }
 
     /**

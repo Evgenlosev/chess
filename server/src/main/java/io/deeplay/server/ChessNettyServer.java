@@ -54,6 +54,10 @@ public class ChessNettyServer {
         return PROTOCOL_VERSION.equals(version);
     }
 
+    public static String getProtocolVersion() {
+        return PROTOCOL_VERSION;
+    }
+
     public static void main(String[] args) throws Exception {
         new ChessNettyServer().run();
 

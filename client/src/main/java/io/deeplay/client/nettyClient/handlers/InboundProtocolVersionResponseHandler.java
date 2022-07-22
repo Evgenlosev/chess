@@ -29,12 +29,13 @@ public class InboundProtocolVersionResponseHandler extends SimpleChannelInboundH
                 logger.info("Версия протокола отклонена сервером");
             }
         } else {
-            logger.info("Версия протокола отклонена сервером");
+            logger.info("Ожидаем от сервера подтверждения версии протокола");
         }
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Прервано соединение с сервером", cause);
+        ctx.channel();
     }
 }

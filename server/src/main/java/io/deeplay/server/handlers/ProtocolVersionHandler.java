@@ -31,7 +31,10 @@ public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command>
             } else {
                 logger.info("Версия протокола отклонена");
                 ctx.writeAndFlush(
-                        new ProtocolVersionResponse(false, "Версия протокола отклонена"));
+                        new ProtocolVersionResponse(
+                                false,
+                                String.format("Версия протокола %s отклонена, на сервере используется версия - %s",
+                                        pvr.getProtocolVersion(), ChessNettyServer.getProtocolVersion())));
             }
         }
     }
@@ -39,5 +42,6 @@ public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command>
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Соединение с клиентом прервано", cause);
+        ctx.close();
     }
 }
