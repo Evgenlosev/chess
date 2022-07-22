@@ -1,10 +1,13 @@
-package io.deeplay.logic;
+package io.deeplay.model;
 
 import io.deeplay.core.model.Side;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static io.deeplay.logic.BitUtils.*;
+import static java.util.Map.entry;
 
 public class ChessBitboard {
     private static final int BOARD_WIDTH = 8;
@@ -13,6 +16,18 @@ public class ChessBitboard {
     private static final Set<Character> allPiecesCharacterRepresentation =
             Stream.of('p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R', 'Q', 'K')
                     .collect(Collectors.toUnmodifiableSet());
+
+    private static final Map<Character, Long> fileCharToBitboardRepresentation =
+            Map.ofEntries(
+                    entry('a', MASK_FILE_A),
+                    entry('b', MASK_FILE_B),
+                    entry('c', MASK_FILE_C),
+                    entry('d', MASK_FILE_D),
+                    entry('e', MASK_FILE_E),
+                    entry('f', MASK_FILE_F),
+                    entry('g', MASK_FILE_G),
+                    entry('h', MASK_FILE_H)
+            );
 
     private Side mySide;
     private long myPawns;
@@ -29,16 +44,29 @@ public class ChessBitboard {
     private long opponentQueens;
     private long opponentKing;
 
+    private long enPassantFile;
+    private boolean isEnPassant;
+
     // Получается из комбинации полей выше
     private long opponentPieces;
     private long myPieces;
     private long occupied;
     private long empty;
 
+
     // From нужен, чтобы определить сторону, т.к. она не передается
-    public ChessBitboard(final String fenNotation, int from) {
+    public ChessBitboard(final String fenNotation, final int from) {
         Map<Character, Long> piecesBitboard = new HashMap<>();
-        String parseBoard = fenNotation.trim();
+        final List<String> parseFenNotation = List.of(fenNotation.split(" "));
+
+        if (parseFenNotation.size() != 6)
+            throw new NullPointerException("Не верная либо неполная нотация, количество элементов в нотации не равно 6");
+        final String parsePiecePlacementData = parseFenNotation.get(0);
+        final String parseTurnSide = parseFenNotation.get(1);
+        final String parseCastlingRights = parseFenNotation.get(2);
+        final String parseEnPassantTargetSquare = parseFenNotation.get(3);
+        final String parseHalfmoveClock = parseFenNotation.get(4);
+        final String parseFullmove = parseFenNotation.get(5);
 
         boolean sideNotDetermined = true;
         final int lastIndex = 63;
@@ -48,13 +76,12 @@ public class ChessBitboard {
         int countCharactersAndSkips = lastIndex - (BOARD_WIDTH - 1);
         int backwardPrinting = BOARD_WIDTH - 1;
         int rowCount = 0; // считаем начиная с верхней строки
-        char currentChar = parseBoard.charAt(count);
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.putIfAbsent(ch, 0L);
         }
 
         int skip;
-        while (currentChar != ' ') {
+        for (char currentChar : parsePiecePlacementData.toCharArray()) {
             if (Character.isDigit(currentChar)) {
                 skip = currentChar - '0'; // widening casting
                 countCharactersAndSkips += skip;
@@ -78,20 +105,21 @@ public class ChessBitboard {
                 rowCount++;
                 countCharactersAndSkips = lastIndex - rowCount * BOARD_WIDTH - (BOARD_WIDTH - 1);
             }
-            currentChar = parseBoard.charAt(count);
         }
         if (sideNotDetermined) {
             // Если сторона не определена, то есть возможность, что дали не верную позицию фигуры
-            throw new NullPointerException("Side is not determined!");
+            throw new NullPointerException("Сторона не определена");
             // TODO: До первого пробела извлекаем charAt и считаем '/' а так же количество свободных фигур
             //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
             // currentChar > 8
             // исключение, логирование
         }
         // TODO: проверка то что символ в условии совпадения from совпадает с символом в мапе
-        //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка)
+        //  (берем символ, из мапы, на позиции from и смотрим на бит, если нету, то ошибка, тогда не нужно проверять на фигуру)
 
-        // TODO: разжевать оставшуюся часть FEN (в цикле до, нужно сохранить индекс пробела)
+        this.enPassantFile = fileCharToBitboardRepresentation.getOrDefault(parseEnPassantTargetSquare.charAt(0), 0L);
+        if(enPassantFile != 0L)
+            this.isEnPassant = true;
 
         if (Side.otherSide(mySide) == Side.BLACK)
             setOpponentsBitboards(piecesBitboard.entrySet().stream().filter(x -> Character.isLowerCase(x.getKey()))
@@ -141,6 +169,21 @@ public class ChessBitboard {
         this.empty = ~occupied;
     }
 
+    public long getEnPassantFile() {
+        return enPassantFile;
+    }
+
+    public void setEnPassantFile(long enPassantFile) {
+        this.enPassantFile = enPassantFile;
+    }
+
+    public boolean isEnPassant() {
+        return isEnPassant;
+    }
+
+    public void setEnPassant(boolean enPassant) {
+        isEnPassant = enPassant;
+    }
 
     public Side getMySide() {
         return mySide;
@@ -294,6 +337,8 @@ public class ChessBitboard {
                 ", opponentRooks=" + opponentRooks +
                 ", opponentQueens=" + opponentQueens +
                 ", opponentKing=" + opponentKing +
+                ", enPassantFile=" + enPassantFile +
+                ", isEnPassant=" + isEnPassant +
                 ", opponentPieces=" + opponentPieces +
                 ", myPieces=" + myPieces +
                 ", occupied=" + occupied +

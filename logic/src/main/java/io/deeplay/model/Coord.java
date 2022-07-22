@@ -1,4 +1,4 @@
-package io.deeplay.logic.board;
+package io.deeplay.model;
 
 import java.util.Objects;
 

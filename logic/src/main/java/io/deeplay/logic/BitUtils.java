@@ -209,7 +209,6 @@ public class BitUtils {
         return positions;
     }
 
-
     /**
      * Get the square bitboard for a given {@link BitIndex}.
      *

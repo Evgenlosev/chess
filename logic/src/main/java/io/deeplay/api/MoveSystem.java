@@ -1,10 +1,10 @@
-package io.deeplay.logic;
+package io.deeplay.api;
 
 import com.google.common.collect.Multimap;
-import io.deeplay.logic.board.ChessBoard;
+import io.deeplay.model.ChessBoard;
 import io.deeplay.core.model.Side;
-import io.deeplay.logic.board.Coord;
-import io.deeplay.logic.board.MoveInfo;
+import io.deeplay.model.Coord;
+import io.deeplay.model.MoveInfo;
 
 import java.util.Set;
 
