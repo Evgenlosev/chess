@@ -1,8 +1,10 @@
 package io.deeplay.client.nettyClient;
 
 import ch.qos.logback.classic.Logger;
-import io.deeplay.client.ChessServer;
-import io.deeplay.client.nettyClient.handlers.InboundClientHandler;
+import io.deeplay.client.ChessClient;
+import io.deeplay.client.nettyClient.handlers.ClientInboundCommandHandler;
+import io.deeplay.client.nettyClient.handlers.ClientInboundObjectDecoder;
+import io.deeplay.client.nettyClient.handlers.ClientOutBoundCommandEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -10,14 +12,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 
-public class ChessNettyClient implements ChessServer {
+public class ChessNettyClient implements ChessClient {
     private final String host;
     private final int port;
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyClient.class);
@@ -41,9 +40,9 @@ public class ChessNettyClient implements ChessServer {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(
-                                    new ObjectDecoder(1024 * 100, ClassResolvers.cacheDisabled(null)),
-                                    new ObjectEncoder(),
-                                    new InboundClientHandler());
+                                    new ClientOutBoundCommandEncoder(),
+                                    new ClientInboundObjectDecoder(),
+                                    new ClientInboundCommandHandler());
                         }
                     });
             //Запуск клиента
