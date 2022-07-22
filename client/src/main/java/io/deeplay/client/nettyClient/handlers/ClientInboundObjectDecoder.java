@@ -1,6 +1,7 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import ch.qos.logback.classic.Logger;
+import io.deeplay.client.nettyClient.ChessNettyClient;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.ProtocolVersionRequest;
 import io.deeplay.interaction.utils.CommandSerializator;
@@ -14,12 +15,22 @@ import java.io.IOException;
 public class ClientInboundObjectDecoder extends ChannelInboundHandlerAdapter {
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ClientInboundObjectDecoder.class);
 
+    /**
+     * После успешного подключения к серверу направляем команду ProtocolVersionRequest с актульной версией
+     * протокола взаимодействия.
+     * @param ctx - ссылка на контекст взаимодействия клиента и сервера
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         logger.info("Успешно подключено к серверу");
-        ctx.writeAndFlush(new ProtocolVersionRequest("1.0"));
+        ctx.writeAndFlush(new ProtocolVersionRequest(ChessNettyClient.getProtocolVersion()));
     }
 
+    /**
+     * При получении входящего сообщения десериализуем ByteBuf в объект класса Command и направляем дальше по конвееру.
+     * @param ctx
+     * @param msg - входящее ByteBuf сообщение.
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuf buf = (ByteBuf) msg;
@@ -38,5 +49,6 @@ public class ClientInboundObjectDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Отключено от сервера", cause);
+        ctx.close();
     }
 }
