@@ -1,5 +1,8 @@
 package io.deeplay.server;
 
+import io.deeplay.server.handlers.InboundCommandHandler;
+import io.deeplay.server.handlers.InboundObjectDecoder;
+import io.deeplay.server.handlers.OutBoundCommandEncoder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -7,9 +10,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 
@@ -33,9 +33,9 @@ public class ChessNettyServer {
                         public void initChannel(SocketChannel ch) {
                             // настройка конвеера для каждого подключившегося клиента
                             ch.pipeline().addLast(
-                                    new ObjectDecoder(MAX_MESSAGE_SIZE, ClassResolvers.cacheDisabled(null)),
-                                    new ObjectEncoder(),
-                                    new InboundClientHandler());
+                                    new OutBoundCommandEncoder(),
+                                    new InboundObjectDecoder(),
+                                    new InboundCommandHandler());
                         }
                     });
             //Запуск сервера
@@ -50,7 +50,7 @@ public class ChessNettyServer {
         }
     }
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         new ChessNettyServer().run();
 
     }
