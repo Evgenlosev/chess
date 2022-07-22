@@ -1,14 +1,14 @@
-package io.deeplay.logic;
+package io.deeplay.logic.logic;
 
 import io.deeplay.core.model.Side;
-import io.deeplay.model.ChessBitboard;
-import io.deeplay.model.Coord;
-import io.deeplay.model.MoveType;
+import io.deeplay.logic.model.ChessBitboard;
+import io.deeplay.logic.model.Coord;
+import io.deeplay.logic.model.MoveType;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.deeplay.logic.BitUtils.*;
+import static io.deeplay.logic.logic.BitUtils.*;
 
 
 /**

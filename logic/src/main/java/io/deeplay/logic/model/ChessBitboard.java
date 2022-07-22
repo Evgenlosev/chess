@@ -1,12 +1,15 @@
-package io.deeplay.model;
+package io.deeplay.logic.model;
 
 import io.deeplay.core.model.Side;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.deeplay.logic.BitUtils.*;
+import static io.deeplay.logic.logic.BitUtils.*;
 import static java.util.Map.entry;
 
 public class ChessBitboard {

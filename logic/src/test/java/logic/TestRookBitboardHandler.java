@@ -1,12 +1,12 @@
 package logic;
 
-import io.deeplay.logic.BitUtils;
-import io.deeplay.api.BitboardHandler;
-import io.deeplay.logic.ChessBoard;
-import io.deeplay.model.Coord;
-import io.deeplay.model.Figure;
-import io.deeplay.model.MoveInfo;
-import io.deeplay.model.MoveType;
+import io.deeplay.logic.api.BitboardHandler;
+import io.deeplay.logic.logic.BitUtils;
+import io.deeplay.logic.logic.ChessBoard;
+import io.deeplay.logic.model.Coord;
+import io.deeplay.logic.model.Figure;
+import io.deeplay.logic.model.MoveInfo;
+import io.deeplay.logic.model.MoveType;
 import org.junit.Test;
 
 import java.util.Set;

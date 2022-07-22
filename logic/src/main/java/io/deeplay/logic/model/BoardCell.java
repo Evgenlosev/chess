@@ -1,4 +1,4 @@
-package io.deeplay.model;
+package io.deeplay.logic.model;
 
 
 public class BoardCell {
