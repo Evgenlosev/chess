@@ -5,6 +5,9 @@ import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.PieceType;
 import io.deeplay.core.model.Side;
 
+/**
+ * Класс хранит и отдаёт информацию об игре
+ */
 public class GameInfo implements ChessObserver {
     // Доска
     // Оба игрока

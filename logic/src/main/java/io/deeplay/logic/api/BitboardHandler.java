@@ -1,11 +1,12 @@
 package io.deeplay.logic.api;
 
-import io.deeplay.core.model.Side;
+import io.deeplay.core.model.*;
 import io.deeplay.logic.logic.BitUtils;
 import io.deeplay.logic.logic.BitboardDynamicPatterns;
 import io.deeplay.logic.logic.BitboardPatternsInitializer;
 import io.deeplay.logic.logic.ChessBoard;
-import io.deeplay.logic.model.*;
+import io.deeplay.logic.model.ChessBitboard;
+import io.deeplay.logic.model.MagicBoard;
 
 import java.util.HashSet;
 import java.util.Map;

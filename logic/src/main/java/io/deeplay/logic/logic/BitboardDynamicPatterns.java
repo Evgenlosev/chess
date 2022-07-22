@@ -1,9 +1,9 @@
 package io.deeplay.logic.logic;
 
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.MoveType;
 import io.deeplay.core.model.Side;
 import io.deeplay.logic.model.ChessBitboard;
-import io.deeplay.logic.model.Coord;
-import io.deeplay.logic.model.MoveType;
 
 import java.util.HashMap;
 import java.util.Map;

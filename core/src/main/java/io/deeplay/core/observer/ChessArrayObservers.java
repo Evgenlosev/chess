@@ -4,6 +4,9 @@ package io.deeplay.core.observer;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс хранит в себе всех наблюдателей, что упрощает процесс оповещения
+ */
 // TODO: во всех реализациях просто пробегает по каждому слушателю
 public class ChessArrayObservers implements ChessObserver {
     private final List<ChessObserver> observers = new ArrayList<>();

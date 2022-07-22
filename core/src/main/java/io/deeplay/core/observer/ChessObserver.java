@@ -1,6 +1,7 @@
 package io.deeplay.core.observer;
 
 
+import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.settings.GameSettings;
 
 /**
@@ -9,14 +10,19 @@ import io.deeplay.core.settings.GameSettings;
 public interface ChessObserver {
     // TODO: стандартная реализация observer в java
 
-    void gameSettingSet(GameSettings gameSettings);
+    void setGameSettings(GameSettings gameSettings);
 
     /**
      * По настройкам создается доска, бот, бот для подсказки, белой стороне передается ход
      */
-    void gameStarted();
+    void gameStarted(); // не ChessObserver же будет создавать
 
-    List<MoveInfo>
+    /**
+     * Запрос на рекомендацию хода от установленного бота для подсказки
+     *
+     * @return Рекомендованный ход
+     */
+    MoveInfo recommendedMove(/*player*/);
 
     void turn(/*player, MoveInfo*/); // dto?
 
