@@ -41,7 +41,7 @@ public class ClientInboundObjectDecoder extends ChannelInboundHandlerAdapter {
             Command inputCommand = CommandSerializator.deserializeByteArray(bytes);
             ctx.fireChannelRead(inputCommand);
         } catch (IOException e) {
-            logger.error("Ошибка про десериализации входящего сообщение", e);
+            logger.error("Ошибка при десериализации входящего сообщение", e);
         } finally {
             buf.release();
         }
