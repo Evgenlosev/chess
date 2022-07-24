@@ -2,9 +2,9 @@ package io.deeplay.client.nettyClient;
 
 import ch.qos.logback.classic.Logger;
 import io.deeplay.client.ChessClient;
-import io.deeplay.client.nettyClient.handlers.ClientInboundCommandHandler;
 import io.deeplay.client.nettyClient.handlers.ClientInboundObjectDecoder;
 import io.deeplay.client.nettyClient.handlers.ClientOutBoundCommandEncoder;
+import io.deeplay.client.nettyClient.handlers.InboundProtocolVersionResponseHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -19,6 +19,7 @@ import java.net.InetSocketAddress;
 public class ChessNettyClient implements ChessClient {
     private final String host;
     private final int port;
+    private static final String PROTOCOL_VERSION = "1.1";
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyClient.class);
 
     public ChessNettyClient(final String host, final int port) {
@@ -42,7 +43,7 @@ public class ChessNettyClient implements ChessClient {
                             ch.pipeline().addLast(
                                     new ClientOutBoundCommandEncoder(),
                                     new ClientInboundObjectDecoder(),
-                                    new ClientInboundCommandHandler());
+                                    new InboundProtocolVersionResponseHandler());
                         }
                     });
             //Запуск клиента
@@ -59,5 +60,9 @@ public class ChessNettyClient implements ChessClient {
                 logger.error("Ошибка при остановке клиента", e);
             }
         }
+    }
+
+    public static String getProtocolVersion() {
+        return PROTOCOL_VERSION;
     }
 }

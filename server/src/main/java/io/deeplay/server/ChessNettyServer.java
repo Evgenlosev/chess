@@ -1,8 +1,8 @@
 package io.deeplay.server;
 
-import io.deeplay.server.handlers.InboundCommandHandler;
 import io.deeplay.server.handlers.InboundObjectDecoder;
 import io.deeplay.server.handlers.OutBoundCommandEncoder;
+import io.deeplay.server.handlers.ProtocolVersionHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -15,7 +15,7 @@ import ch.qos.logback.classic.Logger;
 
 public class ChessNettyServer {
     private static final int PORT = 8189;
-    private static final int MAX_MESSAGE_SIZE = 1024 * 100;
+    private static final String PROTOCOL_VERSION = "1.0";
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyServer.class);
 
     public void run() throws Exception {
@@ -35,7 +35,7 @@ public class ChessNettyServer {
                             ch.pipeline().addLast(
                                     new OutBoundCommandEncoder(),
                                     new InboundObjectDecoder(),
-                                    new InboundCommandHandler());
+                                    new ProtocolVersionHandler());
                         }
                     });
             //Запуск сервера
@@ -48,6 +48,14 @@ public class ChessNettyServer {
             workerGroup.shutdownGracefully(); //Останавливаем потоки обработки сообщений
             logger.info("Сервер остановлен");
         }
+    }
+
+    public static boolean checkProtocolVersion(String version) {
+        return PROTOCOL_VERSION.equals(version);
+    }
+
+    public static String getProtocolVersion() {
+        return PROTOCOL_VERSION;
     }
 
     public static void main(String[] args) throws Exception {

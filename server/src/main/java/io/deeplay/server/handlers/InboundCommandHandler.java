@@ -17,5 +17,6 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Соединение с клиентом прервано", cause);
+        ctx.close();
     }
 }

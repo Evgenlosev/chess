@@ -2,7 +2,6 @@ package io.deeplay.server.handlers;
 
 import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
-import io.deeplay.interaction.serverToClient.ProtocolVersionResponse;
 import io.deeplay.interaction.utils.CommandSerializator;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,9 +15,8 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        logger.info("Клиент подключился");
-        ctx.writeAndFlush(
-                new ProtocolVersionResponse(false, "Версия протокола не подтверждена"));
+        logger.info("Подключлся новый клиент");
+        logger.info("Ожидаем подтверждения версии протокола");
     }
 
     @Override
@@ -38,6 +36,7 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("Клиент отключился", cause);
+        logger.error("Соединение с клиентом прервано", cause);
+        ctx.close();
     }
 }
