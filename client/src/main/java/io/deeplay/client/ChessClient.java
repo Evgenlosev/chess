@@ -1,5 +1,5 @@
 package io.deeplay.client;
 
-public interface ChessServer {
+public interface ChessClient {
     void start();
 }

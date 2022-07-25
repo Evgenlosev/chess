@@ -1,5 +1,8 @@
 package io.deeplay.server;
 
+import io.deeplay.server.handlers.InboundObjectDecoder;
+import io.deeplay.server.handlers.OutBoundCommandEncoder;
+import io.deeplay.server.handlers.ProtocolVersionHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -7,15 +10,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.serialization.ClassResolvers;
-import io.netty.handler.codec.serialization.ObjectDecoder;
-import io.netty.handler.codec.serialization.ObjectEncoder;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Logger;
 
 public class ChessNettyServer {
     private static final int PORT = 8189;
-    private static final int MAX_MESSAGE_SIZE = 1024 * 100;
+    private static final String PROTOCOL_VERSION = "1.0";
     private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyServer.class);
 
     public void run() throws Exception {
@@ -33,9 +33,9 @@ public class ChessNettyServer {
                         public void initChannel(SocketChannel ch) {
                             // настройка конвеера для каждого подключившегося клиента
                             ch.pipeline().addLast(
-                                    new ObjectDecoder(MAX_MESSAGE_SIZE, ClassResolvers.cacheDisabled(null)),
-                                    new ObjectEncoder(),
-                                    new InboundClientHandler());
+                                    new OutBoundCommandEncoder(),
+                                    new InboundObjectDecoder(),
+                                    new ProtocolVersionHandler());
                         }
                     });
             //Запуск сервера
@@ -50,7 +50,15 @@ public class ChessNettyServer {
         }
     }
 
-    public static void main(String[] args) throws Exception{
+    public static boolean checkProtocolVersion(String version) {
+        return PROTOCOL_VERSION.equals(version);
+    }
+
+    public static String getProtocolVersion() {
+        return PROTOCOL_VERSION;
+    }
+
+    public static void main(String[] args) throws Exception {
         new ChessNettyServer().run();
 
     }

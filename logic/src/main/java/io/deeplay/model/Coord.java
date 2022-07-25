@@ -6,12 +6,20 @@ public class Coord {
     private static final int BOARD_WIDTH = 8;
     private static final int BOARD_HEIGHT = 8;
 
+    /**
+     * counts from 0 to 7 (actual - 1)
+     */
     private int row;
     private int column;
 
     public Coord(int indexAsOneDimension){
         this.row = indexAsOneDimension / BOARD_WIDTH;
         this.column = indexAsOneDimension % BOARD_WIDTH;
+    }
+
+    public Coord(int column, int row) {
+        this.row = row;
+        this.column = column;
     }
 
     public int getRow() {
