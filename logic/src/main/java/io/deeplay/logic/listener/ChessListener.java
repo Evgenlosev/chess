@@ -27,7 +27,7 @@ public interface ChessListener {
 
     void acceptDraw(Player player);
 
-    void surrender(Player player);
+    void resign(Player player);
 
     void pawnPromotion(Player player, MoveInfo moveInfo, PieceType pieceType);
 

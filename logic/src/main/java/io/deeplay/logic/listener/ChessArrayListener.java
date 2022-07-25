@@ -48,8 +48,8 @@ public class ChessArrayListener implements ChessListener {
     }
 
     @Override
-    public void surrender(final Player player) {
-        listeners.forEach(listener -> listener.surrender(player));
+    public void resign(final Player player) {
+        listeners.forEach(listener -> listener.resign(player));
     }
 
     @Override
