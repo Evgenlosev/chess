@@ -30,7 +30,7 @@ public interface ChessListener {
 
     void surrender(/*Player player*/);
 
-    void promotion(/*Player player,*/ MoveInfo moveInfo, PieceType pieceType);
+    void pawnPromotion(/*Player player,*/ MoveInfo moveInfo, PieceType pieceType);
 
     void turn(/*Player player,*/ MoveInfo moveInfo);
 
