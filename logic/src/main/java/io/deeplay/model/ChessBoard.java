@@ -138,9 +138,4 @@ public class ChessBoard {
 
         return sb.reverse().toString();
     }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }
