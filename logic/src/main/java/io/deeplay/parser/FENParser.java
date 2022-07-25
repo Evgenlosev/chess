@@ -30,22 +30,8 @@ public class FENParser {
                     entry('g', MASK_FILE_G),
                     entry('h', MASK_FILE_H)
             );
-    /*
-    final String parsePiecePlacementData = parseFenNotation.get(0);
-        final String parseTurnSide = parseFenNotation.get(1);
-        final String parseCastlingRights = parseFenNotation.get(2);
-        final String parseEnPassantTargetSquare = parseFenNotation.get(3);
-        final String parseHalfmoveClock = parseFenNotation.get(4);
-        final String parseFullmove = parseFenNotation.get(5);
-    */
 
-    /*
-    if (Character.isLetter(currentChar) && countCharactersAndSkips == from) {
-                this.mySide = Character.isLowerCase(currentChar) ? Side.BLACK : Side.WHITE;
-                sideNotDetermined = false;
-            }
-    */
-
+    // TODO: тесты
     public static Map<Side, SideBitboards> parseFENToBitboards(final String fen) {
         final String parsePiecePlacementData = splitFEN(fen).get(0);
         // TODO: проверка на то что есть символы "/pnbrqkPNBRQK" + меньше макс. длины fen, логирование, исключения
