@@ -18,11 +18,6 @@ public interface ChessListener {
      */
     void gameStarted();
 
-    /**
-     * Запрос на рекомендацию хода от установленного бота для подсказки
-     */
-    void recommendedMove(Player player);
-
     void offerDraw(Player player);
 
     void acceptDraw(Player player);
