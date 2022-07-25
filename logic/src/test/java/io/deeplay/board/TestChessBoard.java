@@ -1,4 +1,4 @@
-package board;
+package io.deeplay.board;
 
 import io.deeplay.model.ChessBoard;
 import org.junit.Test;

@@ -18,38 +18,22 @@ public class BitboardDynamicPatterns {
 
     // Взятие на проходе, в возможных атаках,не учитывается, т.к. невозможно (в классическом режиме) чтобы за пешкой,
     // которая только что походила на 2 клетки вперед, стояла какая-либо фигура
-    public static long possibleWhitePawnAttacks(final ChessBitboard chessBitboard, final Coord from) {
-        if (chessBitboard.getMySide() != Side.WHITE)
-            throw new IllegalArgumentException("Подсчёт ходов для белых пешек невозможен для чёрных пешек.");
+    public static long possibleWhitePawnAttacks(final Coord from) {
         final long pawnToMoveBitboard = 1L << from.getIndexAsOneDimension();
-        final long notMyPieces = chessBitboard.getOpponentPieces();
-        final long occupied = chessBitboard.getOccupied();
 
         long allAttackMoves = 0L;
-        Map<MoveType, Long> moveTypes = new HashMap<>();
-        allAttackMoves |= (pawnToMoveBitboard << 9) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_A; // capture right
-        allAttackMoves |= (pawnToMoveBitboard << 7) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_H; // capture left
-        //Promotion
-        allAttackMoves |= (pawnToMoveBitboard << 9) & notMyPieces & occupied & MASK_RANK_8 & ~MASK_FILE_A; // pawn promotion by capture right
-        allAttackMoves |= (pawnToMoveBitboard << 7) & notMyPieces & occupied & MASK_RANK_8 & ~MASK_FILE_H; // pawn promotion by capture left
+        allAttackMoves |= (pawnToMoveBitboard << 9) & ~MASK_FILE_A; // capture right
+        allAttackMoves |= (pawnToMoveBitboard << 7) & ~MASK_FILE_H; // capture left
 
         return allAttackMoves;
     }
 
-    public static long possibleBlackPawnAttacks(final ChessBitboard chessBitboard, final Coord from) {
-        if (chessBitboard.getMySide() != Side.BLACK)
-            throw new IllegalArgumentException("Подсчёт ходов для чёрных пешек невозможен для белых пешек.");
+    public static long possibleBlackPawnAttacks(final Coord from) {
         final long pawnToMoveBitboard = 1L << from.getIndexAsOneDimension();
-        final long notMyPieces = chessBitboard.getOpponentPieces();
-        final long occupied = chessBitboard.getOccupied();
 
         long allAttackMoves = 0L;
-        allAttackMoves |= (pawnToMoveBitboard >>> 9) & notMyPieces & occupied & ~MASK_RANK_1 & ~MASK_FILE_H; // capture right
-        allAttackMoves |= (pawnToMoveBitboard >>> 7) & notMyPieces & occupied & ~MASK_RANK_1 & ~MASK_FILE_A; // capture left
-        //Promotion
-        allAttackMoves |= (pawnToMoveBitboard >>> 9) & notMyPieces & occupied & MASK_RANK_1 & ~MASK_FILE_H; // pawn promotion by capture right
-        allAttackMoves |= (pawnToMoveBitboard >>> 7) & notMyPieces & occupied & MASK_RANK_1 & ~MASK_FILE_A; // pawn promotion by capture left
-
+        allAttackMoves |= (pawnToMoveBitboard >>> 9) & ~MASK_FILE_H; // capture right
+        allAttackMoves |= (pawnToMoveBitboard >>> 7) & ~MASK_FILE_A; // capture left
         return allAttackMoves;
     }
 

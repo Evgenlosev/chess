@@ -1,8 +1,6 @@
-package logic;
+package io.deeplay.logic;
 
-import io.deeplay.logic.BitUtils;
 import io.deeplay.api.BitboardHandler;
-import io.deeplay.logic.ChessBoard;
 import io.deeplay.model.Coord;
 import io.deeplay.model.Figure;
 import io.deeplay.model.MoveInfo;
@@ -14,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class TestQueenBitboardHandler {
 

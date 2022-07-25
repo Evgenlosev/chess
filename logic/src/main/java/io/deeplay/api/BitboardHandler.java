@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static io.deeplay.logic.BitUtils.containsSameBits;
+
 // TODO: если наш ход и король противника под шахом (при том что он не зажат), такое невозможно либо исключение либо мат
 // TODO: implements MoveSystem
 // TODO: изменить логику определения фигур
@@ -56,18 +58,6 @@ public class BitboardHandler {
         final MagicBoard magic = BitboardPatternsInitializer.bishopMagicBoards[from.getIndexAsOneDimension()];
         return magic.moveBoards[(int) ((chessBitboard.getOccupied() & magic.blockerMask) *
                 BitboardPatternsInitializer.BISHOP_MAGIC_NUMBERS[from.getIndexAsOneDimension()] >>> magic.shift)];
-    }
-
-    /**
-     * Метод проверяет есть ли одинаковые биты
-     * Пример
-     * 0010 и 0110 -> true, т.к. маска 0010 верна для обоих
-     * @param a
-     * @param b
-     * @return true если есть совпадающие биты
-     */
-    private static boolean containsSameBits(final long a, final long b) {
-        return (a & b) != 0L;
     }
 
     public static Set<MoveInfo> getRookMoves(final io.deeplay.logic.ChessBoard board, final Coord from) {
@@ -197,29 +187,40 @@ public class BitboardHandler {
     // TODO: тест на невозможность королю срубить фигуру
     // нужен королю, для быстрого подсчета угрожающих фигур противника
     // TODO: private
-    public static long getOpponentAttacksBitboardFromAllFigures(final ChessBitboard chessBitboard) {
+    static long getOpponentAttacksBitboardFromAllFigures(final ChessBitboard chessBitboard) {
         long allAttacks = 0L;
-        Map<MoveType, Long> pawnMoves;
         for (long pawn : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getPawns())) {
+            // инвертированы методы, т.к. атаки нужно именно противника (другой стороны)
             allAttacks |= chessBitboard.getMySide() == Side.WHITE
-                    ? BitboardDynamicPatterns.possibleBlackPawnAttacks(chessBitboard, new Coord(Long.numberOfTrailingZeros(pawn)))
-                    : BitboardDynamicPatterns.possibleWhitePawnAttacks(chessBitboard, new Coord(Long.numberOfTrailingZeros(pawn)));
+                    ? BitboardDynamicPatterns.possibleBlackPawnAttacks
+                    (new Coord(Long.numberOfTrailingZeros(pawn)))
+                    : BitboardDynamicPatterns.possibleWhitePawnAttacks
+                    (new Coord(Long.numberOfTrailingZeros(pawn)));
         }
-        for (long knight : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
-            allAttacks |= BitboardPatternsInitializer.knightMoveBitboards[Long.numberOfTrailingZeros(knight)];
+        for (long knight : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getKnights())) {
+            if (knight != 0L)
+                allAttacks |= BitboardPatternsInitializer.knightMoveBitboards[Long.numberOfTrailingZeros(knight)];
         }
-        for (long bishop : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
-            allAttacks |= getBishopAllPossibleMovesBitboard(chessBitboard, new Coord(Long.numberOfTrailingZeros(bishop)));
+        for (long bishop : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getBishops())) {
+            if (bishop != 0L)
+                allAttacks |=
+                        getBishopAllPossibleMovesBitboard(chessBitboard, new Coord(Long.numberOfTrailingZeros(bishop)));
         }
         for (long rook : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
-            allAttacks |= getRookAllPossibleMovesBitboard(chessBitboard, new Coord(Long.numberOfTrailingZeros(rook)));
+            if (rook != 0L)
+                allAttacks |= getRookAllPossibleMovesBitboard
+                        (chessBitboard, new Coord(Long.numberOfTrailingZeros(rook)));
         }
-        for (long queen : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
-            allAttacks |=
-                    getBishopAllPossibleMovesBitboard(chessBitboard, new Coord(Long.numberOfTrailingZeros(queen)))
-                            | getRookAllPossibleMovesBitboard(chessBitboard, new Coord(Long.numberOfTrailingZeros(queen)));
+        for (long queen : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getQueens())) {
+            if (queen != 0L)
+                allAttacks |=
+                        getBishopAllPossibleMovesBitboard
+                                (chessBitboard, new Coord(Long.numberOfTrailingZeros(queen)))
+                                | getRookAllPossibleMovesBitboard
+                                (chessBitboard, new Coord(Long.numberOfTrailingZeros(queen)));
         }
-        for (long king : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
+        for (long king : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getKing())) {
+            // короля не может не быть на доске
             allAttacks |= BitboardPatternsInitializer.kingMoveBitboards[Long.numberOfTrailingZeros(king)];
         }
         return allAttacks;
