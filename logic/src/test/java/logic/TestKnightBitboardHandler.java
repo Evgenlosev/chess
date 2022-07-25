@@ -68,8 +68,5 @@ public class TestKnightBitboardHandler {
                 new MoveInfo(new Coord(2, 5), new Coord(1, 7), MoveType.USUAL_MOVE, Figure.B_KNIGHT)
         ).collect(Collectors.toSet());
         assertEquals(expectedMoveInfoSet, BitboardHandler.getKnightMoves(chessBoard, new Coord(BitUtils.BitIndex.C6_IDX.ordinal())));
-
-
-
     }
 }
