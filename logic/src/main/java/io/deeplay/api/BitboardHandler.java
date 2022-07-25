@@ -193,18 +193,17 @@ public class BitboardHandler {
         return movesInfo;
     }
 
-    // TODO: тест на связанность
+    // TODO: связанность
     // TODO: тест на невозможность королю срубить фигуру
-    // нужен королю, для проверки фигуры на связанность, для быстрого подсчета угрожающих фигур противника
-    private long getOpponentAttacksBitboardFromAllFigures(final ChessBitboard chessBitboard) {
+    // нужен королю, для быстрого подсчета угрожающих фигур противника
+    // TODO: private
+    public static long getOpponentAttacksBitboardFromAllFigures(final ChessBitboard chessBitboard) {
         long allAttacks = 0L;
         Map<MoveType, Long> pawnMoves;
         for (long pawn : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getPawns())) {
-            pawnMoves = chessBitboard.getMySide() == Side.WHITE
-                    ? BitboardDynamicPatterns.possibleBlackPawnMoves(chessBitboard, new Coord(Long.numberOfTrailingZeros(pawn)))
-                    : BitboardDynamicPatterns.possibleWhitePawnMoves(chessBitboard, new Coord(Long.numberOfTrailingZeros(pawn)));
-            for (long pawnMove : pawnMoves.values())
-                allAttacks |= pawnMove;
+            allAttacks |= chessBitboard.getMySide() == Side.WHITE
+                    ? BitboardDynamicPatterns.possibleBlackPawnAttacks(chessBitboard, new Coord(Long.numberOfTrailingZeros(pawn)))
+                    : BitboardDynamicPatterns.possibleWhitePawnAttacks(chessBitboard, new Coord(Long.numberOfTrailingZeros(pawn)));
         }
         for (long knight : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
             allAttacks |= BitboardPatternsInitializer.knightMoveBitboards[Long.numberOfTrailingZeros(knight)];
