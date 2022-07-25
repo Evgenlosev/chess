@@ -3,6 +3,7 @@ package io.deeplay.logic.listener;
 
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.PieceType;
+import io.deeplay.core.player.Player;
 import io.deeplay.core.settings.GameSettings;
 
 /**
@@ -17,22 +18,20 @@ public interface ChessListener {
      */
     void gameStarted();
 
-    /*
+    /**
      * Запрос на рекомендацию хода от установленного бота для подсказки
-     *
-     * Рекомендованный ход
      */
-    // MoveInfo recommendedMove(Player player);
+    void recommendedMove(Player player);
 
-    void offerDraw(/*Player player*/);
+    void offerDraw(Player player);
 
-    void acceptDraw(/*Player player*/);
+    void acceptDraw(Player player);
 
-    void surrender(/*Player player*/);
+    void surrender(Player player);
 
-    void pawnPromotion(/*Player player,*/ MoveInfo moveInfo, PieceType pieceType);
+    void pawnPromotion(Player player, MoveInfo moveInfo, PieceType pieceType);
 
-    void turn(/*Player player,*/ MoveInfo moveInfo);
+    void turn(Player player, MoveInfo moveInfo);
 
     void gameFinished();
 
