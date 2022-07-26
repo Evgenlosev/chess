@@ -49,8 +49,9 @@ public class TestAllOpponentsFigures {
         Set<Coord> uniqueCoords = new HashSet<>(allCoords);
 
         /*
-        // Рекомендую для понимая отличия выводить биты по из-за которых есть отличие в количестве угроз(атак)
+        // Рекомендую для понимая различия выводить биты по из-за которых есть отличие в количестве угроз(атак)
         // и возможностях походить
+
         long allMoves = 0L;
         for(Coord coord : uniqueCoords){
             allMoves |= 1L << coord.getIndexAsOneDimension();

@@ -1,11 +1,10 @@
-package io.deeplay.logic;
+package io.deeplay.logic.api;
 
 
 import io.deeplay.core.model.Coord;
 import io.deeplay.core.model.Figure;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.MoveType;
-import io.deeplay.logic.api.BitboardHandler;
 import io.deeplay.logic.logic.BitUtils;
 import io.deeplay.logic.logic.ChessBoard;
 import org.junit.Test;
