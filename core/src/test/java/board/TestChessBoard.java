@@ -1,9 +1,10 @@
 package board;
 
-import io.deeplay.model.ChessBoard;
+import io.deeplay.core.model.ChessBoard;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.testng.AssertJUnit.assertEquals;
 
 public class TestChessBoard {
     @Test

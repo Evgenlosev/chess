@@ -33,11 +33,6 @@ public class ChessArrayListener implements ChessListener {
     }
 
     @Override
-    public void recommendedMove(final Player player) {
-        listeners.forEach(listener -> listener.recommendedMove(player));
-    }
-
-    @Override
     public void offerDraw(final Player player) {
         listeners.forEach(listener -> listener.offerDraw(player));
     }
