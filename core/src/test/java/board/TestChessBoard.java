@@ -1,6 +1,6 @@
 package board;
 
-import io.deeplay.core.model.ChessBoard;
+import io.deeplay.core.model.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -13,4 +13,17 @@ public class TestChessBoard {
         ChessBoard board = new ChessBoard();
         assertEquals(board.zipFen(board.unzipFen(fen)), fen);
     }
+
+    @Test
+    public void updateBoardTest() {
+        String fen = "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P3/5N2/PPPP1PPP/RNBQK2R w KQkq - 4 4";
+        ChessBoard board = new ChessBoard(fen);
+        MoveInfo moveinfo = new MoveInfo(new Coord(4, 0), new Coord(6, 0),
+                MoveType.CASTLE_SHORT, Figure.W_KING);
+//        MoveInfo moveinfo = new MoveInfo(new Coord(0, 1), new Coord(0, 3),
+//                MoveType.PAWN_LONG_MOVE, Figure.W_PAWN);
+        board.updateBoard(moveinfo);
+        System.out.println(board);
+    }
+
 }

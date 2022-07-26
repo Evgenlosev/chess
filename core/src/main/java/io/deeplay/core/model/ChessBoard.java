@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static java.util.Map.entry;
 
-public class ChessBoard {
+public class ChessBoard  implements Cloneable{
     public static final int boardSize = 8;
     private BoardCell[][] board = new BoardCell[boardSize][boardSize];
     Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
@@ -83,7 +83,7 @@ public class ChessBoard {
         String[] splitFiguresFromProperties = fen.split(" ", 2);
         String unzippedFenWithoutProperties = unzipFen(splitFiguresFromProperties[0]).replace("/", "");
         for (int i = 0; i < unzippedFenWithoutProperties.length(); i++) {
-            board[7 - i / 8][7 - i % 8] = new BoardCell(
+            board[7 - i / 8][i % 8] = new BoardCell(
                     symbolsToFigure.get(String.valueOf(unzippedFenWithoutProperties.charAt(i))));
         }
     }
@@ -225,15 +225,19 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+        StringBuilder row = new StringBuilder();
 
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                sb.append(figureToSymbol.get(board[i][j].getFigure())).append(" ");
+                row.append(figureToSymbol.get(board[i][j].getFigure())).append (" ");
             }
-            sb.append("\n");
+            row.append("\n");
+            result.insert(0, row);
+            row.delete(0, row.length());
         }
 
-        return sb.reverse().toString();
+        return result.toString();
     }
+
 }
