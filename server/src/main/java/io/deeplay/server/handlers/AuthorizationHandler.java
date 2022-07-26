@@ -22,8 +22,8 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<Command> {
         logger.info("Принята команда от клиента: {}", command);
         if (command instanceof AuthRequest) {
             AuthRequest authRequest = (AuthRequest) command;
-            int clientId;
-            if ((clientId = ChessNettyServer.addClient(authRequest.getUserName())) != 0) {
+            int clientId = ChessNettyServer.addClient(authRequest.getUserName());
+            if (clientId != 0) {
                 logger.info("Пользователь авторизован с id - {}", clientId);
                 ctx.writeAndFlush(new AuthResponse(true, clientId));
                 //Если авторизация подтверждена, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
