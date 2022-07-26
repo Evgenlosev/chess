@@ -23,11 +23,12 @@ public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command>
         if (command instanceof ProtocolVersionRequest) {
             ProtocolVersionRequest pvr = (ProtocolVersionRequest) command;
             if (ChessNettyServer.checkProtocolVersion(pvr.getProtocolVersion())) {
-                logger.info("Версия протокола подтверждена");
                 ctx.writeAndFlush(new ProtocolVersionResponse(true));
-                //Если версия протокола подтверждена, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+                logger.info("Версия протокола подтверждена");
+                logger.info("Ожидаем запрос авторизации");
+                //Если версия протокола подтверждена, удаляем из конвеера текущий хэндлер и добавляем AuthorizationHandler
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new InboundCommandHandler());
+                ctx.channel().pipeline().addLast(new AuthorizationHandler());
             } else {
                 logger.info("Версия протокола отклонена");
                 ctx.writeAndFlush(
