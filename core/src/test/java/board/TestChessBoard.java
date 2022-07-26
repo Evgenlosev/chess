@@ -23,7 +23,14 @@ public class TestChessBoard {
 //        MoveInfo moveinfo = new MoveInfo(new Coord(0, 1), new Coord(0, 3),
 //                MoveType.PAWN_LONG_MOVE, Figure.W_PAWN);
         board.updateBoard(moveinfo);
-        System.out.println(board);
+        assertEquals("r n b q k - - r \n" +
+                "p p p p - p p p \n" +
+                "- - - - - n - - \n" +
+                "- - b - p - - - \n" +
+                "- - B - P - - - \n" +
+                "- - - - - N - - \n" +
+                "P P P P - P P P \n" +
+                "R N B Q - R K - \n" , board.toString());
     }
 
 }
