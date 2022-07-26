@@ -1,13 +1,13 @@
-package io.deeplay.api;
+package io.deeplay.logic.api;
 
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
-import io.deeplay.logic.BitUtils;
-import io.deeplay.logic.ChessBoard;
-import io.deeplay.model.ChessBitboard;
-import io.deeplay.model.Coord;
-import io.deeplay.model.MoveInfo;
-import io.deeplay.model.SideBitboards;
-import io.deeplay.parser.FENParser;
+import io.deeplay.logic.logic.BitUtils;
+import io.deeplay.logic.logic.ChessBoard;
+import io.deeplay.logic.model.ChessBitboard;
+import io.deeplay.logic.model.SideBitboards;
+import io.deeplay.logic.parser.FENParser;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static io.deeplay.logic.BitUtils.containsSameBits;
+import static io.deeplay.logic.logic.BitUtils.containsSameBits;
 import static org.junit.Assert.assertEquals;
 
 public class TestAllOpponentsFigures {

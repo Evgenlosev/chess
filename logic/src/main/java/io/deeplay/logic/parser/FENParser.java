@@ -1,7 +1,7 @@
-package io.deeplay.parser;
+package io.deeplay.logic.parser;
 
 import io.deeplay.core.model.Side;
-import io.deeplay.model.SideBitboards;
+import io.deeplay.logic.model.SideBitboards;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.deeplay.logic.BitUtils.*;
+import static io.deeplay.logic.logic.BitUtils.*;
 import static java.util.Map.entry;
 
 public class FENParser {
@@ -31,7 +31,6 @@ public class FENParser {
                     entry('h', MASK_FILE_H)
             );
 
-    // TODO: тесты
     public static Map<Side, SideBitboards> parseFENToBitboards(final String fen) {
         final String parsePiecePlacementData = splitFEN(fen).get(0);
         // TODO: проверка на то что есть символы "/pnbrqkPNBRQK" + меньше макс. длины fen, логирование, исключения

@@ -1,4 +1,4 @@
-package io.deeplay.logic;
+package io.deeplay.logic.logic;
 
 import java.util.ArrayList;
 import java.util.List;

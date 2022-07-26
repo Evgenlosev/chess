@@ -1,4 +1,4 @@
-package io.deeplay.model;
+package io.deeplay.core.model;
 
 public enum Figure {
     W_PAWN(1, false),
