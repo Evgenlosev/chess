@@ -61,6 +61,13 @@ public class ChessNettyServer {
         return PROTOCOL_VERSION;
     }
 
+    /**
+     * Добавляем пользователя в список activeClients
+     * @param userName
+     * @return
+     * clientId - если имя успешно добавлено.
+     * 0 - если пользователь с таким именем уже есть в списке.
+     */
     public static Integer addClient(String userName) {
         if (activeClients.size() == 0) {
             activeClients.put(1, userName);
