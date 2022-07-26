@@ -173,6 +173,11 @@ public class ChessBoard  implements Cloneable{
                 if (previousChessBoard.moveInfo.getMoveType() == MoveType.PAWN_LONG_MOVE &&
                         previousChessBoard.moveInfo.getCellTo().getColumn() - to.getColumn() == 0) {
                     board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                    if (blackFigures.contains(moveInfo.getFigure())) {
+                        board[3][to.getColumn()] = new BoardCell(Figure.NONE);
+                    } else {
+                        board[4][to.getColumn()] = new BoardCell(Figure.NONE);
+                    }
                 } else {
                     throw new RuntimeException("Illegal pawn on go attack");
                 }
