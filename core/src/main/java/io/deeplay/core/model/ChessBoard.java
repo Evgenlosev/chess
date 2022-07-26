@@ -1,4 +1,4 @@
-package io.deeplay.model;
+package io.deeplay.core.model;
 
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;

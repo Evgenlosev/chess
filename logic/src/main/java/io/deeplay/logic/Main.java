@@ -1,6 +1,6 @@
-package io.deeplay;
+package io.deeplay.logic;
 
-import io.deeplay.model.ChessBoard;
+import io.deeplay.core.model.ChessBoard;
 
 public class Main {
     public static void main(String[] args) {
