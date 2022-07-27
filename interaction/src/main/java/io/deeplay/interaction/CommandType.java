@@ -12,6 +12,7 @@ public enum CommandType {
     CANCEL_MOVE_REQUEST,
     DRAW_REQUEST,
     GAME_OVER_REQUEST,
+    PING,
 
     //Команды от сервера клиенту
     PROTOCOL_VERSION_RESPONSE,
@@ -20,6 +21,8 @@ public enum CommandType {
     MOVE_RESPONSE,
     CANCEL_MOVE_RESPONSE,
     DRAW_RESPONSE,
-    GAME_OVER_RESPONSE
+    GAME_OVER_RESPONSE,
+    PONG,
+    CONNECTION_CLOSED_RESPONSE
 
 }
