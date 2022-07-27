@@ -11,32 +11,38 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(InboundObjectDecoder.class);
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(InboundObjectDecoder.class);
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        logger.info("Подключлся новый клиент");
-        logger.info("Ожидаем подтверждения версии протокола");
+    public void userEventTriggered(final ChannelHandlerContext ctx, final Object evt) throws Exception {
+        ctx.fireUserEventTriggered(evt);
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public void channelActive(final ChannelHandlerContext ctx) {
+        LOGGER.info("Подключлся новый клиент");
+        LOGGER.info("Ожидаем подтверждения версии протокола");
+    }
+
+    @Override
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) {
         ByteBuf buf = (ByteBuf) msg;
         byte[] bytes = new byte[buf.readableBytes()];
         try {
             buf.readBytes(bytes);
             Command inputCommand = CommandSerializator.deserializeByteArray(bytes);
+            LOGGER.info("Принята комманда от клиента {}", inputCommand);
             ctx.fireChannelRead(inputCommand);
         } catch (IOException e) {
-            logger.error("Ошибка про десериализации входящего сообщение", e);
+            LOGGER.error("Ошибка про десериализации входящего сообщение", e);
         } finally {
             buf.release();
         }
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("Соединение с клиентом прервано", cause);
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        LOGGER.error("Соединение с клиентом прервано", cause);
         ctx.close();
     }
 }

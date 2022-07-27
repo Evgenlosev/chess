@@ -7,16 +7,16 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
 
 public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(InboundCommandHandler.class);
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(InboundCommandHandler.class);
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Command command) {
-        logger.info("Принята команда от клиента: {}", command);
+    protected void channelRead0(final ChannelHandlerContext channelHandlerContext, final Command command) {
+        LOGGER.info("Принята команда от клиента: {}", command);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("Соединение с клиентом прервано", cause);
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        LOGGER.error("Соединение с клиентом прервано", cause);
         ctx.close();
     }
 }
