@@ -245,9 +245,64 @@ public class BitboardHandler {
         return allPossibleMoves;
     }
 
-    // нужен королю, для быстрого подсчета угрожающих фигур противника
     static long getOpponentAttacksBitboardFromAllFigures(final ChessBitboard chessBitboard) {
         long allAttacks = 0L;
+        for (long pawn : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getPawns()))
+            allAttacks |= getOpponentPawnAttacksBitboard(chessBitboard, pawn);
+
+        if (chessBitboard.getOpponentBitboards().getKnights() != 0L)
+            for (long knight : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getKnights())) {
+                allAttacks |= BitboardPatternsInitializer.knightMoveBitboards[Long.numberOfTrailingZeros(knight)];
+            }
+        if (chessBitboard.getOpponentBitboards().getBishops() != 0L)
+            for (long bishop : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getBishops())) {
+                allAttacks |=
+                        getBishopAllPossibleMovesBitboard(chessBitboard, new Coord(Long.numberOfTrailingZeros(bishop)));
+            }
+        if (chessBitboard.getOpponentBitboards().getRooks() != 0L)
+            for (long rook : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getRooks())) {
+                allAttacks |= getRookAllPossibleMovesBitboard
+                        (chessBitboard, new Coord(Long.numberOfTrailingZeros(rook)));
+            }
+        if (chessBitboard.getOpponentBitboards().getQueens() != 0L)
+            for (long queen : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getQueens())) {
+                allAttacks |=
+                        getBishopAllPossibleMovesBitboard
+                                (chessBitboard, new Coord(Long.numberOfTrailingZeros(queen)))
+                                | getRookAllPossibleMovesBitboard
+                                (chessBitboard, new Coord(Long.numberOfTrailingZeros(queen)));
+            }
+        for (long king : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getKing())) {
+            // короля не может не быть на доске
+            allAttacks |= BitboardPatternsInitializer.kingMoveBitboards[Long.numberOfTrailingZeros(king)];
+        }
+        return allAttacks;
+    }
+
+    // нужно знать количество шахующих(чтобы фигуры кроме короля знали, что им нельзя двигаться) -
+    // отдельный метод который при первой встрече второй угрожающей фигуры возвращает true
+
+    // TODO: надо считать что король ПРОТИВНИКА под шахом/матом/ничья, чтобы заполнить MoveInfo
+    // метод атаки на текущую клетку (учитываются СВОИ фигуры)
+    // если при паттерне коня при пробеге по коням противника нашлось совпадение то добавляем в битборд клетки под атакой
+    // нужно вернуть клетки под атакой
+
+    // TODO: отдельный wrapUP для короля?
+    // TODO: allThreatsCells | myPieces - куда нельзя ходить королю
+    // Чтобы понять что шах: делаем битборда короля & с результатом и мы поймем что король в шахе
+    static long getCellsUnderAttackRelativeToCurrent(final ChessBitboard chessBitboard, final int index) {
+        // Совмещаем все паттерны фигур относительно текущей
+        // (достаточно ферзя и коня т.к. они содержат все остальные при объединении)
+
+        final long allThreatsPossiblePositions = BitboardPatternsInitializer.knightMoveBitboards[index]
+                | getRookAllPossibleMovesBitboard(chessBitboard, new Coord(index))
+                | getBishopAllPossibleMovesBitboard(chessBitboard, new Coord(index));
+        // TODO: delete
+        // т.к. magic board учитывает и свои фигуры, позже их отсекать из множества ходов не нужно?
+        // (нужно, т.к. при отсечении по паттернам останутся только клетки ПОД УГРОЗОЙ, свои учитываться в алгоритме не будут)
+
+        // в битборде 1 стоит отмечать позицию пешки? или только атаку? т.к. если отмечать позицию, то пешка можеть быть защищена извне паттерна короля
+        long allThreatsCells = 0L;
         for (long pawn : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getPawns()))
             allAttacks |= getOpponentPawnAttacksBitboard(chessBitboard, pawn);
 
