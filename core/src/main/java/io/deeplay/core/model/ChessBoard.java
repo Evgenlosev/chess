@@ -3,15 +3,34 @@ package io.deeplay.core.model;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Map.entry;
 
-public class ChessBoard {
+public class ChessBoard  implements Cloneable{
     public static final int boardSize = 8;
     private BoardCell[][] board = new BoardCell[boardSize][boardSize];
     Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard = null;
+    private MoveInfo moveInfo = null;
+    private final Set<Figure> blackFigures = Set.of(
+            Figure.B_PAWN,
+            Figure.B_ROOK,
+            Figure.B_KNIGHT,
+            Figure.B_BISHOP,
+            Figure.B_KING,
+            Figure.B_QUEEN
+            );
+    private final Set<Figure> whiteFigures = Set.of(
+            Figure.W_PAWN,
+            Figure.W_ROOK,
+            Figure.W_KNIGHT,
+            Figure.W_BISHOP,
+            Figure.W_KING,
+            Figure.W_QUEEN
+            );
 
     Map<String, Figure> symbolsToFigure = Map.ofEntries(
             entry("p", Figure.B_PAWN),
@@ -64,7 +83,7 @@ public class ChessBoard {
         String[] splitFiguresFromProperties = fen.split(" ", 2);
         String unzippedFenWithoutProperties = unzipFen(splitFiguresFromProperties[0]).replace("/", "");
         for (int i = 0; i < unzippedFenWithoutProperties.length(); i++) {
-            board[7 - i / 8][7 - i % 8] = new BoardCell(
+            board[7 - i / 8][i % 8] = new BoardCell(
                     symbolsToFigure.get(String.valueOf(unzippedFenWithoutProperties.charAt(i))));
         }
     }
@@ -102,14 +121,98 @@ public class ChessBoard {
         return sb.toString();
     }
 
-    public void updateBoard(MoveInfo moveInfo) {
-
+    public void updateBoard(final MoveInfo moveInfo) {
+        // TODO:: сделать проверку на цвет ходящего и обновлять его после каждого хода
         try {
             previousChessBoard = (ChessBoard) this.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
         }
+        this.moveInfo = moveInfo;
         // TODO:: Сделать перемещение фигуры.
+
+        Coord from = moveInfo.getCellFrom();
+        Coord to = moveInfo.getCellTo();
+
+        switch (moveInfo.getMoveType()) {
+            case USUAL_MOVE:
+                if (board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                } else {
+                    throw new RuntimeException("Usual move tries to get occupied cell");
+                }
+                break;
+            case USUAL_ATTACK:
+                if (whiteFigures.contains(board[from.getRow()][from.getColumn()].getFigure()) &&
+                        blackFigures.contains(board[to.getRow()][to.getColumn()].getFigure()) ||
+                        blackFigures.contains(board[from.getRow()][from.getColumn()].getFigure()) &&
+                        whiteFigures.contains(board[to.getRow()][to.getColumn()].getFigure())) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                } else {
+                    throw new RuntimeException("Attempt to attack empty cell or own figure");
+                }
+                break;
+            case PAWN_ATTACK:
+                if (Math.abs(from.getColumn() - to.getColumn()) == 1 &&
+                        Math.abs(from.getRow() - to.getRow()) == 1) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                } else {
+                    throw new RuntimeException("Illegal pawn attack");
+                }
+                break;
+            case PAWN_LONG_MOVE:
+                if (from.getColumn() - to.getColumn() == 0 &&
+                        Math.abs(from.getRow() - to.getRow()) == 2 &&
+                        board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                } else {
+                    throw new RuntimeException("Illegal long pawn move");
+                }
+                break;
+            case PAWN_ON_GO_ATTACK:
+                if (previousChessBoard.moveInfo.getMoveType() == MoveType.PAWN_LONG_MOVE &&
+                        previousChessBoard.moveInfo.getCellTo().getColumn() - to.getColumn() == 0) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                    if (blackFigures.contains(moveInfo.getFigure())) {
+                        board[3][to.getColumn()] = new BoardCell(Figure.NONE);
+                    } else {
+                        board[4][to.getColumn()] = new BoardCell(Figure.NONE);
+                    }
+                } else {
+                    throw new RuntimeException("Illegal pawn on go attack");
+                }
+                break;
+            case PAWN_TO_FIGURE_ATTACK:
+            case PAWN_TO_FIGURE:
+                throw new RuntimeException("Transformation has not been done yet.");
+            case CASTLE_LONG:
+                if ((moveInfo.getFigure() == Figure.B_KING ||
+                        moveInfo.getFigure() == Figure.W_KING) &&
+                        from.getColumn() - to.getColumn() == 2) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                    // Теперь перемещаем ладью
+                    board[to.getRow()][3].setFigure(board[to.getRow()][0].getFigure());
+                    board[to.getRow()][0].setFigure(Figure.NONE);
+                } else {
+                    throw new RuntimeException("Wrong long castling");
+                }
+                break;
+            case CASTLE_SHORT:
+                if ((moveInfo.getFigure() == Figure.B_KING ||
+                        moveInfo.getFigure() == Figure.W_KING) &&
+                        to.getColumn() - from.getColumn() == 2) {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+                    // Теперь перемещаем ладью
+                    board[to.getRow()][5].setFigure(board[to.getRow()][7].getFigure());
+                    board[to.getRow()][7].setFigure(Figure.NONE);
+                } else {
+                    throw new RuntimeException("Wrong short castling");
+                }
+
+        }
+
+        board[from.getRow()][from.getColumn()] = new BoardCell(Figure.NONE);
+
     }
 
     public String getFEN() {
@@ -127,15 +230,19 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+        StringBuilder row = new StringBuilder();
 
         for (int i = 0; i < boardSize; i++) {
             for (int j = 0; j < boardSize; j++) {
-                sb.append(figureToSymbol.get(board[i][j].getFigure())).append(" ");
+                row.append(figureToSymbol.get(board[i][j].getFigure())).append (" ");
             }
-            sb.append("\n");
+            row.append("\n");
+            result.insert(0, row);
+            row.delete(0, row.length());
         }
 
-        return sb.reverse().toString();
+        return result.toString();
     }
+
 }
