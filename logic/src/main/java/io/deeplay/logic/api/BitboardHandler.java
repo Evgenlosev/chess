@@ -70,18 +70,15 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getRookMoves(final FENBoard board, final Coord from) {
-        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
         // Определяем стороны
-        // TODO: можно завернуть внутрь ChessBitboard
         if (containsSameBits(sideBitboards.get(Side.WHITE).getRooks(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getRooks(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
+        Objects.requireNonNull(chessBitboard);
 
         return wrapRookMoves(chessBitboard, from);
     }
@@ -96,7 +93,6 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getQueenMoves(final FENBoard board, final Coord from) {
-        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -105,8 +101,7 @@ public class BitboardHandler {
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getQueens(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
+        Objects.requireNonNull(chessBitboard);
 
         return wrapQueenMoves(chessBitboard, from);
     }
@@ -119,7 +114,6 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getBishopMoves(final FENBoard board, final Coord from) {
-        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -128,8 +122,7 @@ public class BitboardHandler {
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getBishops(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
+        Objects.requireNonNull(chessBitboard);
 
         return wrapBishopMoves(chessBitboard, from);
     }
@@ -142,7 +135,6 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getKnightMoves(final FENBoard board, final Coord from) {
-        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -151,8 +143,7 @@ public class BitboardHandler {
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getKnights(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
+        Objects.requireNonNull(chessBitboard);
 
         return wrapKnightMoves(chessBitboard, from);
     }
@@ -165,7 +156,6 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getKingMoves(final FENBoard board, final Coord from) {
-        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -174,14 +164,13 @@ public class BitboardHandler {
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getKing(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
+        Objects.requireNonNull(chessBitboard);
 
         return wrapKingMoves(chessBitboard, from);
     }
 
     private static Set<MoveInfo> wrapPawnMoves(final ChessBitboard chessBitboard, final Coord from) {
-        final Map<MoveType, Long> allPossibleMoves = getSidePawnAttacks(chessBitboard, from);
+        final Map<MoveType, Long> allPossibleMoves = getSidePawnMoves(chessBitboard, from);
 
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN;
         Set<MoveInfo> movesInfo = new HashSet<>();
@@ -197,7 +186,6 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getPawnMoves(final FENBoard board, final Coord from) {
-        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -206,8 +194,7 @@ public class BitboardHandler {
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getPawns(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
+        Objects.requireNonNull(chessBitboard);
 
         chessBitboard.setEnPassantFile(FENParser.getEnPassant(board.getFenNotation()));
 
@@ -215,6 +202,7 @@ public class BitboardHandler {
     }
 
     public static Multimap<Coord, MoveInfo> getAllPossibleMoves(final FENBoard board, final Side side) {
+        Objects.requireNonNull(side);
         Multimap<Coord, MoveInfo> allPossibleMoves = HashMultimap.create();
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
         ChessBitboard chessBitboard = null;
@@ -223,8 +211,6 @@ public class BitboardHandler {
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (side == Side.BLACK)
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        if (chessBitboard == null)
-            throw new IllegalArgumentException("Сторона не определена");
 
         int index;
         for (long pawn : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getPawns())) {
@@ -262,14 +248,9 @@ public class BitboardHandler {
     // нужен королю, для быстрого подсчета угрожающих фигур противника
     static long getOpponentAttacksBitboardFromAllFigures(final ChessBitboard chessBitboard) {
         long allAttacks = 0L;
-        for (long pawn : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getPawns())) {
-            // инвертированы методы, т.к. атаки нужно именно противника (другой стороны)
-            allAttacks |= chessBitboard.getMySide() == Side.WHITE
-                    ? BitboardDynamicPatterns.possibleBlackPawnAttacks
-                    (new Coord(Long.numberOfTrailingZeros(pawn)))
-                    : BitboardDynamicPatterns.possibleWhitePawnAttacks
-                    (new Coord(Long.numberOfTrailingZeros(pawn)));
-        }
+        for (long pawn : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getPawns()))
+            allAttacks |= getOpponentPawnAttacksBitboard(chessBitboard, pawn);
+
         if (chessBitboard.getOpponentBitboards().getKnights() != 0L)
             for (long knight : BitUtils.segregatePositions(chessBitboard.getOpponentBitboards().getKnights())) {
                 allAttacks |= BitboardPatternsInitializer.knightMoveBitboards[Long.numberOfTrailingZeros(knight)];
@@ -299,7 +280,7 @@ public class BitboardHandler {
         return allAttacks;
     }
 
-    private static Map<MoveType, Long> getSidePawnAttacks(final ChessBitboard chessBitboard, final Coord from) {
+    private static Map<MoveType, Long> getSidePawnMoves(final ChessBitboard chessBitboard, final Coord from) {
         if (chessBitboard.getMySide() == Side.WHITE)
             return BitboardDynamicPatterns.possibleWhitePawnMoves(chessBitboard, from);
         else if (chessBitboard.getMySide() == Side.BLACK)
@@ -307,6 +288,16 @@ public class BitboardHandler {
         return Collections.emptyMap();
     }
 
+    private static long getOpponentPawnAttacksBitboard(final ChessBitboard chessBitboard, final long pawnBitboard) {
+        // инвертированы методы, т.к. атаки нужно именно противника (другой стороны)
+        if (chessBitboard.getMySide() == Side.WHITE)
+            return BitboardDynamicPatterns
+                    .possibleBlackPawnAttacks(new Coord(Long.numberOfTrailingZeros(pawnBitboard)));
+        else if (chessBitboard.getMySide() == Side.BLACK)
+            return BitboardDynamicPatterns
+                    .possibleWhitePawnAttacks(new Coord(Long.numberOfTrailingZeros(pawnBitboard)));
+        return 0L;
+    }
 
     // TODO: Multimap<Coord, MoveInfo> getAllPossibleMoves(io.deeplay.logic.logic.ChessBoard board, Side side);
     // TODO: boolean isCheck(io.deeplay.logic.logic.ChessBoard board, Side side);

@@ -80,7 +80,7 @@ public class FENParser {
     private static List<String> splitFEN(final String fen) {
         final List<String> parseFenNotation = List.of(fen.split(" "));
         if (parseFenNotation.size() != 6)
-            throw new NullPointerException("Неверная, либо неполная нотация, количество элементов в нотации не равно 6");
+            throw new IllegalArgumentException("Неверная, либо неполная нотация, количество элементов в нотации не равно 6");
         return parseFenNotation;
     }
 

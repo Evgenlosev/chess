@@ -4,6 +4,10 @@ import io.deeplay.core.model.Side;
 
 import java.util.Map;
 
+/**
+ * Класс хранит в себе битборд-представление фигур одной стороны(белой/чёрной) доски шахмат.
+ * Упрощает взаимодействие со сторонами игры.
+ */
 public class SideBitboards {
     private final Side side;
     private final long pawns;
