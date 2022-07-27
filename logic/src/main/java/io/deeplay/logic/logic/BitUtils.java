@@ -210,6 +210,19 @@ public class BitUtils {
     }
 
     /**
+     * Метод проверяет есть ли одинаковые биты
+     * Пример
+     * 0010 и 0110 -> true, т.к. маска 0010 верна для обоих
+     *
+     * @param a
+     * @param b
+     * @return true если есть совпадающие биты
+     */
+    public static boolean containsSameBits(final long a, final long b) {
+        return (a & b) != 0L;
+    }
+
+    /**
      * Get the square bitboard for a given {@link BitIndex}.
      *
      * @param bitIndex A {@link BitIndex}.

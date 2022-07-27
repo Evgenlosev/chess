@@ -1,12 +1,11 @@
-package logic;
+package io.deeplay.logic.api;
 
 import io.deeplay.core.model.Coord;
 import io.deeplay.core.model.Figure;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.MoveType;
-import io.deeplay.logic.api.BitboardHandler;
 import io.deeplay.logic.logic.BitUtils;
-import io.deeplay.logic.logic.ChessBoard;
+import io.deeplay.logic.logic.FENBoard;
 import org.junit.Test;
 
 import java.util.Set;
@@ -19,13 +18,13 @@ public class TestQueenBitboardHandler {
 
     @Test
     public void testQueenAtStartPositionClassic() {
-        ChessBoard chessBoard = new ChessBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"); // D1 белые
-        assertEquals(0, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.D1_IDX.ordinal())).size());
+        FENBoard FENBoard = new FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"); // D1 белые
+        assertEquals(0, BitboardHandler.getQueenMoves(FENBoard, new Coord(BitUtils.BitIndex.D1_IDX.ordinal())).size());
     }
 
     @Test
     public void testQueenInMiddlePosition() {
-        ChessBoard chessBoard = new ChessBoard("8/N1k1r1R1/P1P1b2P/1P2Q1b1/4P3/1nN3K1/8/3r1r2 b - - 0 1"); // черные e5 7
+        FENBoard FENBoard = new FENBoard("8/N1k1r1R1/P1P1b2P/1P2Q1b1/4P3/1nN3K1/8/3r1r2 b - - 0 1"); // черные e5 7
         Set<MoveInfo> expectedMoveInfoSet = Stream.of(
                         new MoveInfo(new Coord(36), new Coord(50), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
                         new MoveInfo(new Coord(36), new Coord(43), MoveType.USUAL_MOVE, Figure.W_QUEEN),
@@ -39,13 +38,13 @@ public class TestQueenBitboardHandler {
                         new MoveInfo(new Coord(36), new Coord(29), MoveType.USUAL_MOVE, Figure.W_QUEEN))
                 .collect(Collectors.toSet());
 
-        assertEquals(expectedMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.E5_IDX.ordinal())));
+        assertEquals(expectedMoveInfoSet, BitboardHandler.getQueenMoves(FENBoard, new Coord(BitUtils.BitIndex.E5_IDX.ordinal())));
 
     }
 
     @Test
     public void testQueenInMiddlePositionClamped() { // королева зажата
-        ChessBoard chessBoard = new ChessBoard("8/8/3pnB2/R3QK2/4pr2/2k5/8/8 w - - 0 1"); // белые
+        FENBoard FENBoard = new FENBoard("8/8/3pnB2/R3QK2/4pr2/2k5/8/8 w - - 0 1"); // белые
         Set<MoveInfo> expectedMoveInfoSet = Stream.of(
                         new MoveInfo(new Coord(36), new Coord(43), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
                         new MoveInfo(new Coord(36), new Coord(44), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
@@ -58,13 +57,13 @@ public class TestQueenBitboardHandler {
                         new MoveInfo(new Coord(36), new Coord(18), MoveType.USUAL_ATTACK, Figure.W_QUEEN))
                 .collect(Collectors.toSet());
 
-        assertEquals(expectedMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.E5_IDX.ordinal())));
+        assertEquals(expectedMoveInfoSet, BitboardHandler.getQueenMoves(FENBoard, new Coord(BitUtils.BitIndex.E5_IDX.ordinal())));
     }
 
     @Test
     public void testQueensInCornersPosition() {
         // 31 - белый (у одного края), 0 - черный (в углу)
-        ChessBoard chessBoard = new ChessBoard("rnb1kbnr/1p2p1pp/3p4/p1p5/5p1Q/4P3/2PP1PPP/qNB1KBNR w Kkq a6 0 1");
+        FENBoard FENBoard = new FENBoard("rnb1kbnr/1p2p1pp/3p4/p1p5/5p1Q/4P3/2PP1PPP/qNB1KBNR w Kkq a6 0 1");
         Set<MoveInfo> expectedWhiteMoveInfoSet = Stream.of( // белая королева A1 - 0 клетка
                         new MoveInfo(new Coord(31), new Coord(22), MoveType.USUAL_MOVE, Figure.W_QUEEN),
                         new MoveInfo(new Coord(31), new Coord(30), MoveType.USUAL_MOVE, Figure.W_QUEEN),
@@ -77,7 +76,7 @@ public class TestQueenBitboardHandler {
                         new MoveInfo(new Coord(31), new Coord(38), MoveType.USUAL_MOVE, Figure.W_QUEEN),
                         new MoveInfo(new Coord(31), new Coord(45), MoveType.USUAL_MOVE, Figure.W_QUEEN))
                 .collect(Collectors.toSet());
-        assertEquals(expectedWhiteMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.H4_IDX.ordinal())));
+        assertEquals(expectedWhiteMoveInfoSet, BitboardHandler.getQueenMoves(FENBoard, new Coord(BitUtils.BitIndex.H4_IDX.ordinal())));
 
         Set<MoveInfo> expectedBlackMoveInfoSet = Stream.of( // черная королева H2 - 15 клетка
                         new MoveInfo(new Coord(0), new Coord(1), MoveType.USUAL_ATTACK, Figure.B_QUEEN),
@@ -93,7 +92,7 @@ public class TestQueenBitboardHandler {
                         new MoveInfo(new Coord(0), new Coord(16), MoveType.USUAL_MOVE, Figure.B_QUEEN))
                 .collect(Collectors.toSet());
 
-        assertEquals(expectedBlackMoveInfoSet, BitboardHandler.getQueenMoves(chessBoard, new Coord(BitUtils.BitIndex.A1_IDX.ordinal())));
+        assertEquals(expectedBlackMoveInfoSet, BitboardHandler.getQueenMoves(FENBoard, new Coord(BitUtils.BitIndex.A1_IDX.ordinal())));
     }
     
 }

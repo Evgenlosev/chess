@@ -1,10 +1,10 @@
 package io.deeplay.logic.logic;
 
-public class ChessBoard {
+public class FENBoard {
 
     private String fenNotation;
 
-    public ChessBoard(String fenNotation) {
+    public FENBoard(String fenNotation) {
         this.fenNotation = fenNotation;
     }
 
