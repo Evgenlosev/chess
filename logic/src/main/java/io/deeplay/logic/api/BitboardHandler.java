@@ -299,7 +299,6 @@ public class BitboardHandler {
         return 0L;
     }
 
-    // TODO: Multimap<Coord, MoveInfo> getAllPossibleMoves(io.deeplay.logic.logic.ChessBoard board, Side side);
     // TODO: boolean isCheck(io.deeplay.logic.logic.ChessBoard board, Side side);
 
 }
