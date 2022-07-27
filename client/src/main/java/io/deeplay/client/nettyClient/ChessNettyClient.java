@@ -2,6 +2,7 @@ package io.deeplay.client.nettyClient;
 
 import ch.qos.logback.classic.Logger;
 import io.deeplay.client.ChessClient;
+import io.deeplay.client.nettyClient.handlers.ClientInPingHandler;
 import io.deeplay.client.nettyClient.handlers.ClientInboundObjectDecoder;
 import io.deeplay.client.nettyClient.handlers.ClientOutBoundCommandEncoder;
 import io.deeplay.client.nettyClient.handlers.InboundProtocolVersionResponseHandler;
@@ -19,8 +20,8 @@ import java.net.InetSocketAddress;
 public class ChessNettyClient implements ChessClient {
     private final String host;
     private final int port;
-    private static final String PROTOCOL_VERSION = "1.1";
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(ChessNettyClient.class);
+    private static final String PROTOCOL_VERSION = "1.0";
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ChessNettyClient.class);
 
     public ChessNettyClient(final String host, final int port) {
         this.host = host;
@@ -39,10 +40,11 @@ public class ChessNettyClient implements ChessClient {
                     .remoteAddress(new InetSocketAddress(host, port))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        public void initChannel(SocketChannel ch) throws Exception {
+                        public void initChannel(final SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(
                                     new ClientOutBoundCommandEncoder(),
                                     new ClientInboundObjectDecoder(),
+                                    new ClientInPingHandler(),
                                     new InboundProtocolVersionResponseHandler());
                         }
                     });
@@ -51,13 +53,13 @@ public class ChessNettyClient implements ChessClient {
             //Ожидание завершения работы клиента
             channelFuture.channel().closeFuture().sync();
         } catch (InterruptedException e) {
-            logger.error("Ошибка при запуске клиента", e);
+            LOGGER.error("Ошибка при запуске клиента", e);
         } finally {
             try {
                 group.shutdownGracefully().sync();
-                logger.info("Клиент остановлен");
+                LOGGER.info("Клиент остановлен");
             } catch (InterruptedException e) {
-                logger.error("Ошибка при остановке клиента", e);
+                LOGGER.error("Ошибка при остановке клиента", e);
             }
         }
     }
