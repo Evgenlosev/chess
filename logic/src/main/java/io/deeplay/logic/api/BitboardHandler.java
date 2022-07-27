@@ -299,7 +299,7 @@ public class BitboardHandler {
         return 0L;
     }
 
-    // TODO: boolean isCheck(io.deeplay.logic.logic.ChessBoard board, Side side);
+    // TODO: boolean isCheck(FENBoard board, Side side);
 
 }
 
