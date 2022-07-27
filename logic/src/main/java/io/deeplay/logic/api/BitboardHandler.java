@@ -12,9 +12,7 @@ import io.deeplay.logic.model.MagicBoard;
 import io.deeplay.logic.model.SideBitboards;
 import io.deeplay.logic.parser.FENParser;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static io.deeplay.logic.logic.BitUtils.containsSameBits;
 
@@ -72,10 +70,12 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getRookMoves(final FENBoard board, final Coord from) {
+        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
         // Определяем стороны
+        // TODO: можно завернуть внутрь ChessBitboard
         if (containsSameBits(sideBitboards.get(Side.WHITE).getRooks(), 1L << from.getIndexAsOneDimension()))
             chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
         if (containsSameBits(sideBitboards.get(Side.BLACK).getRooks(), 1L << from.getIndexAsOneDimension()))
@@ -96,6 +96,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getQueenMoves(final FENBoard board, final Coord from) {
+        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -118,6 +119,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getBishopMoves(final FENBoard board, final Coord from) {
+        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -140,6 +142,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getKnightMoves(final FENBoard board, final Coord from) {
+        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -162,6 +165,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getKingMoves(final FENBoard board, final Coord from) {
+        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -177,9 +181,8 @@ public class BitboardHandler {
     }
 
     private static Set<MoveInfo> wrapPawnMoves(final ChessBitboard chessBitboard, final Coord from) {
-        final Map<MoveType, Long> allPossibleMoves = chessBitboard.getMySide() == Side.WHITE
-                ? BitboardDynamicPatterns.possibleWhitePawnMoves(chessBitboard, from)
-                : BitboardDynamicPatterns.possibleBlackPawnMoves(chessBitboard, from);
+        final Map<MoveType, Long> allPossibleMoves = getSidePawnAttacks(chessBitboard, from);
+
         final Figure figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN;
         Set<MoveInfo> movesInfo = new HashSet<>();
 
@@ -194,6 +197,7 @@ public class BitboardHandler {
     }
 
     public static Set<MoveInfo> getPawnMoves(final FENBoard board, final Coord from) {
+        Objects.requireNonNull(from);
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -293,6 +297,14 @@ public class BitboardHandler {
             allAttacks |= BitboardPatternsInitializer.kingMoveBitboards[Long.numberOfTrailingZeros(king)];
         }
         return allAttacks;
+    }
+
+    private static Map<MoveType, Long> getSidePawnAttacks(final ChessBitboard chessBitboard, final Coord from) {
+        if (chessBitboard.getMySide() == Side.WHITE)
+            return BitboardDynamicPatterns.possibleWhitePawnMoves(chessBitboard, from);
+        else if (chessBitboard.getMySide() == Side.BLACK)
+            return BitboardDynamicPatterns.possibleBlackPawnMoves(chessBitboard, from);
+        return Collections.emptyMap();
     }
 
 
