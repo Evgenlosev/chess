@@ -6,6 +6,7 @@ import io.deeplay.core.model.*;
 import io.deeplay.logic.logic.BitUtils;
 import io.deeplay.logic.logic.BitboardDynamicPatterns;
 import io.deeplay.logic.logic.BitboardPatternsInitializer;
+import io.deeplay.logic.logic.FENBoard;
 import io.deeplay.logic.model.ChessBitboard;
 import io.deeplay.logic.model.MagicBoard;
 import io.deeplay.logic.model.SideBitboards;
@@ -70,7 +71,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getRookMoves(final io.deeplay.logic.logic.ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getRookMoves(final FENBoard board, final Coord from) {
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -94,7 +95,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getQueenMoves(final io.deeplay.logic.logic.ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getQueenMoves(final FENBoard board, final Coord from) {
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -116,7 +117,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getBishopMoves(final io.deeplay.logic.logic.ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getBishopMoves(final FENBoard board, final Coord from) {
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -138,7 +139,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getKnightMoves(final io.deeplay.logic.logic.ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getKnightMoves(final FENBoard board, final Coord from) {
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -160,7 +161,7 @@ public class BitboardHandler {
         return wrapUpMoves(chessBitboard, from, allPossibleMoves, figure);
     }
 
-    public static Set<MoveInfo> getKingMoves(final io.deeplay.logic.logic.ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getKingMoves(final FENBoard board, final Coord from) {
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -192,7 +193,7 @@ public class BitboardHandler {
         return movesInfo;
     }
 
-    public static Set<MoveInfo> getPawnMoves(final io.deeplay.logic.logic.ChessBoard board, final Coord from) {
+    public static Set<MoveInfo> getPawnMoves(final FENBoard board, final Coord from) {
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
 
         ChessBitboard chessBitboard = null;
@@ -209,7 +210,7 @@ public class BitboardHandler {
         return wrapPawnMoves(chessBitboard, from);
     }
 
-    public static Multimap<Coord, MoveInfo> getAllPossibleMoves(final io.deeplay.logic.logic.ChessBoard board, final Side side) {
+    public static Multimap<Coord, MoveInfo> getAllPossibleMoves(final FENBoard board, final Side side) {
         Multimap<Coord, MoveInfo> allPossibleMoves = HashMultimap.create();
         Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(board.getFenNotation());
         ChessBitboard chessBitboard = null;
