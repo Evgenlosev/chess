@@ -3,7 +3,6 @@ package io.deeplay.core.model;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,6 +14,9 @@ public class ChessBoard  implements Cloneable{
     Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard = null;
     private MoveInfo moveInfo = null;
+
+    private Side whoseMove = Side.WHITE;
+
     private final Set<Figure> blackFigures = Set.of(
             Figure.B_PAWN,
             Figure.B_ROOK,
@@ -31,7 +33,6 @@ public class ChessBoard  implements Cloneable{
             Figure.W_KING,
             Figure.W_QUEEN
             );
-
     Map<String, Figure> symbolsToFigure = Map.ofEntries(
             entry("p", Figure.B_PAWN),
             entry("r", Figure.B_ROOK),
@@ -47,6 +48,7 @@ public class ChessBoard  implements Cloneable{
             entry("K", Figure.W_KING),
             entry("1", Figure.NONE)
     );
+
     Map<Figure, String> figureToSymbol = Map.ofEntries(
             entry(Figure.B_PAWN, "p"),
             entry(Figure.B_ROOK, "r"),
@@ -62,7 +64,6 @@ public class ChessBoard  implements Cloneable{
             entry(Figure.W_KING, "K"),
             entry(Figure.NONE, "-")
     );
-
     /**
      * Default constructor to create default board;
      */
@@ -226,6 +227,10 @@ public class ChessBoard  implements Cloneable{
 
     public void setBoard(final BoardCell[][] board) {
         this.board = board;
+    }
+
+    public Side getWhoseMove() {
+        return whoseMove;
     }
 
     @Override
