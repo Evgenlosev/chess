@@ -12,19 +12,19 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class OutBoundCommandEncoder extends ChannelOutboundHandlerAdapter {
-    private static final Logger logger = (Logger) LoggerFactory.getLogger(OutBoundCommandEncoder.class);
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(OutBoundCommandEncoder.class);
 
     @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) {
+    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {
         Command command = (Command) msg;
         ByteBuf buf = ctx.alloc().directBuffer();
         try {
             byte[] bytes = CommandSerializator.serializeCommand(command);
             buf.writeBytes(bytes);
             ctx.writeAndFlush(buf);
-            logger.info("Отправлена команда клиенту: {}", command);
+            LOGGER.info("Отправлена команда клиенту: {}", command);
         } catch (IOException e) {
-            logger.error("Ошибка при сериализации комманды", e);
+            LOGGER.error("Ошибка при сериализации комманды", e);
         } finally {
             buf.release();
         }

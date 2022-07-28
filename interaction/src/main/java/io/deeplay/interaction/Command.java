@@ -22,7 +22,10 @@ import io.deeplay.interaction.serverToClient.*;
         @JsonSubTypes.Type(value = GameOverResponse.class, name = "GameOverResponse"),
         @JsonSubTypes.Type(value = MoveResponse.class, name = "MoveResponse"),
         @JsonSubTypes.Type(value = ProtocolVersionResponse.class, name = "ProtocolVersionResponse"),
-        @JsonSubTypes.Type(value = StartGameResponse.class, name = "StartGameResponse")
+        @JsonSubTypes.Type(value = StartGameResponse.class, name = "StartGameResponse"),
+        @JsonSubTypes.Type(value = Ping.class, name = "Ping"),
+        @JsonSubTypes.Type(value = Pong.class, name = "Pong"),
+        @JsonSubTypes.Type(value = ConnectionClosedResponse.class, name = "ConnectionClosedResponse")
 })
 public abstract class Command {
     private final CommandType commandType;
