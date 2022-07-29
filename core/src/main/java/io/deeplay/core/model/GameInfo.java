@@ -6,15 +6,25 @@ import io.deeplay.core.listener.ChessListener;
 import java.util.List;
 
 public class GameInfo implements ChessListener {
-
+    private GameStatus gameStatus;
     ChessBoard board;
 
     public GameInfo() {
         board = new ChessBoard();
+        this.gameStatus = GameStatus.INACTIVE;
     }
 
     public GameInfo(final ChessBoard board) {
         this.board = board;
+        this.gameStatus = GameStatus.INACTIVE;
+    }
+
+    public ChessBoard getBoard() {
+        return board;
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
 
     public String getFenBoard() {
@@ -30,6 +40,7 @@ public class GameInfo implements ChessListener {
     }
 
     public boolean isGameOver() {
+        if (gameStatus == GameStatus.ACTIVE || gameStatus == GameStatus.INACTIVE) return true;
         return false;
     }
 
@@ -51,14 +62,14 @@ public class GameInfo implements ChessListener {
      */
     @Override
     public void gameStarted() {
-
+        this.gameStatus = GameStatus.ACTIVE;
     }
 
     /**
      * @param side
      */
     @Override
-    public void playerSeated(Side side) {
+    public void playerSeated(final Side side) {
 
     }
 
@@ -67,7 +78,15 @@ public class GameInfo implements ChessListener {
      * @param moveInfo
      */
     @Override
-    public void playerActed(Side side, MoveInfo moveInfo) {
+    public void playerActed(final Side side, final MoveInfo moveInfo) {
+        updateBoard(moveInfo);
+    }
+
+    /**
+     * @param side
+     */
+    @Override
+    public void offerDraw(final Side side) {
 
     }
 
@@ -75,7 +94,7 @@ public class GameInfo implements ChessListener {
      * @param side
      */
     @Override
-    public void offerDraw(Side side) {
+    public void acceptDraw(final Side side) {
 
     }
 
@@ -83,7 +102,7 @@ public class GameInfo implements ChessListener {
      * @param side
      */
     @Override
-    public void acceptDraw(Side side) {
+    public void playerRequestsTakeBack(final Side side) {
 
     }
 
@@ -91,7 +110,7 @@ public class GameInfo implements ChessListener {
      * @param side
      */
     @Override
-    public void playerRequestsTakeBack(Side side) {
+    public void playerAgreesTakeBack(final Side side) {
 
     }
 
@@ -99,15 +118,7 @@ public class GameInfo implements ChessListener {
      * @param side
      */
     @Override
-    public void playerAgreesTakeBack(Side side) {
-
-    }
-
-    /**
-     * @param side
-     */
-    @Override
-    public void playerResigned(Side side) {
+    public void playerResigned(final Side side) {
 
     }
 
@@ -123,7 +134,7 @@ public class GameInfo implements ChessListener {
      * @param side
      */
     @Override
-    public void playerWon(Side side) {
+    public void playerWon(final Side side) {
 
     }
 
