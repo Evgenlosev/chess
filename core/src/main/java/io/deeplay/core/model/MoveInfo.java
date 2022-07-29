@@ -23,6 +23,10 @@ public class MoveInfo {
     }
 
 
+    public MoveInfo(final Coord cellFrom, final Coord cellTo, final MoveType moveType, final Figure figure) {
+        this(cellFrom, cellTo, moveType, figure, null);
+    }
+
     public Coord getCellFrom() {
         return cellFrom;
     }
