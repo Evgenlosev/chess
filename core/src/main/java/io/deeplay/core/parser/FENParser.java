@@ -83,7 +83,7 @@ public class FENParser {
     }
 
     public static Side getTurnSide(final String fen) {
-        final String parseTurnSide = splitFEN(fen).get(2);
+        final String parseTurnSide = splitFEN(fen).get(1);
         final char turnSide = parseTurnSide.charAt(0);
         if (!charToSideRepresentation.containsKey(turnSide))
             throw new IllegalArgumentException

@@ -22,7 +22,7 @@ public interface SimpleLogicAppeal {
 
     /**
      * @param fenNotation нотация Форсайта — Эдвардса
-     * @return возвращает все возможные ходы для стороны предстоящим ходом, если игра закончилась list = 0
+     * @return возвращает все возможные ходы для стороны с предстоящим ходом, если игра закончилась set = 0
      */
     Set<MoveInfo> getMoves(final String fenNotation);
 
