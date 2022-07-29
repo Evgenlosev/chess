@@ -1,13 +1,20 @@
 package io.deeplay.core.model;
 
-import com.google.common.collect.Multimap;
+import io.deeplay.core.api.SimpleLogic;
+import io.deeplay.core.api.SimpleLogicAppeal;
 import io.deeplay.core.listener.ChessListener;
 
 import java.util.List;
+import java.util.Set;
 
 public class GameInfo implements ChessListener {
     private GameStatus gameStatus;
     ChessBoard board;
+    private boolean isDraw = false;
+    private boolean isGameOver = false;
+    private Side winner = null;
+
+    SimpleLogicAppeal logic = new SimpleLogic();
 
     public GameInfo() {
         board = new ChessBoard();
@@ -40,18 +47,22 @@ public class GameInfo implements ChessListener {
     }
 
     public boolean isGameOver() {
-        if (gameStatus == GameStatus.ACTIVE || gameStatus == GameStatus.INACTIVE) return true;
         return false;
     }
 
     public boolean isMoveValid(final MoveInfo moveInfo) {
-        return true;
+        return logic.getMoves(board.getFEN()).contains(moveInfo);
     }
 
-    public Multimap<Coord, MoveInfo> getAvailableMoves(final Side side) {
-        return null;
+    public Set<MoveInfo> getAvailableMoves(final Side side) {
+        return logic.getMoves(board.getFEN());
     }
 
+    /**
+     * Возвращает список оставшихся фигур на доске
+     * @param side цвет игрока
+     * @return
+     */
     public List<Figure> getSideFigures(final Side side) {
         return null;
     }
@@ -66,7 +77,8 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * @param side
+     * Игнорируется
+     * @param side За какую сторону сел игрок
      */
     @Override
     public void playerSeated(final Side side) {
@@ -74,8 +86,9 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * @param side
-     * @param moveInfo
+     * Совершенный ход
+     * @param side ходившая сторона
+     * @param moveInfo совершенный ход
      */
     @Override
     public void playerActed(final Side side, final MoveInfo moveInfo) {
@@ -83,7 +96,7 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * @param side
+     * @param side Сторона, предложившая ничью
      */
     @Override
     public void offerDraw(final Side side) {
@@ -95,11 +108,11 @@ public class GameInfo implements ChessListener {
      */
     @Override
     public void acceptDraw(final Side side) {
-
+        this.isDraw = true;
     }
 
     /**
-     * @param side
+     * @param side сторона запросившая отмену хода
      */
     @Override
     public void playerRequestsTakeBack(final Side side) {
@@ -107,7 +120,7 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * @param side
+     * @param side сторона согласившаяся на отмену хода
      */
     @Override
     public void playerAgreesTakeBack(final Side side) {
@@ -115,7 +128,7 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * @param side
+     * @param side сдавшаяся сторона
      */
     @Override
     public void playerResigned(final Side side) {
@@ -131,11 +144,11 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * @param side
+     * @param side победившая сторона
      */
     @Override
     public void playerWon(final Side side) {
-
+        winner = side;
     }
 
     /**
@@ -143,6 +156,6 @@ public class GameInfo implements ChessListener {
      */
     @Override
     public void gameOver() {
-
+        isGameOver = true;
     }
 }

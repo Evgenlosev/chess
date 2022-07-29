@@ -8,13 +8,17 @@ import java.util.Set;
 
 import static java.util.Map.entry;
 
-public class ChessBoard  implements Cloneable{
-    public static final int boardSize = 8;
+public class ChessBoard  implements Cloneable {
+    public final int boardSize = 8;
     private BoardCell[][] board = new BoardCell[boardSize][boardSize];
     Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard = null;
     private MoveInfo moveInfo = null;
-
+    private String castleAvailable;
+    private int movesWithoutAttackOrPawnMove;
+    private int moveCounter;
+    // column if there were a long move, -1 otherwise.
+    private int pawnLongMoveColumn;
     private Side whoseMove = Side.WHITE;
 
     private final Set<Figure> blackFigures = Set.of(
@@ -64,6 +68,28 @@ public class ChessBoard  implements Cloneable{
             entry(Figure.W_KING, "K"),
             entry(Figure.NONE, "-")
     );
+
+    Map<String, Integer> lettersToNumbers = Map.ofEntries(
+            entry("a", 0),
+            entry("b", 1),
+            entry("c", 2),
+            entry("d", 3),
+            entry("e", 4),
+            entry("f", 5),
+            entry("g", 6),
+            entry("h", 7)
+    );
+
+    Map<Integer, String> numbersToLetters = Map.ofEntries(
+            entry(0,"a"),
+            entry(1,"b"),
+            entry(2,"c"),
+            entry(3,"d"),
+            entry(4,"e"),
+            entry(5,"f"),
+            entry(6,"g"),
+            entry(7,"h")
+    );
     /**
      * Default constructor to create default board;
      */
@@ -73,7 +99,6 @@ public class ChessBoard  implements Cloneable{
 
     /**
      * Constructor to create custom start board from FEN string
-     * Options like long pawn move, move number, will be ignored.
      * @param fen FEN string.
      */
     public ChessBoard(final String fen) {
@@ -87,9 +112,35 @@ public class ChessBoard  implements Cloneable{
             board[7 - i / 8][i % 8] = new BoardCell(
                     symbolsToFigure.get(String.valueOf(unzippedFenWithoutProperties.charAt(i))));
         }
+        String properties = splitFiguresFromProperties[1];
+        setProperties(properties);
     }
 
-    public String unzipFen(String fen) {
+    private void setProperties(final String properties) {
+        String[] param = properties.split(" ");
+        whoseMove = "w".equals(param[0]) ? Side.WHITE : Side.BLACK;
+        castleAvailable = param[1];
+        pawnLongMoveColumn = lettersToNumbers.getOrDefault(String.valueOf(param[2].charAt(0)), -1);
+        movesWithoutAttackOrPawnMove = Integer.parseInt(param[3]);
+        moveCounter = Integer.parseInt(param[4]);
+    }
+
+    private String getProperties() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" ");
+        sb.append(whoseMove).append(" ");
+        sb.append("-").append(" ");
+        sb.append(pawnLongMoveColumn == -1 ? "-" : getPawnLongMove()).append(" ");
+        sb.append(movesWithoutAttackOrPawnMove).append(" ");
+        sb.append(moveCounter);
+        return sb.toString();
+    }
+
+    private String getPawnLongMove() {
+        return "-";
+    }
+
+    public String unzipFen(final String fen) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < fen.length(); i++) {
             if (String.valueOf(fen.charAt(i)).matches("[1-8]")) {
@@ -217,7 +268,14 @@ public class ChessBoard  implements Cloneable{
     }
 
     public String getFEN() {
-        return "88005553535";
+        String str = this.toString();
+        str = str.replace('\n', '/');
+        str = str.substring(0, str.length() - 1);
+        str = str.replace('-', '1');
+        str = str.replace(" ", "");
+        str = zipFen(str);
+        str += getProperties();
+        return str;
         // TODO:: Получить из массива строку фен, с указанием очередности хода, номером хода, количеством ходов без взятия фигур.
     }
 

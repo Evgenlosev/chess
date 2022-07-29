@@ -2,14 +2,15 @@ package io.deeplay.core.api;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.deeplay.core.logic.FENBoard;
-import io.deeplay.core.model.*;
 import io.deeplay.core.logic.BitUtils;
 import io.deeplay.core.logic.BitboardDynamicPatterns;
 import io.deeplay.core.logic.BitboardPatternsInitializer;
+import io.deeplay.core.logic.FENBoard;
+import io.deeplay.core.model.*;
 import io.deeplay.core.parser.FENParser;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static io.deeplay.core.logic.BitUtils.containsSameBits;
 import static io.deeplay.core.logic.BitUtils.inBetween;
@@ -618,6 +619,54 @@ public class BitboardHandler {
                                 new Coord(Long.numberOfTrailingZeros(myQueen))) & threatPieceBitboard & notMyPieces);
         }
         return allPossibleMoves;
+    }
+
+    public static Set<MoveInfo> getAllPossibleMovesWrapped(final ChessBitboard chessBitboard, final Map<Integer, Long> allPossibleMoves) {
+        Set<MoveInfo> allMoves = new HashSet<>();
+        Map<MoveType, Long> pawnMoves;
+        int index;
+        Figure figure;
+        for (long pawn : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getPawns())) {
+            index = Long.numberOfTrailingZeros(pawn);
+            int finalIndex = index;
+            pawnMoves = getSidePawnMoves(chessBitboard, new Coord(index)).entrySet()
+                    .stream().filter(x -> containsSameBits(allPossibleMoves.get(finalIndex), x.getValue()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN;
+            for (MoveType moveType : pawnMoves.keySet()) {
+                for (long possibleMove : BitUtils.segregatePositions(pawnMoves.get(moveType))) {
+                    if (possibleMove != 0L)
+                        allMoves.add(new MoveInfo(new Coord(index), new Coord(Long.numberOfTrailingZeros(possibleMove)),
+                                moveType, figure));
+                }
+            }
+        }
+        for (long knight : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getKnights())) {
+            index = Long.numberOfTrailingZeros(knight);
+            figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_KNIGHT : Figure.B_KNIGHT;
+            allMoves.addAll(wrapUpMoves(chessBitboard, new Coord(index), allPossibleMoves.get(index), figure));
+        }
+        for (long bishop : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getBishops())) {
+            index = Long.numberOfTrailingZeros(bishop);
+            figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_BISHOP : Figure.B_BISHOP;
+            allMoves.addAll(wrapUpMoves(chessBitboard, new Coord(index), allPossibleMoves.get(index), figure));
+        }
+        for (long rook : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getRooks())) {
+            index = Long.numberOfTrailingZeros(rook);
+            figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK;
+            allMoves.addAll(wrapUpMoves(chessBitboard, new Coord(index), allPossibleMoves.get(index), figure));
+        }
+        for (long queen : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getQueens())) {
+            index = Long.numberOfTrailingZeros(queen);
+            figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN;
+            allMoves.addAll(wrapUpMoves(chessBitboard, new Coord(index), allPossibleMoves.get(index), figure));
+        }
+        for (long king : BitUtils.segregatePositions(chessBitboard.getMyBitboards().getKing())) {
+            index = Long.numberOfTrailingZeros(king);
+            figure = chessBitboard.getMySide() == Side.WHITE ? Figure.W_KING : Figure.B_KING;
+            allMoves.addAll(wrapUpMoves(chessBitboard, new Coord(index), allPossibleMoves.get(index), figure)); // TODO: рокировка
+        }
+        return allMoves;
     }
 }
 
