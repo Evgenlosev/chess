@@ -9,28 +9,19 @@ public class MoveInfo {
     private final MoveType moveType;
     private final Figure figure;
     private final Figure promoteTo;
-    private final boolean checkedOpponent;
-    private final boolean isMate; // TODO: достаточно GameStatus?
 
     public MoveInfo(final Coord cellFrom,
                     final Coord cellTo,
                     final MoveType moveType,
                     final Figure figure,
-                    final Figure promoteTo,
-                    final boolean checkedOpponent,
-                    final boolean isMate) {
+                    final Figure promoteTo) {
         this.cellFrom = cellFrom;
         this.cellTo = cellTo;
         this.moveType = moveType;
         this.figure = figure;
         this.promoteTo = promoteTo;
-        this.checkedOpponent = checkedOpponent;
-        this.isMate = isMate;
     }
 
-    public MoveInfo(final Coord cellFrom, final Coord cellTo, final MoveType moveType, final Figure figure) {
-        this(cellFrom, cellTo, moveType, figure, null, false, false);
-    }
 
     public Coord getCellFrom() {
         return cellFrom;
@@ -52,26 +43,17 @@ public class MoveInfo {
         return promoteTo;
     }
 
-    public boolean getCheckedOpponent() {
-        return checkedOpponent;
-    }
-
-
-    public boolean isMate() {
-        return isMate;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MoveInfo moveInfo = (MoveInfo) o;
-        return isMate == moveInfo.isMate && Objects.equals(cellFrom, moveInfo.cellFrom) && Objects.equals(cellTo, moveInfo.cellTo) && moveType == moveInfo.moveType && figure == moveInfo.figure && promoteTo == moveInfo.promoteTo && checkedOpponent == moveInfo.checkedOpponent;
+        return Objects.equals(cellFrom, moveInfo.cellFrom) && Objects.equals(cellTo, moveInfo.cellTo) && moveType == moveInfo.moveType && figure == moveInfo.figure && promoteTo == moveInfo.promoteTo;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cellFrom, cellTo, moveType, figure, promoteTo, checkedOpponent, isMate);
+        return Objects.hash(cellFrom, cellTo, moveType, figure, promoteTo);
     }
 
     @Override
@@ -82,8 +64,6 @@ public class MoveInfo {
                 ", moveType=" + moveType +
                 ", figure=" + figure +
                 ", promoteTo=" + promoteTo +
-                ", checkedOpponent=" + checkedOpponent +
-                ", isMate=" + isMate +
                 '}';
     }
 }
