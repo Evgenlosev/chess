@@ -30,6 +30,11 @@ public class FENParser {
                     entry('g', MASK_FILE_G),
                     entry('h', MASK_FILE_H)
             );
+    private static final Map<Character, Side> charToSideRepresentation =
+            Map.ofEntries(
+                    entry('w', Side.WHITE),
+                    entry('b', Side.BLACK)
+            );
 
     public static Map<Side, SideBitboards> parseFENToBitboards(final String fen) {
         final String parsePiecePlacementData = splitFEN(fen).get(0);
@@ -40,7 +45,7 @@ public class FENParser {
         final int lastIndex = BOARD_SIZE * BOARD_SIZE - 1;
         // т.к. нужно знать индекс фигуры для битборда, нужно так же считать пустые клетки нотации FEN
         int backwardPrinting = BOARD_SIZE - 1;
-        int rowCount = 0; // считаем начиная с верхней строки
+        int rowCount = 0; // считаем начиная с верхней строки (8 ранг на шахматной доске)
         Map<Character, Long> piecesBitboard = new HashMap<>();
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.putIfAbsent(ch, 0L);
@@ -75,6 +80,15 @@ public class FENParser {
     public static long getEnPassant(final String fen) {
         final String parseEnPassantTargetSquare = splitFEN(fen).get(3);
         return fileCharToBitboardRepresentation.getOrDefault(parseEnPassantTargetSquare.charAt(0), 0L);
+    }
+
+    public static Side getTurnSide(final String fen) {
+        final String parseTurnSide = splitFEN(fen).get(2);
+        final char turnSide = parseTurnSide.charAt(0);
+        if (!charToSideRepresentation.containsKey(turnSide))
+            throw new IllegalArgumentException
+                    ("Неверно указана сторона, допустимы только 'w' или 'b', а оказалось: " + turnSide);
+        return charToSideRepresentation.get(turnSide);
     }
 
     private static List<String> splitFEN(final String fen) {

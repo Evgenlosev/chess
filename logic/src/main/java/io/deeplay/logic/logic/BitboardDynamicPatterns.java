@@ -134,5 +134,52 @@ public class BitboardDynamicPatterns {
         return moveTypes;
     }
 
+    public static long possibleWhitePawnMovesBitboard(final ChessBitboard chessBitboard, final Coord from) {
+        if (chessBitboard.getMySide() != Side.WHITE)
+            throw new IllegalArgumentException("Подсчёт ходов для белых пешек невозможен для чёрных пешек.");
+        final long pawnToMoveBitboard = 1L << from.getIndexAsOneDimension();
+        final long notMyPieces = chessBitboard.getOpponentPieces();
+        final long opponentPawns = chessBitboard.getOpponentBitboards().getPawns();
+        final long occupied = chessBitboard.getOccupied();
+        final long empty = chessBitboard.getEmpty();
+        final long enPassantFile = chessBitboard.getEnPassantFile();
+
+        long allMoves = (pawnToMoveBitboard << 9) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_A;
+        allMoves |= (pawnToMoveBitboard << 7) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_H;
+        allMoves |= (pawnToMoveBitboard << 8) & empty & ~MASK_RANK_8;
+        allMoves |= (pawnToMoveBitboard << 16) & empty & (empty << 8) & MASK_RANK_4;
+        allMoves |= (pawnToMoveBitboard << 9) & notMyPieces & occupied & MASK_RANK_8 & ~MASK_FILE_A;
+        allMoves |= (pawnToMoveBitboard << 7) & notMyPieces & occupied & MASK_RANK_8 & ~MASK_FILE_H;
+        allMoves |= (pawnToMoveBitboard << 8) & empty & MASK_RANK_8;
+        if (enPassantFile != 0L) {
+            allMoves |= (pawnToMoveBitboard << 9) & (opponentPawns << 8) & MASK_RANK_6 & ~MASK_FILE_A & enPassantFile;
+            allMoves |= (pawnToMoveBitboard << 7) & (opponentPawns << 8) & MASK_RANK_6 & ~MASK_FILE_H & enPassantFile;
+        }
+        return allMoves;
+    }
+
+    public static long possibleBlackPawnMovesBitboard(final ChessBitboard chessBitboard, final Coord from) {
+        if (chessBitboard.getMySide() != Side.BLACK)
+            throw new IllegalArgumentException("Подсчёт ходов для чёрных пешек невозможен для белых пешек.");
+        final long pawnToMoveBitboard = 1L << from.getIndexAsOneDimension();
+        final long notMyPieces = chessBitboard.getOpponentPieces();
+        final long opponentPawns = chessBitboard.getOpponentBitboards().getPawns();
+        final long occupied = chessBitboard.getOccupied();
+        final long empty = chessBitboard.getEmpty();
+        final long enPassantFile = chessBitboard.getEnPassantFile();
+
+        long allMoves = (pawnToMoveBitboard >>> 9) & notMyPieces & occupied & ~MASK_RANK_1 & ~MASK_FILE_H; // capture right
+        allMoves |= (pawnToMoveBitboard >>> 7) & notMyPieces & occupied & ~MASK_RANK_1 & ~MASK_FILE_A; // capture left
+        allMoves |= (pawnToMoveBitboard >>> 8) & empty & ~MASK_RANK_1; // move 1 forward
+        allMoves |= (pawnToMoveBitboard >>> 16) & empty & (empty >>> 8) & MASK_RANK_5; // move 2 forward
+        allMoves |= (pawnToMoveBitboard >>> 9) & notMyPieces & occupied & MASK_RANK_1 & ~MASK_FILE_H; // pawn promotion by capture right
+        allMoves |= (pawnToMoveBitboard >>> 7) & notMyPieces & occupied & MASK_RANK_1 & ~MASK_FILE_A; // pawn promotion by capture left
+        allMoves |= (pawnToMoveBitboard >>> 8) & empty & MASK_RANK_1;// pawn promotion by move 1 forward
+        if (enPassantFile != 0L) {
+            allMoves |= (pawnToMoveBitboard >>> 9) & (opponentPawns >>> 8) & MASK_RANK_3 & ~MASK_FILE_H & enPassantFile;
+            allMoves |= (pawnToMoveBitboard >>> 7) & (opponentPawns >>> 8) & MASK_RANK_3 & ~MASK_FILE_A & enPassantFile;
+        }
+        return allMoves;
+    }
 
 }

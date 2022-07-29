@@ -22,10 +22,10 @@ import static org.junit.Assert.assertEquals;
 public class TestAllOpponentsFigures {
     @Test
     public void testCompareAttacksAndPossibilitiesWhite() {
-        FENBoard FENBoard =
+        FENBoard fenBoard =
                 new FENBoard("r4rk1/1pp1b1pp/p1n1b3/3n1pB1/2B5/1N3N2/PPP2PPP/R4RK1 b - - 7 19");
         Coord from = new Coord(BitUtils.BitIndex.G8_IDX.ordinal());
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(FENBoard.getFenNotation());
+        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenBoard.getFenNotation());
 
         ChessBitboard chessBitboard = null;
         // Определяем стороны
@@ -36,7 +36,7 @@ public class TestAllOpponentsFigures {
         if (chessBitboard == null)
             throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
 
-        long allAttacks = BitboardHandler.getOpponentAttacksBitboardFromAllFigures(chessBitboard); // оппонент - былые
+        long allAttacks = BitboardHandler.getSideAttacksBitboardFromAllFigures(chessBitboard); // оппонент - былые
         long allExpectedAttacks = 0b0000000000010000101000010101111110101000111111111111100111111111L;
         // Клетки под УГРОЗОЙ атаки (но не факт, что возможно походить)
         assertEquals(35, BitUtils.bitCount(allAttacks));
@@ -44,7 +44,7 @@ public class TestAllOpponentsFigures {
 
         // Клетки на которые есть возможность походить
         // (для пешек, например, нет возможности атаковать клетку без фигуры противника на ней)
-        List<Coord> allCoords = BitboardHandler.getAllPossibleMoves(FENBoard, Side.WHITE)
+        List<Coord> allCoords = BitboardHandler.getAllPossibleMoves(fenBoard, Side.WHITE)
                 .values().stream().map(MoveInfo::getCellTo).collect(Collectors.toList());
         Set<Coord> uniqueCoords = new HashSet<>(allCoords);
 
@@ -62,10 +62,10 @@ public class TestAllOpponentsFigures {
         assertEquals(39, allCoords.size());
         assertEquals(27, uniqueCoords.size());
 
-        FENBoard = new FENBoard("4r1k1/1pp4p/p7/B5p1/1PQ5/5P1b/P5PP/3K1R2 b - - 0 1");
+        fenBoard = new FENBoard("4r1k1/1pp4p/p7/B5p1/1PQ5/5P1b/P5PP/3K1R2 b - - 0 1");
         // TODO: с таким же FEN тест на то что у короля 3 хода + 1 ладьи + 1 слона = 5 возможных ходов
         from = new Coord(BitUtils.BitIndex.G8_IDX.ordinal());
-        sideBitboards = FENParser.parseFENToBitboards(FENBoard.getFenNotation());
+        sideBitboards = FENParser.parseFENToBitboards(fenBoard.getFenNotation());
 
         chessBitboard = null;
         // Определяем стороны
@@ -77,13 +77,13 @@ public class TestAllOpponentsFigures {
             throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
 
         // Клетки под атакой
-        allAttacks = BitboardHandler.getOpponentAttacksBitboardFromAllFigures(chessBitboard); // оппонент - былые
+        allAttacks = BitboardHandler.getSideAttacksBitboardFromAllFigures(chessBitboard); // оппонент - былые
         allExpectedAttacks = 0b0100000000100100000101110000111111111010111011100011110111111100L;
         assertEquals(34, BitUtils.bitCount(allAttacks));
         assertEquals(allExpectedAttacks, allAttacks);
 
         // Возможные ходы
-        allCoords = BitboardHandler.getAllPossibleMoves(FENBoard, Side.WHITE)
+        allCoords = BitboardHandler.getAllPossibleMoves(fenBoard, Side.WHITE)
                 .values().stream().map(MoveInfo::getCellTo).collect(Collectors.toList());
         uniqueCoords = new HashSet<>(allCoords);
 
@@ -108,7 +108,7 @@ public class TestAllOpponentsFigures {
             throw new IllegalArgumentException("Координата не соответствует фигуре на доске");
 
         // Клетки под атакой
-        long allAttacks = BitboardHandler.getOpponentAttacksBitboardFromAllFigures(chessBitboard); // оппонент - чёрные
+        long allAttacks = BitboardHandler.getSideAttacksBitboardFromAllFigures(chessBitboard); // оппонент - чёрные
         long allExpectedAttacks = 0b1111111111111101111011110111111101111010000101010000000000000000L;
         assertEquals(37, BitUtils.bitCount(allAttacks));
         assertEquals(allExpectedAttacks, allAttacks);

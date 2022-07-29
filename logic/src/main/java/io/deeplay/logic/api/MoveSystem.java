@@ -59,11 +59,4 @@ public interface MoveSystem {
      */
     Multimap<Coord, MoveInfo> getAllPossibleMoves(ChessBoard board, Side side);
 
-    /**
-     * @param board текущее состояние шахматной доски
-     * @param side
-     * @return true если королю side поставлен шах
-     */
-    boolean isCheck(ChessBoard board, Side side);
-
 }

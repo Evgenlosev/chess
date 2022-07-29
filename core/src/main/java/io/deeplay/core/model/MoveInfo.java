@@ -8,12 +8,23 @@ public class MoveInfo {
     private final Coord cellTo;
     private final MoveType moveType;
     private final Figure figure;
+    private final Figure promoteTo;
 
-    public MoveInfo(final Coord cellFrom, final Coord cellTo, final MoveType moveType, final Figure figure) {
+    public MoveInfo(final Coord cellFrom,
+                    final Coord cellTo,
+                    final MoveType moveType,
+                    final Figure figure,
+                    final Figure promoteTo) {
         this.cellFrom = cellFrom;
         this.cellTo = cellTo;
         this.moveType = moveType;
         this.figure = figure;
+        this.promoteTo = promoteTo;
+    }
+
+
+    public MoveInfo(final Coord cellFrom, final Coord cellTo, final MoveType moveType, final Figure figure) {
+        this(cellFrom, cellTo, moveType, figure, null);
     }
 
     public Coord getCellFrom() {
@@ -32,14 +43,8 @@ public class MoveInfo {
         return figure;
     }
 
-    @Override
-    public String toString() {
-        return "MoveInfo{" +
-                "cellFrom=" + cellFrom +
-                ", cellTo=" + cellTo +
-                ", moveType=" + moveType +
-                ", figure=" + figure +
-                '}';
+    public Figure getPromoteTo() {
+        return promoteTo;
     }
 
     @Override
@@ -47,11 +52,22 @@ public class MoveInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MoveInfo moveInfo = (MoveInfo) o;
-        return Objects.equals(cellFrom, moveInfo.cellFrom) && Objects.equals(cellTo, moveInfo.cellTo) && moveType == moveInfo.moveType && figure == moveInfo.figure;
+        return Objects.equals(cellFrom, moveInfo.cellFrom) && Objects.equals(cellTo, moveInfo.cellTo) && moveType == moveInfo.moveType && figure == moveInfo.figure && promoteTo == moveInfo.promoteTo;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cellFrom, cellTo, moveType, figure);
+        return Objects.hash(cellFrom, cellTo, moveType, figure, promoteTo);
+    }
+
+    @Override
+    public String toString() {
+        return "MoveInfo{" +
+                "cellFrom=" + cellFrom +
+                ", cellTo=" + cellTo +
+                ", moveType=" + moveType +
+                ", figure=" + figure +
+                ", promoteTo=" + promoteTo +
+                '}';
     }
 }

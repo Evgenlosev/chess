@@ -1,6 +1,7 @@
 package io.deeplay.logic.logic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BitUtils {
@@ -195,6 +196,8 @@ public class BitUtils {
      * @return возвращает разделенные возможные позиции
      */
     public static List<Long> segregatePositions(final long allPossiblePositions) {
+        if (allPossiblePositions == 0L)
+            return Collections.emptyList();
         List<Long> positions = new ArrayList<>();
         long allLeftToSegregatePositions = allPossiblePositions;
         long possibility = allLeftToSegregatePositions & ~(allLeftToSegregatePositions - 1);
@@ -324,6 +327,49 @@ public class BitUtils {
 
     public static String getBitboardAsBinaryString(long bitboard) {
         return String.format("%" + Long.SIZE + "s", Long.toBinaryString(bitboard)).replace(' ', '0');
+    }
+
+
+    // если не соединяемы по диагонали/вертикали/горизонтали, то возвращает 0, иначе соединяет единицами
+    public static long inBetween(int squareIndex1, int squareIndex2) {
+        final int sq1 = Math.min(squareIndex1, squareIndex2);
+        final int sq2 = Math.max(squareIndex1, squareIndex2);
+        final int file1 = squareIndex1 % 8;
+        final int file2 = squareIndex2 % 8;
+        final int rank1 = 7 - (squareIndex1 / 8);
+        final int rank2 = 7 - (squareIndex2 / 8);
+        final int distance = Math.abs(squareIndex1 - squareIndex2);
+
+        // same file
+        if (file1 == file2) {
+            long x = 0L;
+            for (int i = sq1; i <= sq2; i += 8) {
+                x |= 1L << i;
+                printBitboard(x);
+            }
+            return x;
+        }
+
+        // same rank
+        if (rank1 == rank2) {
+            long x = 0L;
+            for (int i = sq1; i <= sq2; i++) {
+                x |= 1L << i;
+            }
+            return x;
+        }
+
+        // check if distance is 7 or 9, then it is diagonal
+        if (distance % 7 == 0 || distance % 9 == 0) {
+            final long addMe = distance % 7 == 0 ? 7 : 9;
+            long x = 0L;
+            for (int i = sq1; i <= sq2; i += addMe) {
+                x |= 1L << i;
+            }
+            return x;
+        }
+
+        return 0L;
     }
 
 }
