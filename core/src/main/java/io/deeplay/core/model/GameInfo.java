@@ -1,5 +1,6 @@
 package io.deeplay.core.model;
 
+import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
 import io.deeplay.core.listener.ChessListener;
 
@@ -13,22 +14,7 @@ public class GameInfo implements ChessListener {
     private boolean isGameOver = false;
     private Side winner = null;
 
-    SimpleLogicAppeal logic = new SimpleLogicAppeal() {
-        @Override
-        public boolean isMate(String fenNotation) {
-            return false;
-        }
-
-        @Override
-        public boolean isStalemate(String fenNotation) {
-            return false;
-        }
-
-        @Override
-        public Set<MoveInfo> getMoves(String fenNotation) {
-            return null;
-        }
-    };
+    SimpleLogicAppeal logic = new SimpleLogic();
 
     public GameInfo() {
         board = new ChessBoard();
