@@ -1,4 +1,4 @@
-package io.deeplay.logic.logic;
+package io.deeplay.core.logic;
 
 public class FENBoard {
 

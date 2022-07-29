@@ -1,10 +1,10 @@
-package io.deeplay.logic.logic;
+package io.deeplay.core.logic;
 
-import io.deeplay.logic.api.BitboardHandler;
-import io.deeplay.logic.model.CheckData;
-import io.deeplay.logic.model.CheckType;
-import io.deeplay.logic.model.ChessBitboard;
-import io.deeplay.logic.parser.FENParser;
+import io.deeplay.core.api.BitboardHandler;
+import io.deeplay.core.model.ChessBitboard;
+import io.deeplay.core.model.CheckData;
+import io.deeplay.core.model.CheckType;
+import io.deeplay.core.parser.FENParser;
 
 import java.util.HashMap;
 import java.util.Map;

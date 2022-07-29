@@ -1,6 +1,4 @@
-package io.deeplay.logic.model;
-
-import io.deeplay.core.model.Side;
+package io.deeplay.core.model;
 
 public class ChessBitboard {
 

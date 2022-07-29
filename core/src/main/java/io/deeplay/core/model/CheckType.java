@@ -1,4 +1,4 @@
-package io.deeplay.logic.model;
+package io.deeplay.core.model;
 
 public enum CheckType {
     /**

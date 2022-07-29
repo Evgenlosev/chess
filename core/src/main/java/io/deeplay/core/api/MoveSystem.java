@@ -1,4 +1,4 @@
-package io.deeplay.logic.api;
+package io.deeplay.core.api;
 
 import com.google.common.collect.Multimap;
 import io.deeplay.core.model.ChessBoard;
