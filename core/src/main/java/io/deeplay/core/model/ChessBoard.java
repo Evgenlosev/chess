@@ -262,7 +262,7 @@ public class ChessBoard  implements Cloneable {
                 }
 
         }
-
+        whoseMove = Side.otherSide(whoseMove);
         board[from.getRow()][from.getColumn()] = new BoardCell(Figure.NONE);
 
     }
@@ -304,7 +304,6 @@ public class ChessBoard  implements Cloneable {
             result.insert(0, row);
             row.delete(0, row.length());
         }
-
         return result.toString();
     }
 
