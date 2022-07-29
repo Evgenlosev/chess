@@ -47,6 +47,7 @@ public class GameInfo implements ChessListener {
     }
 
     public boolean isGameOver() {
+        if (gameStatus == GameStatus.ACTIVE) return true;
         return false;
     }
 
