@@ -1,11 +1,11 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.Side;
 import io.deeplay.core.logic.BitUtils;
 import io.deeplay.core.logic.ContractHandler;
 import io.deeplay.core.logic.FENBoard;
 import io.deeplay.core.model.ChessBitboard;
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.Side;
 import io.deeplay.core.model.SideBitboards;
 import io.deeplay.core.parser.FENParser;
 import org.junit.Test;
@@ -17,8 +17,7 @@ import static io.deeplay.core.logic.BitUtils.printBitboard;
 
 public class TestFenState {
 
-    // 8/2k5/5r2/4p3/4P3/4K3/3r4/8 w - - 0 1
-
+    // TODO: большеееее тестов
     @Test
     public void testStalemate() {
 //        String fenNotation = "8/2k5/5r2/4p3/4P3/4K3/3r4/8 w - - 0 1";
