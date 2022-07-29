@@ -1,6 +1,6 @@
-package io.deeplay.logic.logic;
+package io.deeplay.core.logic;
 
-import io.deeplay.logic.model.MagicBoard;
+import io.deeplay.core.model.MagicBoard;
 
 import java.util.HashMap;
 import java.util.Map;

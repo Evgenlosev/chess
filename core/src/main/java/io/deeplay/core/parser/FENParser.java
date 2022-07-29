@@ -1,7 +1,8 @@
-package io.deeplay.logic.parser;
+package io.deeplay.core.parser;
 
+import io.deeplay.core.logic.BitUtils;
 import io.deeplay.core.model.Side;
-import io.deeplay.logic.model.SideBitboards;
+import io.deeplay.core.model.SideBitboards;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +11,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.deeplay.logic.logic.BitUtils.*;
 import static java.util.Map.entry;
 
 public class FENParser {
@@ -21,14 +21,14 @@ public class FENParser {
                     .collect(Collectors.toUnmodifiableSet());
     private static final Map<Character, Long> fileCharToBitboardRepresentation =
             Map.ofEntries(
-                    entry('a', MASK_FILE_A),
-                    entry('b', MASK_FILE_B),
-                    entry('c', MASK_FILE_C),
-                    entry('d', MASK_FILE_D),
-                    entry('e', MASK_FILE_E),
-                    entry('f', MASK_FILE_F),
-                    entry('g', MASK_FILE_G),
-                    entry('h', MASK_FILE_H)
+                    entry('a', BitUtils.MASK_FILE_A),
+                    entry('b', BitUtils.MASK_FILE_B),
+                    entry('c', BitUtils.MASK_FILE_C),
+                    entry('d', BitUtils.MASK_FILE_D),
+                    entry('e', BitUtils.MASK_FILE_E),
+                    entry('f', BitUtils.MASK_FILE_F),
+                    entry('g', BitUtils.MASK_FILE_G),
+                    entry('h', BitUtils.MASK_FILE_H)
             );
     private static final Map<Character, Side> charToSideRepresentation =
             Map.ofEntries(

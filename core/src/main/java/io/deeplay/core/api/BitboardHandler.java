@@ -1,19 +1,18 @@
-package io.deeplay.logic.api;
+package io.deeplay.core.api;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import io.deeplay.core.logic.FENBoard;
 import io.deeplay.core.model.*;
-import io.deeplay.logic.logic.BitUtils;
-import io.deeplay.logic.logic.BitboardDynamicPatterns;
-import io.deeplay.logic.logic.BitboardPatternsInitializer;
-import io.deeplay.logic.logic.FENBoard;
-import io.deeplay.logic.model.*;
-import io.deeplay.logic.parser.FENParser;
+import io.deeplay.core.logic.BitUtils;
+import io.deeplay.core.logic.BitboardDynamicPatterns;
+import io.deeplay.core.logic.BitboardPatternsInitializer;
+import io.deeplay.core.parser.FENParser;
 
 import java.util.*;
 
-import static io.deeplay.logic.logic.BitUtils.containsSameBits;
-import static io.deeplay.logic.logic.BitUtils.inBetween;
+import static io.deeplay.core.logic.BitUtils.containsSameBits;
+import static io.deeplay.core.logic.BitUtils.inBetween;
 
 
 /**

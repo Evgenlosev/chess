@@ -1,19 +1,20 @@
-package io.deeplay.logic.api;
+package io.deeplay.core.api;
 
+import io.deeplay.core.api.BitboardHandler;
 import io.deeplay.core.model.Coord;
 import io.deeplay.core.model.Side;
-import io.deeplay.logic.logic.BitUtils;
-import io.deeplay.logic.logic.FENBoard;
-import io.deeplay.logic.model.CheckData;
-import io.deeplay.logic.model.ChessBitboard;
-import io.deeplay.logic.model.SideBitboards;
-import io.deeplay.logic.parser.FENParser;
+import io.deeplay.core.logic.BitUtils;
+import io.deeplay.core.logic.FENBoard;
+import io.deeplay.core.model.CheckData;
+import io.deeplay.core.model.ChessBitboard;
+import io.deeplay.core.model.SideBitboards;
+import io.deeplay.core.parser.FENParser;
 import org.junit.Test;
 
 import java.util.Map;
 
-import static io.deeplay.logic.logic.BitUtils.containsSameBits;
-import static io.deeplay.logic.logic.BitUtils.printBitboard;
+import static io.deeplay.core.logic.BitUtils.containsSameBits;
+import static io.deeplay.core.logic.BitUtils.printBitboard;
 
 public class TestPinBitboardHandler {
 

@@ -1,4 +1,4 @@
-package io.deeplay.logic.api;
+package io.deeplay.core.api;
 
 import io.deeplay.core.model.MoveInfo;
 
