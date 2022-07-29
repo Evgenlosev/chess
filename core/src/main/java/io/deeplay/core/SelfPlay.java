@@ -33,6 +33,9 @@ public class SelfPlay {
         this.gameInfoGroup.addListener(this.gameInfo);
     }
 
+    /**
+     * Метод переключает текущего игрока, чей ход ожидается
+     */
     private void changeCurrentPlayerToMove() {
         if (currentPlayerToMove.getSide() == firstPlayer.getSide()) {
             currentPlayerToMove = secondPlayer;
