@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class GameInfo implements ChessListener {
-
+    private GameStatus gameStatus;
     ChessBoard board;
     private boolean isDraw = false;
     private boolean isGameOver = false;
@@ -18,10 +18,20 @@ public class GameInfo implements ChessListener {
 
     public GameInfo() {
         board = new ChessBoard();
+        this.gameStatus = GameStatus.INACTIVE;
     }
 
     public GameInfo(final ChessBoard board) {
         this.board = board;
+        this.gameStatus = GameStatus.INACTIVE;
+    }
+
+    public ChessBoard getBoard() {
+        return board;
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
 
     public String getFenBoard() {
@@ -37,7 +47,8 @@ public class GameInfo implements ChessListener {
     }
 
     public boolean isGameOver() {
-        return logic.isMate(board.getFEN()) || logic.isStalemate(board.getFEN()) || isDraw;
+        if (gameStatus == GameStatus.ACTIVE) return true;
+        return false;
     }
 
     public boolean isMoveValid(final MoveInfo moveInfo) {
@@ -59,17 +70,21 @@ public class GameInfo implements ChessListener {
 
 
     /**
-     * Получает событие начала игры, игнорирует его
+     *
      */
     @Override
-    public void gameStarted() {}
+    public void gameStarted() {
+        this.gameStatus = GameStatus.ACTIVE;
+    }
 
     /**
      * Игнорируется
      * @param side За какую сторону сел игрок
      */
     @Override
-    public void playerSeated(Side side) {}
+    public void playerSeated(final Side side) {
+
+    }
 
     /**
      * Совершенный ход
@@ -77,21 +92,23 @@ public class GameInfo implements ChessListener {
      * @param moveInfo совершенный ход
      */
     @Override
-    public void playerActed(Side side, MoveInfo moveInfo) {
-        board.updateBoard(moveInfo);
+    public void playerActed(final Side side, final MoveInfo moveInfo) {
+        updateBoard(moveInfo);
     }
 
     /**
      * @param side Сторона, предложившая ничью
      */
     @Override
-    public void offerDraw(Side side) {}
+    public void offerDraw(final Side side) {
+
+    }
 
     /**
-     * @param side сторона принявшая ничью
+     * @param side
      */
     @Override
-    public void acceptDraw(Side side) {
+    public void acceptDraw(final Side side) {
         this.isDraw = true;
     }
 
@@ -99,19 +116,23 @@ public class GameInfo implements ChessListener {
      * @param side сторона запросившая отмену хода
      */
     @Override
-    public void playerRequestsTakeBack(Side side) {}
+    public void playerRequestsTakeBack(final Side side) {
+
+    }
 
     /**
      * @param side сторона согласившаяся на отмену хода
      */
     @Override
-    public void playerAgreesTakeBack(Side side) {}
+    public void playerAgreesTakeBack(final Side side) {
+
+    }
 
     /**
      * @param side сдавшаяся сторона
      */
     @Override
-    public void playerResigned(Side side) {
+    public void playerResigned(final Side side) {
 
     }
 

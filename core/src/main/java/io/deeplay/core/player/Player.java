@@ -1,4 +1,34 @@
 package io.deeplay.core.player;
 
-public class Player {
+import io.deeplay.core.model.GameInfo;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
+
+public abstract class Player {
+    private Side side;
+    private int id;
+
+    public Player(final Side side, final int id) {
+        this.side = side;
+        this.id = id;
+    }
+
+    public Side getSide() {
+        return side;
+    }
+
+    public void setSide(final Side side) {
+        this.side = side;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public abstract MoveInfo getAnswer(GameInfo gameInfo);
+
 }

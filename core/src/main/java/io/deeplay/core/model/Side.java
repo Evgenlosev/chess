@@ -14,7 +14,8 @@ public enum Side {
         this.side = side;
     }
 
-    public static Side otherSide(Side side){
+    public static Side otherSide(final Side side){
         return side == WHITE ? BLACK : WHITE;
     }
+
 }
