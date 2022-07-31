@@ -1,7 +1,12 @@
 package io.deeplay.core.api;
 
 import io.deeplay.core.logic.BitboardPatternsInitializer;
-import io.deeplay.core.model.*;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
+import io.deeplay.core.model.bitboard.CheckData;
+import io.deeplay.core.model.bitboard.CheckType;
+import io.deeplay.core.model.bitboard.ChessBitboard;
+import io.deeplay.core.model.bitboard.SideBitboards;
 import io.deeplay.core.parser.FENParser;
 
 import java.util.Map;
@@ -14,7 +19,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
     public boolean isMate(final String fenNotation) {
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenNotation);
+        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboardsOld(fenNotation);
         Side mySide = FENParser.getTurnSide(fenNotation);
         ChessBitboard chessBitboard = null;
         // Определяем стороны
@@ -26,14 +31,14 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
         CheckData mySideCheckData = BitboardHandler.getCheckData(chessBitboard);
         final ChessBitboard opponentChessBitboard =
-                new ChessBitboard(chessBitboard.getOpponentBitboards(), chessBitboard.getMyBitboards()); // инвертируем стороны
+                new ChessBitboard(chessBitboard.getOpponentSideBitboards(), chessBitboard.getProcessingSideBitboards()); // инвертируем стороны
         CheckData opponentSideCheckData = BitboardHandler.getCheckData(opponentChessBitboard);
         if (opponentSideCheckData.getCheckType().ordinal() > 0) {
             throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
         }
-        final int kingIndex = Long.numberOfTrailingZeros(chessBitboard.getMyBitboards().getKing());
+        final int kingIndex = Long.numberOfTrailingZeros(chessBitboard.getProcessingSideBitboards().getKing());
         long kingMoves = BitboardPatternsInitializer.kingMoveBitboards[kingIndex]
-                & ~mySideCheckData.getAllAttacks() & ~chessBitboard.getMyPieces();
+                & ~mySideCheckData.getAllAttacks() & ~chessBitboard.getProcessingSidePieces();
         // мат проверяем только для нашей стороны (т.к. отсекается случай когда противник под шахом, а ход наш)
         if (mySideCheckData.getCheckType() == CheckType.TWO && kingMoves == 0) {
             return true;
@@ -48,7 +53,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
     public boolean isStalemate(final String fenNotation) {
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenNotation);
+        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboardsOld(fenNotation);
         Side mySide = FENParser.getTurnSide(fenNotation);
         ChessBitboard chessBitboard = null;
         // Определяем стороны
@@ -60,7 +65,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
         CheckData mySideCheckData = BitboardHandler.getCheckData(chessBitboard);
         final ChessBitboard opponentChessBitboard =
-                new ChessBitboard(chessBitboard.getOpponentBitboards(), chessBitboard.getMyBitboards()); // инвертируем стороны
+                new ChessBitboard(chessBitboard.getOpponentSideBitboards(), chessBitboard.getProcessingSideBitboards()); // инвертируем стороны
         CheckData opponentSideCheckData = BitboardHandler.getCheckData(opponentChessBitboard);
         if (opponentSideCheckData.getCheckType().ordinal() > 0) {
             throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
@@ -72,7 +77,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenNotation);
+        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboardsOld(fenNotation);
         Side mySide = FENParser.getTurnSide(fenNotation);
         ChessBitboard chessBitboard = null;
         // Определяем стороны

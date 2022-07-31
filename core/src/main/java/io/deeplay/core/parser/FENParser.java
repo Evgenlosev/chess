@@ -2,7 +2,9 @@ package io.deeplay.core.parser;
 
 import io.deeplay.core.logic.BitUtils;
 import io.deeplay.core.model.Side;
-import io.deeplay.core.model.SideBitboards;
+import io.deeplay.core.model.bitboard.ChessBitboard;
+import io.deeplay.core.model.bitboard.ChessBitboardFactory;
+import io.deeplay.core.model.bitboard.SideBitboards;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,12 +38,11 @@ public class FENParser {
                     entry('b', Side.BLACK)
             );
 
-    public static Map<Side, SideBitboards> parseFENToBitboards(final String fen) {
+    public static Map<Side, SideBitboards> parseFENToBitboardsOld(final String fen) {
         final String parsePiecePlacementData = splitFEN(fen).get(0);
         // TODO: проверка на то что есть символы "/pnbrqkPNBRQK" + меньше макс. длины fen, логирование, исключения
-        // TODO: До первого пробела извлекаем charAt и считаем '/' а так же количество свободных фигур
+        // TODO: извлекаем charAt и считаем '/' а так же количество свободных фигур
         //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
-
         final int lastIndex = BOARD_SIZE * BOARD_SIZE - 1;
         // т.к. нужно знать индекс фигуры для битборда, нужно так же считать пустые клетки нотации FEN
         int backwardPrinting = BOARD_SIZE - 1;
@@ -67,6 +68,7 @@ public class FENParser {
             backwardPrinting = BOARD_SIZE - 1;
             rowCount++;
         }
+
         return Map.ofEntries(
                 entry(Side.WHITE, new SideBitboards(piecesBitboard.entrySet().stream()
                         .filter(x -> Character.isUpperCase(x.getKey()))
@@ -76,6 +78,49 @@ public class FENParser {
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), Side.BLACK))
         );
     }
+
+    public static ChessBitboard parseFENToBitboards(final String fen) {
+        final String parsePiecePlacementData = splitFEN(fen).get(0);
+        // TODO: проверка на то что есть символы "/pnbrqkPNBRQK" + меньше макс. длины fen, логирование, исключения
+        // TODO: извлекаем charAt и считаем '/' а так же количество свободных фигур
+        //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
+        final int lastIndex = BOARD_SIZE * BOARD_SIZE - 1;
+        // т.к. нужно знать индекс фигуры для битборда, нужно так же считать пустые клетки нотации FEN
+        int backwardPrinting = BOARD_SIZE - 1;
+        int rowCount = 0; // считаем начиная с верхней строки (8 ранг на шахматной доске)
+        Map<Character, Long> piecesBitboard = new HashMap<>();
+        for (char ch : allPiecesCharacterRepresentation) {
+            piecesBitboard.put(ch, 0L);
+        }
+        // TODO: проверка ладьи на права (если белый король или ладья не на 1 линии, а права рокировки сохранились, то ошибка, аналогично для чёрных)
+        // TODO: проверка фигур на столе по буквам
+        for (String rank : parsePiecePlacementData.split("/")) {
+            for (char currentChar : rank.toCharArray()) {
+                if (Character.isDigit(currentChar)) {
+                    backwardPrinting -= currentChar - '0'; // widening casting
+                }
+                if (allPiecesCharacterRepresentation.contains(currentChar)) {
+                    piecesBitboard.put(currentChar,
+                            piecesBitboard.get(currentChar) | (1L << (lastIndex - (rowCount * BOARD_SIZE + backwardPrinting))));
+                }
+                if (Character.isLetter(currentChar)) {
+                    backwardPrinting--;
+                }
+            }
+            backwardPrinting = BOARD_SIZE - 1;
+            rowCount++;
+        }
+        // TODO: передавать инф-у про права в ChessBitboardFactory
+        return ChessBitboardFactory.createChessBitboard(Map.ofEntries(
+                entry(Side.WHITE, new SideBitboards(piecesBitboard.entrySet().stream()
+                        .filter(x -> Character.isUpperCase(x.getKey()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), Side.WHITE)),
+                entry(Side.BLACK, new SideBitboards(piecesBitboard.entrySet().stream()
+                        .filter(x -> Character.isLowerCase(x.getKey()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)), Side.BLACK))
+        ), getTurnSide(fen), getEnPassant(fen));
+    }
+
 
     public static long getEnPassant(final String fen) {
         final String parseEnPassantTargetSquare = splitFEN(fen).get(3);

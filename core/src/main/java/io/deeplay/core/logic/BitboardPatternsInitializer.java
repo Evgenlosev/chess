@@ -1,9 +1,8 @@
 package io.deeplay.core.logic;
 
-import io.deeplay.core.model.MagicBoard;
+import io.deeplay.core.model.bitboard.MagicBoard;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * В начале работы класс инициализирует паттерны передвижений фигур, после чего не производит никаких вычислений
@@ -55,10 +54,15 @@ public class BitboardPatternsInitializer {
 
     public static final MagicBoard[] bishopMagicBoards;
 
+    // В List т.к. храниться в Map
+    public static final List<Long> whitePawnMoveBitboards;
+    public static final List<Long> blackPawnMoveBitboards;
+
     static {
         kingMoveBitboards = calcKingMoveBitboards();
         knightMoveBitboards = calcKnightMoveBitboards();
-
+        whitePawnMoveBitboards = calcWhitePawnAttackBitboards();
+        blackPawnMoveBitboards = calcBlackPawnAttackBitboards();
         /*
             Rook on e4:
             -----------
@@ -92,6 +96,54 @@ public class BitboardPatternsInitializer {
 
         calcRookMoveBoards(rookBlockerBoards);
         calcBishopMoveBoards(bishopBlockerBoards);
+    }
+
+    /**
+     * Calculate every possible position of attack for any white pawn.
+     *
+     * @return A precomputed lookup table.
+     */
+    private static List<Long> calcWhitePawnAttackBitboards() {
+        List<Long> pawnAttackBitboards = new ArrayList<>();
+        long squareBitboard;
+        long rightBitboard;
+        long leftBitboard;
+
+        for (int i = 0; i < 64; i++) {
+            squareBitboard = 1L << i;
+            rightBitboard = (squareBitboard << 9) & BitUtils.CLEAR_FILE_A;
+            leftBitboard = (squareBitboard << 7) & BitUtils.CLEAR_FILE_H;
+
+            pawnAttackBitboards.add(rightBitboard | leftBitboard);
+        }
+
+        return Collections.unmodifiableList(pawnAttackBitboards);
+    }
+
+    //-------------------------------------------------
+    // Calculate black pawn attacks
+    //-------------------------------------------------
+
+    /**
+     * Calculate every possible position of attack for any black pawn.
+     *
+     * @return A precomputed lookup table.
+     */
+    private static List<Long> calcBlackPawnAttackBitboards() {
+        List<Long> pawnAttackBitboards = new ArrayList<>();
+        long squareBitboard;
+        long rightBitboard;
+        long leftBitboard;
+
+        for (int i = 0; i < 64; i++) {
+            squareBitboard = 1L << i;
+            rightBitboard = (squareBitboard >>> 9) & BitUtils.CLEAR_FILE_H;
+            leftBitboard = (squareBitboard >>> 7) & BitUtils.CLEAR_FILE_A;
+
+            pawnAttackBitboards.add(rightBitboard | leftBitboard);
+        }
+
+        return Collections.unmodifiableList(pawnAttackBitboards);
     }
 
     private static long[] calcKingMoveBitboards() {
