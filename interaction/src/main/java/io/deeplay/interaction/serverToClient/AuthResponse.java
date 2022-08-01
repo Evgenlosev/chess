@@ -20,9 +20,15 @@ public class AuthResponse extends Command {
         this.errorMessage = errorMessage;
     }
 
-    public AuthResponse(final boolean isAuthorized, final int userId) {
+    public AuthResponse(final boolean isAuthorized, final String errorMessage) {
         this.isAuthorized = isAuthorized;
-        this.userId = userId;
+        this.userId = 0;
+        this.errorMessage = errorMessage;
+    }
+
+    public AuthResponse(final boolean isAuthorized) {
+        this.isAuthorized = isAuthorized;
+        this.userId = 0;
     }
 
     public AuthResponse() {

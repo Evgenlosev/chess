@@ -2,19 +2,20 @@ package io.deeplay.interaction.clientToServer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 
 @JsonTypeName("AuthRequest")
 public class AuthRequest extends Command {
-    private final String userName;
+    private final Side side;
 
-    public AuthRequest(final String userName) {
-        this.userName = userName;
+    public AuthRequest(final Side side) {
+        this.side = side;
     }
 
     public AuthRequest() {
-        this.userName = null;
+        this.side = null;
     }
 
     @JsonIgnore
@@ -23,14 +24,14 @@ public class AuthRequest extends Command {
         return CommandType.AUTH_REQUEST;
     }
 
-    public String getUserName() {
-        return userName;
+    public Side getSide() {
+        return side;
     }
 
     @Override
     public String toString() {
         return "AuthRequest{" +
-                "userName='" + userName + '\'' +
+                "side='" + side + '\'' +
                 '}';
     }
 }
