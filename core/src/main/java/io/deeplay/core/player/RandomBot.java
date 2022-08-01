@@ -2,30 +2,32 @@ package io.deeplay.core.player;
 
 import io.deeplay.core.model.*;
 
-import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 public class RandomBot extends Player {
-    private final PlayerType playerType;
+
+    private final Random random;
 
     public RandomBot(final Side side, final int id) {
         super(side, id);
-        this.playerType = PlayerType.RANDOM_BOT;
+        this.random = new Random(System.currentTimeMillis());
     }
 
     @Override
+    public PlayerType getPlayerType() {
+        return PlayerType.RANDOM_BOT;
+    }
+
+    /**
+     * Возвращает рандомный ход
+     * @param gameInfo - текущее состоние партии
+     * @return
+     */
+    @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
-        //TODO: должен быть реализован метод, который возвращает set
         Set<MoveInfo> allMoves = gameInfo.getAvailableMoves(this.getSide());
-        int randomMoveNumber = new Random().nextInt(allMoves.size());
-        int i = 0;
-        for (MoveInfo moveInfo : allMoves) {
-            if (i == randomMoveNumber) {
-                return moveInfo;
-            }
-            i++;
-        }
-        return null;
+        int randomMoveNumber = random.nextInt(allMoves.size());
+        return (MoveInfo) allMoves.toArray()[randomMoveNumber];
     }
 }

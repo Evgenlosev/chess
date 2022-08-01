@@ -1,6 +1,7 @@
 package io.deeplay.interaction.serverToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
@@ -13,7 +14,6 @@ public class StartGameResponse extends Command {
     private String errorMessage;
 
     public StartGameResponse(final boolean isGameStarted) {
-        super(CommandType.START_GAME_RESPONSE);
         this.isGameStarted = isGameStarted;
     }
 
@@ -21,13 +21,11 @@ public class StartGameResponse extends Command {
     public StartGameResponse(
             @JsonProperty("isGameStarted") final boolean isGameStarted,
             @JsonProperty("errorMessage") final String errorMessage) {
-        super(CommandType.START_GAME_RESPONSE);
         this.isGameStarted = isGameStarted;
         this.errorMessage = errorMessage;
     }
 
     public StartGameResponse() {
-        super(CommandType.START_GAME_RESPONSE);
         this.isGameStarted = false;
     }
 
@@ -44,11 +42,16 @@ public class StartGameResponse extends Command {
         this.errorMessage = errorMessage;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.START_GAME_RESPONSE;
+    }
+
     @Override
     public String toString() {
         return "StartGameResponse{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", isGameStarted=" + isGameStarted +
+                "isGameStarted=" + isGameStarted +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';
     }

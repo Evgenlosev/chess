@@ -31,4 +31,6 @@ public abstract class Player {
 
     public abstract MoveInfo getAnswer(GameInfo gameInfo);
 
+    public abstract PlayerType getPlayerType();
+
 }

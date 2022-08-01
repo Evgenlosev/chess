@@ -1,5 +1,6 @@
 package io.deeplay.interaction.clientToServer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
@@ -9,14 +10,11 @@ public class StartGameRequest extends Command {
     private final int userId;
     //Помимо этого поля, описывающие характеристики игры
 
-
     public StartGameRequest(final int userId) {
-        super(CommandType.START_GAME_REQUEST);
         this.userId = userId;
     }
 
     public StartGameRequest() {
-        super(CommandType.START_GAME_REQUEST);
         this.userId = 0;
     }
 
@@ -24,11 +22,16 @@ public class StartGameRequest extends Command {
         return userId;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.START_GAME_REQUEST;
+    }
+
     @Override
     public String toString() {
         return "StartGameRequest{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", userId=" + userId +
+                "userId=" + userId +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package io.deeplay.interaction.clientToServer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
@@ -10,13 +11,11 @@ public class MoveRequest extends Command {
     private final int moveTo;
 
     public MoveRequest(final int moveFrom, final int moveTo) {
-        super(CommandType.MOVE_REQUEST);
         this.moveFrom = moveFrom;
         this.moveTo = moveTo;
     }
 
     public MoveRequest() {
-        super(CommandType.MOVE_REQUEST);
         this.moveFrom = 0;
         this.moveTo = 0;
     }
@@ -29,11 +28,16 @@ public class MoveRequest extends Command {
         return moveTo;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.MOVE_REQUEST;
+    }
+
     @Override
     public String toString() {
         return "MoveRequest{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", moveFrom=" + moveFrom +
+                "moveFrom=" + moveFrom +
                 ", moveTo=" + moveTo +
                 '}';
     }

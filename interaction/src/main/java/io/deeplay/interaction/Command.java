@@ -28,13 +28,14 @@ import io.deeplay.interaction.serverToClient.*;
         @JsonSubTypes.Type(value = ConnectionClosedResponse.class, name = "ConnectionClosedResponse")
 })
 public abstract class Command {
-    private final CommandType commandType;
+//    private final CommandType commandType;
 
-    public Command(final CommandType commandType) {
-        this.commandType = commandType;
+    public Command() {
     }
 
-    public CommandType getCommandType() {
-        return commandType;
-    }
+    public abstract CommandType getCommandType();
+
+//    public CommandType getCommandType() {
+//        return commandType;
+//    }
 }

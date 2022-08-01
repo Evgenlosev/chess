@@ -1,6 +1,7 @@
 package io.deeplay.interaction.serverToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
@@ -12,12 +13,10 @@ public class DrawResponse extends Command {
 
     @JsonCreator()
     public DrawResponse(@JsonProperty("isDrawAgreed") final boolean isDrawAgreed) {
-        super(CommandType.DRAW_RESPONSE);
         this.isDrawAgreed = isDrawAgreed;
     }
 
     public DrawResponse() {
-        super(CommandType.DRAW_RESPONSE);
         this.isDrawAgreed = false;
     }
 
@@ -26,10 +25,15 @@ public class DrawResponse extends Command {
         return isDrawAgreed;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.DRAW_RESPONSE;
+    }
+
     @Override
     public String toString() {
         return "DrawResponse{" +
-                "commandType='" + super.getCommandType() + '\'' +
                 ", isDrawAgreed=" + isDrawAgreed +
                 '}';
     }
