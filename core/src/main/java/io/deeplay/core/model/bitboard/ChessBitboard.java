@@ -1,6 +1,10 @@
 package io.deeplay.core.model.bitboard;
 
+import io.deeplay.core.logic.BitUtils;
 import io.deeplay.core.model.Side;
+
+import static io.deeplay.core.logic.BitboardPatternsInitializer.blackCells;
+import static io.deeplay.core.logic.BitboardPatternsInitializer.whiteCells;
 
 /**
  * Класс хранит обобщенную информацию о шахматной доске.
@@ -45,6 +49,21 @@ public class ChessBitboard {
         this.occupied = opponentPieces | processingSidePieces;
         this.empty = ~occupied;
         this.enPassantFile = 0L;
+    }
+
+    public boolean isOneBishop() {
+        return BitUtils.bitCount(
+                processingSideBitboards.getBishops() | opponentSideBitboards.getBishops()) == 1;
+    }
+
+    public boolean isOneKnight() {
+        return BitUtils.bitCount(
+                processingSideBitboards.getKnights() | opponentSideBitboards.getKnights()) == 1;
+    }
+
+    public boolean isLeftBishopsOnAlikeCellColors() {
+        long allBishops = processingSideBitboards.getBishops() | opponentSideBitboards.getBishops();
+        return (allBishops & whiteCells) == allBishops || (allBishops & blackCells) == allBishops;
     }
 
     public Side getProcessingSide() {

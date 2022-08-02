@@ -59,6 +59,50 @@ public class SimpleLogic implements SimpleLogicAppeal {
                 && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
 
+    /*
+     * King versus king
+     * King and bishop versus king
+     * King and knight versus king
+     * King and bishop versus king and bishop with the bishops on the same color.
+     * */
+    public boolean isDrawByPieceShortage(final String fenNotation) {
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
+
+        SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
+        SideBitboards opponentSideBitboards = currentSideChessBitboard.getOpponentSideBitboards();
+
+        ChessBitboard opponentChessBitboard = new ChessBitboard(currentTurnSideBitboards, opponentSideBitboards);
+        opponentChessBitboard.setProcessingSideCheckData(SimpleBitboardHandler
+                .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards)));
+        SimpleBitboardHandler.countAllPossibleMoves(opponentChessBitboard);
+
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
+            throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
+        }
+        final boolean isBishopsAndKingsLeft = (currentSideChessBitboard.getProcessingSideBitboards().getKing() &
+                currentSideChessBitboard.getProcessingSideBitboards().getBishops() &
+                currentSideChessBitboard.getOpponentSideBitboards().getKing() &
+                currentSideChessBitboard.getOpponentSideBitboards().getBishops()) ==
+                currentSideChessBitboard.getOccupied();
+
+        if ((currentSideChessBitboard.getProcessingSideBitboards().getKing() &
+                currentSideChessBitboard.getOpponentSideBitboards().getKing()) ==
+                currentSideChessBitboard.getOccupied())
+            return true;
+
+        if (currentSideChessBitboard.isOneBishop() && isBishopsAndKingsLeft)
+            return true;
+
+        if (currentSideChessBitboard.isOneKnight() &&
+                (currentSideChessBitboard.getProcessingSideBitboards().getKing() &
+                        currentSideChessBitboard.getProcessingSideBitboards().getKnights() &
+                        currentSideChessBitboard.getOpponentSideBitboards().getKing() &
+                        currentSideChessBitboard.getOpponentSideBitboards().getKnights()) ==
+                        currentSideChessBitboard.getOccupied())
+            return true;
+        return currentSideChessBitboard.isLeftBishopsOnAlikeCellColors() && isBishopsAndKingsLeft;
+    }
+
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
         return getCurrentProcessingSideAllMoves(FENParser.parseFENToBitboards(fenNotation));
