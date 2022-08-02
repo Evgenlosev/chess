@@ -24,7 +24,6 @@ public class RandomBot extends Player {
     /**
      * Возвращает рандомный ход
      * @param gameInfo - текущее состоние партии
-     * @return - рандомный ход
      */
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {

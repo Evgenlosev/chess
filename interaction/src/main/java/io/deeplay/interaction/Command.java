@@ -35,7 +35,4 @@ public abstract class Command {
 
     public abstract CommandType getCommandType();
 
-//    public CommandType getCommandType() {
-//        return commandType;
-//    }
 }
