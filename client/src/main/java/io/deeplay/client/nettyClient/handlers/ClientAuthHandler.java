@@ -29,14 +29,14 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
             AuthResponse authResponse = (AuthResponse) command;
             if (authResponse.isAuthorized()) {
                 LOGGER.info("Успешно авторизованы на сервере");
-                //Если авторизация прошла успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+                //Если авторизация прошла успешно, удаляем из конвеера текущий хэндлер и добавляем ClientStartGameHandler
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientInboundCommandHandler());
+                ctx.channel().pipeline().addLast(new ClientStartGameHandler());
             } else {
                 LOGGER.info("Авторизация не пройдена", authResponse.getErrorMessage());
             }
         } else {
-            LOGGER.info("Ожидаем от сервера подтверждения версии протокола");
+            LOGGER.info("Ожидаем от сервера подтверждения авторизации");
         }
     }
 }
