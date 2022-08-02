@@ -29,8 +29,7 @@ public class SelfPlay {
             this.secondPlayer = firstPlayer;
         }
         this.currentPlayerToMove = firstPlayer;
-        this.gameInfoGroup = new GameInfoGroup();
-        this.gameInfoGroup.addListener(this.gameInfo);
+        this.gameInfoGroup = new GameInfoGroup(gameInfo);
     }
 
     /**
@@ -56,7 +55,7 @@ public class SelfPlay {
             LOGGER.info("Ходят {}", currentPlayerToMove.getSide());
             final MoveInfo moveInfo = currentPlayerToMove.getAnswer(gameInfo);
             gameInfoGroup.playerActed(currentPlayerToMove.getSide(), moveInfo);
-            LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide(), moveInfo);
+            LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide(), gameInfo.getFenBoard());
             LOGGER.info("\n" + gameInfo.getBoard().toString());
             changeCurrentPlayerToMove();
         }
