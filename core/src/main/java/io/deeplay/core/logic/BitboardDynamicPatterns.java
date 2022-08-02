@@ -32,7 +32,7 @@ public class BitboardDynamicPatterns {
 
     public static Set<MoveBitboard> possibleWhiteKingMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.WHITE)
-            throw new IllegalArgumentException("Подсчёт ходов для белых невозможен для чёрных.");
+            throw new IllegalArgumentException("Calculation method for white pieces is impossible for black pieces.");
         Set<MoveBitboard> moves = new HashSet<>();
         final long occupied = chessBitboard.getOccupied();
         final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
@@ -60,7 +60,7 @@ public class BitboardDynamicPatterns {
 
     public static Set<MoveBitboard> possibleBlackKingMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.BLACK)
-            throw new IllegalArgumentException("Подсчёт ходов для чёрных невозможен для белых.");
+            throw new IllegalArgumentException("Calculation method for black pieces is impossible for white pieces.");
         Set<MoveBitboard> moves = new HashSet<>();
         final long occupied = chessBitboard.getOccupied();
         final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
@@ -89,7 +89,7 @@ public class BitboardDynamicPatterns {
     // TODO: удалить не нужные методы
     public static Set<MoveBitboard> possibleWhitePawnMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.WHITE)
-            throw new IllegalArgumentException("Подсчёт ходов для белых пешек невозможен для чёрных пешек.");
+            throw new IllegalArgumentException("Calculation method for white pieces is impossible for black pieces.");
         final long pawnToMoveBitboard = 1L << from;
         final long notMyPieces = chessBitboard.getOpponentPieces();
         final long opponentPawns = chessBitboard.getOpponentSideBitboards().getPawns();
@@ -138,7 +138,7 @@ public class BitboardDynamicPatterns {
 
     public static Set<MoveBitboard> possibleBlackPawnMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.BLACK)
-            throw new IllegalArgumentException("Подсчёт ходов для чёрных пешек невозможен для белых пешек.");
+            throw new IllegalArgumentException("Calculation method for black pieces is impossible for white pieces.");
         final long pawnToMoveBitboard = 1L << from;
         final long notMyPieces = chessBitboard.getOpponentPieces();
         final long opponentPawns = chessBitboard.getOpponentSideBitboards().getPawns();
