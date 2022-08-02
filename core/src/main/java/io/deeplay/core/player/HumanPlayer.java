@@ -1,10 +1,13 @@
 package io.deeplay.core.player;
 
-import io.deeplay.core.model.*;
+
+import io.deeplay.core.model.GameInfo;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
 
 public class HumanPlayer extends Player {
-    public HumanPlayer(final Side side, final int id) {
-        super(side, id);
+    public HumanPlayer(final Side side) {
+        super(side);
     }
 
     @Override
@@ -16,6 +19,6 @@ public class HumanPlayer extends Player {
     // тип хода (MoveType) и вернет объект MoveInfo.
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
-        throw new RuntimeException("Функционал еще не реализован");
+        throw new RuntimeException("Human move has not been done yet");
     }
 }

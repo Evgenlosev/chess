@@ -11,8 +11,8 @@ public class RandomBot extends Player {
 
     private final Random random;
 
-    public RandomBot(final Side side, final int id) {
-        super(side, id);
+    public RandomBot(final Side side) {
+        super(side);
         this.random = new Random(System.currentTimeMillis());
     }
 
@@ -24,11 +24,11 @@ public class RandomBot extends Player {
     /**
      * Возвращает рандомный ход
      * @param gameInfo - текущее состоние партии
-     * @return
+     * @return - рандомный ход
      */
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
-        Set<MoveInfo> allMoves = gameInfo.getAvailableMoves(this.getSide());
+        Set<MoveInfo> allMoves = gameInfo.getAvailableMoves();
         int randomMoveNumber = random.nextInt(allMoves.size());
         return (MoveInfo) allMoves.toArray()[randomMoveNumber];
     }

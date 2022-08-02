@@ -13,6 +13,11 @@ public abstract class Player {
         this.id = id;
     }
 
+    public Player(final Side side) {
+        this.side = side;
+        this.id = 0;
+    }
+
     public Side getSide() {
         return side;
     }
