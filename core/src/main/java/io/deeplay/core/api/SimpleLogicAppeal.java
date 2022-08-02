@@ -21,10 +21,10 @@ public interface SimpleLogicAppeal {
     boolean isStalemate(final String fenNotation);
 
     /**
-     * Ничья из-за нехватки фигур
+     * Ничья из-за нехватки фигур.
      *
      * @param fenNotation нотация Форсайта — Эдвардса
-     * @return возвращает true в случаях: фигур короля против короля, короля+слона и короля,
+     * @return возвращает true в 4-x случаях: остались только фигуры короля против короля, короля+слона и короля,
      * короля+коня и короля, короля+слона* и короля+слона* (* - ВСЕ слоны на клетках одного цвета)
      */
     boolean isDrawByPieceShortage(final String fenNotation);

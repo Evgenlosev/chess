@@ -12,7 +12,6 @@ import static org.junit.Assert.*;
 
 public class TestFen {
 /*
-    // TODO: большеееее тестов
     @Test
     public void testStalemate() {
 //        String fenNotation = "8/2k5/5r2/4p3/4P3/4K3/3r4/8 w - - 0 1";
@@ -160,7 +159,7 @@ public class TestFen {
         MoveInfo moveInfo = new MoveInfo(
                 new Coord(BitUtils.BitIndex.E1_IDX.ordinal()),
                 new Coord(BitUtils.BitIndex.G1_IDX.ordinal()),
-                MoveType.CASTLE_SHORT, Figure.B_KING); <- не ругается на то что король чужой стороны, почему то String.matches не учитывает регистр...
+                MoveType.CASTLE_SHORT, Figure.B_KING); <- не ругается на то что король чужой стороны, почему-то String.matches не учитывает регистр...
          */
 
         String expectedFenNotation = "r3k2r/8/8/8/8/8/8/R4RK1 w kq - 0 1";

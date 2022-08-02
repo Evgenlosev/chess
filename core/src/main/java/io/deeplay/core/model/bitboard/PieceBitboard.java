@@ -8,6 +8,9 @@ import io.deeplay.core.model.Side;
 import java.util.Set;
 import java.util.function.BiFunction;
 
+/**
+ * Класс фигуры, фигура получает информацию о виде и о том как считать ходы.
+ */
 public class PieceBitboard {
 
     private final Side side;

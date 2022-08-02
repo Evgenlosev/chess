@@ -26,7 +26,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
                 .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards))); // invertedClone()?
 
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
-            throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
         // мат проверяем только для нашей стороны (т.к. отсекается случай когда противник под шахом, а ход наш)
         if (currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.TWO &&
@@ -50,7 +50,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
         SimpleBitboardHandler.countAllPossibleMoves(opponentChessBitboard);
 
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
-            throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
                 && opponentChessBitboard.getCountFiguresThatCanMove() == 0)
@@ -59,12 +59,6 @@ public class SimpleLogic implements SimpleLogicAppeal {
                 && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
 
-    /*
-     * King versus king
-     * King and bishop versus king
-     * King and knight versus king
-     * King and bishop versus king and bishop with the bishops on the same color.
-     * */
     @Override
     public boolean isDrawByPieceShortage(final String fenNotation) {
         ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
@@ -78,7 +72,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
         SimpleBitboardHandler.countAllPossibleMoves(opponentChessBitboard);
 
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
-            throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
         final boolean isBishopsAndKingsLeft = (currentSideChessBitboard.getProcessingSideBitboards().getKing() |
                 currentSideChessBitboard.getProcessingSideBitboards().getBishops() |

@@ -6,7 +6,8 @@ import io.deeplay.core.model.Side;
 import java.util.Map;
 
 public class ChessBitboardFactory {
-    // ChessBitboard изменяет состояние внутри, это можно исправить если все методы с ChessBitboard
+    // ChessBitboard изменяет состояние внутри(внутри SideBitboards),
+    // это можно исправить если все методы с ChessBitboard
     // перекрутить на SideBitboards, но это займет много времени
     public static ChessBitboard createChessBitboard(final Map<Side, SideBitboards> sideBitboards,
                                                     final Side currentTurnSide,

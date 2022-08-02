@@ -12,6 +12,7 @@ import java.util.Map;
 /**
  * Класс хранит в себе битборд-представление фигур одной стороны(белой/чёрной) доски шахмат.
  * Упрощает взаимодействие со сторонами игры.
+ * Инициализирует все фигуры(PieceBitboard).
  */
 public class SideBitboards {
     private final Side side;
@@ -39,7 +40,7 @@ public class SideBitboards {
         pieceBitboards = new ArrayList<>();
     }
 
-    public void initializePieceBitboards(final ChessBitboard chessBitboard) { // TODO: вставить в каждый соответствующие методы обертки
+    public void initializePieceBitboards(final ChessBitboard chessBitboard) {
         int pieceIndex;
         for (long pawn : BitUtils.segregatePositions(pawns)) {
             pieceIndex = Long.numberOfTrailingZeros(pawn);
@@ -72,7 +73,7 @@ public class SideBitboards {
                     SimpleBitboardHandler.getWrappedMovesGenerator));
         }
         if (BitUtils.bitCount(king) != 1)
-            throw new IllegalArgumentException("У стороны " + side + " - не верно расстановлены фигуры (королей либо много, либо нету)");
+            throw new IllegalArgumentException("Side" + side + " - has incorrect placed pieces (there's no king or more than one for one side)");
         pieceIndex = Long.numberOfTrailingZeros(king);
         this.kingPieceBitboards = new PieceBitboard(side, side == Side.WHITE ? Figure.W_KING : Figure.B_KING,
                 pieceIndex, king, SimpleBitboardHandler.getKingMovesBitboard,

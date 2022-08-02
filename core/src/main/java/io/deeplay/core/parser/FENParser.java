@@ -94,9 +94,9 @@ public class FENParser {
         ), getTurnSide(fen), getEnPassantFileBitboard(fen), getCastlingRights(fen));
     }
 
-    // Превращение, возвращает обновлённый fen. Не изменяет сторону хода (ссылку, где изменяет).
+    // Превращение, возвращает обновлённый fen. Не изменяет сторону хода (ChessBoard изменяет).
     // Нет проверок на то что спереди перед пешкой нет никого при условии обычного хода. Это всё в логике.
-    // Нет проверок на то что атака/ход. Логика вернёт что нужно, главное не подавать лишнего.
+    // Нет проверок на то что атака/ход. Логика вернёт что нужно, главное сюда не подавать лишнего.
     public static String promotePawnToFigureUpdateFen(final String fen, final MoveInfo moveInfo) {
         Objects.requireNonNull(moveInfo.getPromoteTo());
         validatePromotion(moveInfo);
@@ -133,23 +133,23 @@ public class FENParser {
                                                       final int fenPositionIndex) {
         if (!fen.substring(fenPositionIndex, fenPositionIndex + 1)
                 .equals(fileCharToFigureRepresentation.get(figure)))
-            throw new IllegalArgumentException("Фигура " + figure + " не найдена на позиции символа "
-                    + fenPositionIndex + " в нотации: " + fen);
+            throw new IllegalArgumentException("Piece " + figure + " wasn't fount at given position: "
+                    + fenPositionIndex + " with notation: " + fen);
     }
 
     private static void validatePromotion(final MoveInfo moveInfo) {
         if (moveInfo.getPromoteTo() == Figure.B_KING || moveInfo.getPromoteTo() == Figure.B_PAWN ||
                 moveInfo.getPromoteTo() == Figure.W_KING || moveInfo.getPromoteTo() == Figure.W_PAWN)
-            throw new IllegalArgumentException("Попытка превращения пешки в " + moveInfo.getPromoteTo());
+            throw new IllegalArgumentException("Pawn promotion attempt  " + moveInfo.getPromoteTo());
         if (moveInfo.getFigure() != Figure.B_PAWN && moveInfo.getFigure() != Figure.W_PAWN)
-            throw new IllegalArgumentException("Попытка превращения не пешки.");
+            throw new IllegalArgumentException("Promotion attempt of a piece that isn't a pawn.");
         if (moveInfo.getMoveType() != MoveType.PAWN_TO_FIGURE
                 && moveInfo.getMoveType() != MoveType.PAWN_TO_FIGURE_ATTACK)
-            throw new IllegalArgumentException("Не верный тип передвижения для превращения: " + moveInfo.getMoveType());
+            throw new IllegalArgumentException("Incorrect move type for promotion: " + moveInfo.getMoveType());
         if (moveInfo.getFigure().getWeight() > 0 && moveInfo.getPromoteTo().getWeight() < 0
                 || moveInfo.getFigure().getWeight() < 0 && moveInfo.getPromoteTo().getWeight() > 0) // Если превращение в другой цвет
             throw new IllegalArgumentException
-                    ("Попытка превращения " + moveInfo.getFigure() + " в " + moveInfo.getPromoteTo());
+                    ("Promotion attempt from: " + moveInfo.getFigure() + " to: " + moveInfo.getPromoteTo());
     }
 
     // Проверка на право рокировки, то что клетки атакованы, то что клетки не свободны - не делается. Это есть в логике.
@@ -201,7 +201,7 @@ public class FENParser {
             splitBySpace.add(2, castlingRights.replace("k", "").replace("q", ""));
         }
         if (splitBySpace.size() < 6)
-            throw new IllegalArgumentException("Рокировка не возможна: " + moveInfo + " при нотации " + fen);
+            throw new IllegalArgumentException("Castling is impossible: " + moveInfo + " with fen notation: " + fen);
         return zipFen(Joiner.on(" ").join(splitBySpace));
     }
 
@@ -215,25 +215,25 @@ public class FENParser {
         final int lastRow = 7;
         final int firstRow = 0;
         if (moveInfo.getFigure() != Figure.B_KING && moveInfo.getFigure() != Figure.W_KING)
-            throw new IllegalArgumentException("Попытка рокировки фигурой: " + moveInfo.getFigure());
+            throw new IllegalArgumentException("Castling attempt with a piece: " + moveInfo.getFigure());
         if (moveInfo.getCellFrom().getColumn() != standardKingPosition
                 && (moveInfo.getCellFrom().getRow() != lastRow || moveInfo.getCellFrom().getRow() != firstRow))
-            throw new IllegalArgumentException("Король вне изначальной позиции.");
+            throw new IllegalArgumentException("King is not at the beginning position.");
         if (moveInfo.getMoveType() != MoveType.CASTLE_LONG
                 && moveInfo.getMoveType() != MoveType.CASTLE_SHORT)
-            throw new IllegalArgumentException("Не верный тип передвижения для рокировки: " + moveInfo.getMoveType());
+            throw new IllegalArgumentException("Incorrect move type for promotion: " + moveInfo.getMoveType());
         final Set<String> castleRights =
                 Arrays.stream(getCastlingRights(fen).split("")).collect(Collectors.toSet());
         if (castleRights.contains("-"))
-            throw new IllegalArgumentException("Ни у одной стороны нет прав на рокировку: " + moveInfo);
+            throw new IllegalArgumentException("Either side doesn't have castling rights: " + moveInfo);
         if (whiteKingSideCastlingRight && !castleRights.contains("K"))
-            throw new IllegalArgumentException("Нету права для рокировки: " + moveInfo + " при заданном fen: " + fen);
+            throw new IllegalArgumentException("No castling right: " + moveInfo + " with given fen: " + fen);
         if (whiteQueenSideCastlingRight && !castleRights.contains("Q")) // Белые, длинная рокировка
-            throw new IllegalArgumentException("Нету права для рокировки: " + moveInfo + " при заданном fen: " + fen);
+            throw new IllegalArgumentException("No castling right: " + moveInfo + " with given fen: " + fen);
         if (blackKingSideCastlingRight && !castleRights.contains("k")) // Чёрные, короткая рокировка
-            throw new IllegalArgumentException("Нету права для рокировки: " + moveInfo + " при заданном fen: " + fen);
+            throw new IllegalArgumentException("No castling right: " + moveInfo + " with given fen: " + fen);
         if (blackQueenSideCastlingRight && !castleRights.contains("q")) // Чёрные, длинная рокировка
-            throw new IllegalArgumentException("Нету права для рокировки: " + moveInfo + " при заданном fen: " + fen);
+            throw new IllegalArgumentException("No castling right: " + moveInfo + " with given fen: " + fen);
     }
 
     public static String unzipFen(final String fen) {
@@ -294,14 +294,14 @@ public class FENParser {
         final char turnSide = parseTurnSide.charAt(0);
         if (!charToSideRepresentation.containsKey(turnSide))
             throw new IllegalArgumentException
-                    ("Неверно указана сторона, допустимы только 'w' или 'b', а оказалось: " + turnSide);
+                    ("Turn side is not 'w' or 'b', but a: " + turnSide);
         return charToSideRepresentation.get(turnSide);
     }
 
     private static List<String> splitFEN(final String fen) {
         final List<String> parseFenNotation = List.of(fen.split(" "));
         if (parseFenNotation.size() != 6)
-            throw new IllegalArgumentException("Неверная, либо неполная нотация, количество элементов в нотации не равно 6");
+            throw new IllegalArgumentException("Incorrect, or incomplete notation, amount of elements in notation isn't equal to 6");
         return parseFenNotation;
     }
 

@@ -5,6 +5,7 @@ import io.deeplay.core.model.MoveType;
 import java.util.Objects;
 
 /**
+ * Тип хода и сама позиция в виде битборда.
  * Выделение такого класса необходимо из-за того что некоторые фигуры имеют больше 2-х типов ходов (пешка, король).
  */
 public class MoveBitboard {
