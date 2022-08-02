@@ -8,6 +8,9 @@ import java.util.*;
  * В начале работы класс инициализирует паттерны передвижений фигур, после чего не производит никаких вычислений
  */
 public class BitboardPatternsInitializer {
+
+    public static final long whiteCells = 0b0101010110101010010101011010101001010101101010100101010110101010L;
+    public static final long blackCells = 0b1010101001010101101010100101010110101010010101011010101001010101L;
     public static final long[] ROOK_MAGIC_NUMBERS = {
             0x0A8002C000108020L, 0x06C00049B0002001L, 0x0100200010090040L, 0x2480041000800801L,
             0x0280028004000800L, 0x0900410008040022L, 0x0280020001001080L, 0x2880002041000080L,

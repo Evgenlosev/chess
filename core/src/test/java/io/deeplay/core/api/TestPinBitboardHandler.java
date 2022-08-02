@@ -1,23 +1,9 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.logic.FENBoard;
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.Side;
-import io.deeplay.core.model.bitboard.CheckData;
-import io.deeplay.core.model.bitboard.ChessBitboard;
-import io.deeplay.core.model.bitboard.SideBitboards;
-import io.deeplay.core.parser.FENParser;
-import org.junit.Test;
-
-import java.util.Map;
-
-import static io.deeplay.core.logic.BitUtils.containsSameBits;
-import static io.deeplay.core.logic.BitUtils.printBitboard;
-
 public class TestPinBitboardHandler {
 
     // TODO: Дописать тесты
+    /*
     @Test
     public void testPinRookAndBishop() {
 //        FENBoard fenBoard = new FENBoard("4r1k1/1pp4p/p7/B5p1/1PQ5/5P1b/P5PP/3K1R2 b - - 0 1");
@@ -185,4 +171,5 @@ public class TestPinBitboardHandler {
         printBitboard(allMoves);
         System.out.println(allPossibleMoves);
     }
+     */
 }

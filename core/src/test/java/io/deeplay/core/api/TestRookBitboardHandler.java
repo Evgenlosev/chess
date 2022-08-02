@@ -1,20 +1,5 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.api.BitboardHandler;
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.Figure;
-import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.MoveType;
-import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.logic.FENBoard;
-import org.junit.Test;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-
 // Мегаполезная штука: https://www.dailychess.com/chess/chess-fen-viewer.php - можно расставлять фигуры + есть FEN
 public class TestRookBitboardHandler {
     // TODO: связанная за своим королем ладья должна ходить только по линии атаки связывающей фигуры
@@ -23,7 +8,7 @@ public class TestRookBitboardHandler {
     // TODO: тест когда фигура связана и не может ходить
     // TODO: тест когда фигура связана и не может ходить, но есть возможность срубить НЕ связывающую фигуру
     // TODO: тест когда фигура связана и может срубить связывающую фигуру
-
+/*
     @Test
     public void testRookInMiddlePosition() {
         FENBoard FENBoard = new FENBoard("8/K1P1Rp2/8/8/8/4k3/8/8 b - - 0 1"); // белые
@@ -88,5 +73,5 @@ public class TestRookBitboardHandler {
 
         assertEquals(expectedBlackMoveInfoSet, BitboardHandler.getRookMoves(FENBoard, new Coord(BitUtils.BitIndex.H3_IDX.ordinal())));
     }
-
+*/
 }

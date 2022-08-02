@@ -1,22 +1,7 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.api.BitboardHandler;
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.Figure;
-import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.MoveType;
-import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.logic.FENBoard;
-import org.junit.Test;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-
 public class TestBishopBitboardHandler {
-
+/*
     @Test
     public void testBishopInMiddlePosition() {
         FENBoard FENBoard = new FENBoard("5rk1/K1P5/4B3/1p3P2/1Np5/8/3Q3R/8 w - - 0 1"); // белые
@@ -69,5 +54,5 @@ public class TestBishopBitboardHandler {
 
         assertEquals(expectedBlackMoveInfoSet, BitboardHandler.getBishopMoves(FENBoard, new Coord(BitUtils.BitIndex.H2_IDX.ordinal())));
     }
-    
+    */
 }

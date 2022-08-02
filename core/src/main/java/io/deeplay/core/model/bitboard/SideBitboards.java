@@ -43,46 +43,45 @@ public class SideBitboards {
         int pieceIndex;
         for (long pawn : BitUtils.segregatePositions(pawns)) {
             pieceIndex = Long.numberOfTrailingZeros(pawn);
-            pieceBitboards.add(new PieceBitboard(chessBitboard.getOccupied(), side,
-                    side == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN, pieceIndex, pawn,
-                    SimpleBitboardHandler.getPawnFunction(side))); // У каждой фигуры своя логика обработки, передаем её
+            pieceBitboards.add(new PieceBitboard(side, side == Side.WHITE ? Figure.W_PAWN : Figure.B_PAWN,
+                    pieceIndex, pawn, SimpleBitboardHandler.getPawnFunction(side), // У каждой фигуры своя логика обработки, передаем её
+                    SimpleBitboardHandler.getPawnWrappedMovesGenerator));
         }
         for (long knight : BitUtils.segregatePositions(knights)) {
             pieceIndex = Long.numberOfTrailingZeros(knight);
-            pieceBitboards.add(new PieceBitboard(chessBitboard.getOccupied(), side,
-                    side == Side.WHITE ? Figure.W_KNIGHT : Figure.B_KNIGHT, pieceIndex, knight,
-                    SimpleBitboardHandler.getKnightMovesBitboard));
+            pieceBitboards.add(new PieceBitboard(side, side == Side.WHITE ? Figure.W_KNIGHT : Figure.B_KNIGHT,
+                    pieceIndex, knight, SimpleBitboardHandler.getKnightMovesBitboard,
+                    SimpleBitboardHandler.getWrappedMovesGenerator));
         }
         for (long bishop : BitUtils.segregatePositions(bishops)) {
             pieceIndex = Long.numberOfTrailingZeros(bishop);
-            pieceBitboards.add(new PieceBitboard(chessBitboard.getOccupied(), side,
-                    side == Side.WHITE ? Figure.W_BISHOP : Figure.B_BISHOP, pieceIndex, bishop,
-                    SimpleBitboardHandler.getBishopMovesBitboard));
+            pieceBitboards.add(new PieceBitboard(side, side == Side.WHITE ? Figure.W_BISHOP : Figure.B_BISHOP,
+                    pieceIndex, bishop, SimpleBitboardHandler.getBishopMovesBitboard,
+                    SimpleBitboardHandler.getWrappedMovesGenerator));
         }
         for (long rook : BitUtils.segregatePositions(rooks)) {
             pieceIndex = Long.numberOfTrailingZeros(rook);
-            pieceBitboards.add(new PieceBitboard(chessBitboard.getOccupied(), side,
-                    side == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK, pieceIndex, rook,
-                    SimpleBitboardHandler.getRookMovesBitboard));
+            pieceBitboards.add(new PieceBitboard(side, side == Side.WHITE ? Figure.W_ROOK : Figure.B_ROOK,
+                    pieceIndex, rook, SimpleBitboardHandler.getRookMovesBitboard,
+                    SimpleBitboardHandler.getWrappedMovesGenerator));
         }
         for (long queen : BitUtils.segregatePositions(queens)) {
             pieceIndex = Long.numberOfTrailingZeros(queen);
-            pieceBitboards.add(new PieceBitboard(chessBitboard.getOccupied(), side,
-                    side == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN, pieceIndex, queen,
-                    SimpleBitboardHandler.getQueenMovesBitboard));
+            pieceBitboards.add(new PieceBitboard(side, side == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN,
+                    pieceIndex, queen, SimpleBitboardHandler.getQueenMovesBitboard,
+                    SimpleBitboardHandler.getWrappedMovesGenerator));
         }
-        if (king == 0L)
-            throw new IllegalArgumentException("У стороны " + side + " - не обнаружена фигура короля");
+        if (BitUtils.bitCount(king) != 1)
+            throw new IllegalArgumentException("У стороны " + side + " - не верно расстановлены фигуры (королей либо много, либо нету)");
         pieceIndex = Long.numberOfTrailingZeros(king);
-        this.kingPieceBitboards = new PieceBitboard(chessBitboard.getOccupied(), side,
-                side == Side.WHITE ? Figure.W_KING : Figure.B_KING, pieceIndex, king,
-                SimpleBitboardHandler.getKingMovesBitboard);
+        this.kingPieceBitboards = new PieceBitboard(side, side == Side.WHITE ? Figure.W_KING : Figure.B_KING,
+                pieceIndex, king, SimpleBitboardHandler.getKingMovesBitboard,
+                SimpleBitboardHandler.getKingWrappedMovesGenerator);
         // Короля в список всех фигур не сохраняем, т.к. вычисления по всем фигурам будут происходить относительно него
         for (PieceBitboard pieceBitboard : pieceBitboards)
             pieceBitboard.initializeMoves(chessBitboard);
         kingPieceBitboards.initializeMoves(chessBitboard);
     }
-
 
     public long orOperationOnAllBitboards() {
         return pawns | knights | bishops | rooks | queens | king; // occupied (занятые клетки)

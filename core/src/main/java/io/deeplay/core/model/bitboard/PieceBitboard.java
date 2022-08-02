@@ -2,38 +2,38 @@ package io.deeplay.core.model.bitboard;
 
 import io.deeplay.core.logic.newlogic.QuadFunction;
 import io.deeplay.core.model.Figure;
+import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
 import java.util.Set;
+import java.util.function.BiFunction;
 
-// TODO: нужно ходы вычислять извне...
 public class PieceBitboard {
 
-    private final long occupied; // занятые клетки нужно знать, чтобы считать все возможные ходы
     private final Side side;
     private final Figure figure;
     private final int positionIndex;
     private final long positionBitboard;
     private final QuadFunction<ChessBitboard, Long, Long, Integer, Long> movesGenerationFunction;
+    private final BiFunction<ChessBitboard, PieceBitboard, Set<MoveInfo>> wrappedMovesGenerationFunction;
     private long allMovesBitboard;
-    private Set<MoveBitboard> allMoves; // TODO:
     /**
      * В данное поле добавляется информация о допустимых для хода клетках.
      */
     private long allRestrictionsBitboard;
 
-    public PieceBitboard(final long occupied,
-                         final Side side,
+    public PieceBitboard(final Side side,
                          final Figure figure,
                          final int positionIndex,
                          final long positionBitboard,
-                         final QuadFunction<ChessBitboard, Long, Long, Integer, Long> movesGenerationFunction) {
-        this.occupied = occupied;
+                         final QuadFunction<ChessBitboard, Long, Long, Integer, Long> movesGenerationFunction,
+                         final BiFunction<ChessBitboard, PieceBitboard, Set<MoveInfo>> wrappedMovesGenerationFunction) {
         this.side = side;
         this.figure = figure;
         this.positionIndex = positionIndex;
         this.positionBitboard = positionBitboard;
         this.movesGenerationFunction = movesGenerationFunction;
+        this.wrappedMovesGenerationFunction = wrappedMovesGenerationFunction;
         this.allRestrictionsBitboard = ~0L;
     }
 
@@ -53,21 +53,13 @@ public class PieceBitboard {
     public long getMovesUnderRestrictions(final ChessBitboard chessBitboard) {
         return getMoves(chessBitboard, 0L, allRestrictionsBitboard);
     }
-/*
 
-    public List<MoveBitboard> getPossibleMoves() {
-        if(allRestrictionsBitboard == ~0L)
-            return allMoves;
-        // TODO: иначе нужно исключить все неподходящие ходы
+    public Set<MoveInfo> getWrappedMovesUnderRestriction(final ChessBitboard chessBitboard) {
+        return wrappedMovesGenerationFunction.apply(chessBitboard, this);
     }
-*/
 
     public void addRestriction(final long restriction) {
         this.allRestrictionsBitboard &= restriction;
-    }
-
-    public long getOccupied() {
-        return occupied;
     }
 
     public Side getSide() {
@@ -88,5 +80,9 @@ public class PieceBitboard {
 
     public long getAllMovesBitboard() {
         return allMovesBitboard;
+    }
+
+    public long getAllRestrictionsBitboard() {
+        return allRestrictionsBitboard;
     }
 }

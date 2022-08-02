@@ -3,10 +3,12 @@ package io.deeplay.core.logic;
 import io.deeplay.core.model.MoveType;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.model.bitboard.ChessBitboard;
+import io.deeplay.core.model.bitboard.MoveBitboard;
+import io.deeplay.core.model.bitboard.PieceBitboard;
 import io.deeplay.core.model.bitboard.SideBitboards;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import static io.deeplay.core.logic.BitUtils.*;
 
@@ -15,9 +17,77 @@ import static io.deeplay.core.logic.BitUtils.*;
  * Класс содержит методы, которые производят вычисления каждый раз когда нужно, в отличие от BitboardPatternsInitializer
  */
 public class BitboardDynamicPatterns {
+    // Маски клеток которые не должны находиться под атакой
+    private static final long whiteKingSideShouldBeSafeMask = 7L << 4;
+    private static final long whiteQueenSideShouldBeSafeMask = 7L << 2;
+    private static final long blackKingSideShouldBeSafeMask = 7L << 60;
+    private static final long blackQueenSideShouldBeSafeMask = 7L << 58;
+
+    // Маски позиций которые должны быть пусты
+    private static final long whiteKingSideShouldBeEmptySquares = 3L << 5;
+    private static final long whiteQueenSideShouldBeEmptySquares = 7L << 1;
+    private static final long blackKingSideShouldBeEmptySquares = 3L << 61;
+    private static final long blackQueenSideShouldBeEmptySquares = 7L << 57;
+    // Отрицание атак с маской рокировки
+
+    public static Set<MoveBitboard> possibleWhiteKingMoves(final ChessBitboard chessBitboard, final int from) {
+        if (chessBitboard.getProcessingSide() != Side.WHITE)
+            throw new IllegalArgumentException("Подсчёт ходов для белых невозможен для чёрных.");
+        Set<MoveBitboard> moves = new HashSet<>();
+        final long occupied = chessBitboard.getOccupied();
+        final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
+        final long notOpponentPieces = ~chessBitboard.getOpponentPieces();
+        final long notUnderAttack = ~chessBitboard.getProcessingSideCheckData().getAllAttacks();
+        final PieceBitboard kingPieceBitboard = chessBitboard.getProcessingSideBitboards().getKingPieceBitboards();
+        final long kingMoves = kingPieceBitboard.getMovesUnderRestrictions(chessBitboard);
+        for (long possibleMove : BitUtils.segregatePositions(kingMoves)) {
+            if (containsSameBits(possibleMove, chessBitboard.getOpponentPieces()))
+                moves.add(new MoveBitboard(MoveType.USUAL_ATTACK, possibleMove));
+            if (containsSameBits(possibleMove, notMyPieces & notOpponentPieces))
+                moves.add(new MoveBitboard(MoveType.USUAL_MOVE, possibleMove));
+        }
+        if (chessBitboard.isWhiteKingSideCastlingRight()
+                && containsSameBits(notUnderAttack, whiteKingSideShouldBeSafeMask)
+                && !containsSameBits(whiteKingSideShouldBeEmptySquares, occupied))
+            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 6)); // конечная позиция короля после рокировки
+        if (chessBitboard.isWhiteQueenSideCastlingRight()
+                && containsSameBits(notUnderAttack, whiteQueenSideShouldBeSafeMask)
+                && !containsSameBits(whiteQueenSideShouldBeEmptySquares, occupied))
+            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 2));
+
+        return moves;
+    }
+
+    public static Set<MoveBitboard> possibleBlackKingMoves(final ChessBitboard chessBitboard, final int from) {
+        if (chessBitboard.getProcessingSide() != Side.BLACK)
+            throw new IllegalArgumentException("Подсчёт ходов для чёрных невозможен для белых.");
+        Set<MoveBitboard> moves = new HashSet<>();
+        final long occupied = chessBitboard.getOccupied();
+        final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
+        final long notOpponentPieces = ~chessBitboard.getOpponentPieces();
+        final long notUnderAttack = ~chessBitboard.getProcessingSideCheckData().getAllAttacks();
+        final PieceBitboard kingPieceBitboard = chessBitboard.getProcessingSideBitboards().getKingPieceBitboards();
+        final long kingMoves = kingPieceBitboard.getMovesUnderRestrictions(chessBitboard);
+        for (long possibleMove : BitUtils.segregatePositions(kingMoves)) {
+            if (containsSameBits(possibleMove, chessBitboard.getOpponentPieces()))
+                moves.add(new MoveBitboard(MoveType.USUAL_ATTACK, possibleMove));
+            if (containsSameBits(possibleMove, notMyPieces & notOpponentPieces))
+                moves.add(new MoveBitboard(MoveType.USUAL_MOVE, possibleMove));
+        }
+        if (chessBitboard.isBlackKingSideCastlingRight()
+                && containsSameBits(notUnderAttack, blackKingSideShouldBeSafeMask)
+                && !containsSameBits(blackKingSideShouldBeEmptySquares, occupied))
+            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 62)); // конечная позиция короля после рокировки
+        if (chessBitboard.isBlackQueenSideCastlingRight()
+                && containsSameBits(notUnderAttack, blackQueenSideShouldBeSafeMask)
+                && !containsSameBits(blackQueenSideShouldBeEmptySquares, occupied))
+            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 58));
+
+        return moves;
+    }
 
     // TODO: удалить не нужные методы
-    public static Map<MoveType, Long> possibleWhitePawnMoves(final ChessBitboard chessBitboard, final int from) {
+    public static Set<MoveBitboard> possibleWhitePawnMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.WHITE)
             throw new IllegalArgumentException("Подсчёт ходов для белых пешек невозможен для чёрных пешек.");
         final long pawnToMoveBitboard = 1L << from;
@@ -27,46 +97,46 @@ public class BitboardDynamicPatterns {
         final long empty = chessBitboard.getEmpty();
         final long enPassantFile = chessBitboard.getEnPassantFile();
 
-        Map<MoveType, Long> moveTypes = new HashMap<>();
+        Set<MoveBitboard> moves = new HashSet<>();
         long satisfyingMoves = (pawnToMoveBitboard << 9) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_A; // capture right
-        moveTypes.putIfAbsent(MoveType.PAWN_ATTACK, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard << 7) & notMyPieces & occupied & ~MASK_RANK_8 & ~MASK_FILE_H; // capture left
-        moveTypes.put(MoveType.PAWN_ATTACK, moveTypes.get(MoveType.PAWN_ATTACK) | satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard << 8) & empty & ~MASK_RANK_8;// move 1 forward
-        moveTypes.putIfAbsent(MoveType.USUAL_MOVE, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.USUAL_MOVE, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard << 16) & empty & (empty << 8) & MASK_RANK_4; // move 2 forward
-        moveTypes.putIfAbsent(MoveType.PAWN_LONG_MOVE, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_LONG_MOVE, satisfyingMoves));
 
         //Promotion
         satisfyingMoves = (pawnToMoveBitboard << 9) & notMyPieces & occupied & MASK_RANK_8 & ~MASK_FILE_A; // pawn promotion by capture right
-        moveTypes.putIfAbsent(MoveType.PAWN_TO_FIGURE_ATTACK, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_TO_FIGURE_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard << 7) & notMyPieces & occupied & MASK_RANK_8 & ~MASK_FILE_H; // pawn promotion by capture left
-        moveTypes.put(MoveType.PAWN_TO_FIGURE_ATTACK, moveTypes.get(MoveType.PAWN_TO_FIGURE_ATTACK) | satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_TO_FIGURE_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard << 8) & empty & MASK_RANK_8; // pawn promotion by move 1 forward
-        moveTypes.putIfAbsent(MoveType.PAWN_TO_FIGURE, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_TO_FIGURE, satisfyingMoves));
 
         if (enPassantFile != 0L) {
             // en passant right
             // shows destination, not piece to remove
             satisfyingMoves = (pawnToMoveBitboard << 9) & (opponentPawns << 8) & MASK_RANK_6 & ~MASK_FILE_A & enPassantFile;
             if (satisfyingMoves != 0) {
-                moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
+                moves.add(new MoveBitboard(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves));
             }
             // en passant left
             satisfyingMoves = (pawnToMoveBitboard << 7) & (opponentPawns << 8) & MASK_RANK_6 & ~MASK_FILE_H & enPassantFile;
             if (satisfyingMoves != 0) {
-                moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
+                moves.add(new MoveBitboard(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves));
             }
         }
-        return moveTypes;
+        return moves;
     }
 
-    public static Map<MoveType, Long> possibleBlackPawnMoves(final ChessBitboard chessBitboard, final int from) {
+    public static Set<MoveBitboard> possibleBlackPawnMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.BLACK)
             throw new IllegalArgumentException("Подсчёт ходов для чёрных пешек невозможен для белых пешек.");
         final long pawnToMoveBitboard = 1L << from;
@@ -76,42 +146,42 @@ public class BitboardDynamicPatterns {
         final long empty = chessBitboard.getEmpty();
         final long enPassantFile = chessBitboard.getEnPassantFile();
 
-        Map<MoveType, Long> moveTypes = new HashMap<>();
+        Set<MoveBitboard> moves = new HashSet<>();
         long satisfyingMoves = (pawnToMoveBitboard >>> 9) & notMyPieces & occupied & ~MASK_RANK_1 & ~MASK_FILE_H; // capture right
-        moveTypes.putIfAbsent(MoveType.PAWN_ATTACK, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard >>> 7) & notMyPieces & occupied & ~MASK_RANK_1 & ~MASK_FILE_A; // capture left
-        moveTypes.put(MoveType.PAWN_ATTACK, moveTypes.get(MoveType.PAWN_ATTACK) | satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard >>> 8) & empty & ~MASK_RANK_1; // move 1 forward
-        moveTypes.putIfAbsent(MoveType.USUAL_MOVE, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.USUAL_MOVE, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard >>> 16) & empty & (empty >>> 8) & MASK_RANK_5; // move 2 forward
-        moveTypes.putIfAbsent(MoveType.PAWN_LONG_MOVE, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_LONG_MOVE, satisfyingMoves));
 
         //Promotion
         satisfyingMoves = (pawnToMoveBitboard >>> 9) & notMyPieces & occupied & MASK_RANK_1 & ~MASK_FILE_H; // pawn promotion by capture right
-        moveTypes.putIfAbsent(MoveType.PAWN_TO_FIGURE_ATTACK, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_TO_FIGURE_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard >>> 7) & notMyPieces & occupied & MASK_RANK_1 & ~MASK_FILE_A; // pawn promotion by capture left
-        moveTypes.put(MoveType.PAWN_TO_FIGURE_ATTACK, moveTypes.get(MoveType.PAWN_TO_FIGURE_ATTACK) | satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_TO_FIGURE_ATTACK, satisfyingMoves));
 
         satisfyingMoves = (pawnToMoveBitboard >>> 8) & empty & MASK_RANK_1;// pawn promotion by move 1 forward
-        moveTypes.putIfAbsent(MoveType.PAWN_TO_FIGURE, satisfyingMoves);
+        moves.add(new MoveBitboard(MoveType.PAWN_TO_FIGURE, satisfyingMoves));
 
         if (enPassantFile != 0L) {
             // en passant right
             satisfyingMoves = (pawnToMoveBitboard >>> 9) & (opponentPawns >>> 8) & MASK_RANK_3 & ~MASK_FILE_H & enPassantFile;
             if (satisfyingMoves != 0) {
-                moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
+                moves.add(new MoveBitboard(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves));
             }
             // en passant left
             satisfyingMoves = (pawnToMoveBitboard >>> 7) & (opponentPawns >>> 8) & MASK_RANK_3 & ~MASK_FILE_A & enPassantFile;
             if (satisfyingMoves != 0) {
-                moveTypes.putIfAbsent(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves);
+                moves.add(new MoveBitboard(MoveType.PAWN_ON_GO_ATTACK, satisfyingMoves));
             }
         }
-        return moveTypes;
+        return moves;
     }
 
     public static long possibleWhitePawnMovesBitboard(final ChessBitboard chessBitboard, final int from) {

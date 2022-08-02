@@ -1,25 +1,8 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.logic.FENBoard;
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.Side;
-import io.deeplay.core.model.bitboard.ChessBitboard;
-import io.deeplay.core.model.bitboard.SideBitboards;
-import io.deeplay.core.parser.FENParser;
-import org.junit.Test;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static io.deeplay.core.logic.BitUtils.containsSameBits;
-import static org.junit.Assert.assertEquals;
-
 public class TestAllOpponentsFigures {
+
+    /*
     @Test
     public void testCompareAttacksAndPossibilitiesWhite() {
         FENBoard fenBoard =
@@ -51,7 +34,7 @@ public class TestAllOpponentsFigures {
 //                        .stream().map(MoveInfo::getCellTo).collect(Collectors.toList());
         Set<Coord> uniqueCoords = new HashSet<>(allCoords);
 
-        /*
+
         // Рекомендую для понимая различия выводить биты по из-за которых есть отличие в количестве угроз(атак)
         // и возможностях походить
 
@@ -60,7 +43,7 @@ public class TestAllOpponentsFigures {
             allMoves |= 1L << coord.getIndexAsOneDimension();
         }
         BitUtils.printBitboard(allMoves ^ allAttacks);
-        */
+
 
         assertEquals(39, allCoords.size());
         assertEquals(27, uniqueCoords.size());
@@ -129,5 +112,5 @@ public class TestAllOpponentsFigures {
         assertEquals(43, allCoords.size());
         assertEquals(25, uniqueCoords.size());
     }
-
+*/
 }

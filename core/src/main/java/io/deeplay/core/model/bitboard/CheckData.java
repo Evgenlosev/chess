@@ -5,7 +5,7 @@ public class CheckData {
      * Здесь находятся все клетки под атакой противника, без учёта своей фигуры короля, в виде битборда.
      * Нужно, для того чтобы отсечь множество допустимых ходов короля.
      */
-    public final long allAttacks;
+    private final long allAttacks;
     private final CheckType checkType;
     /**
      * Если checkType = ONE, то в переменной содержится информация о местоположении угрозы королю
