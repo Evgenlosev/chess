@@ -26,7 +26,7 @@ public class TestChessBoard {
                 "- - B - P - - - \n" +
                 "- - - - - N - - \n" +
                 "P P P P - P P P \n" +
-                "R N B Q - R K - \n" , board.toString());
+                "R N B Q - R K - \n", board.toString());
 
         moveinfo = new MoveInfo(new Coord(0, 6), new Coord(0, 4),
                 MoveType.PAWN_LONG_MOVE, Figure.B_PAWN);
@@ -100,6 +100,32 @@ public class TestChessBoard {
                 "- Q N - - - - - \n" +
                 "P P - - P P P P \n" +
                 "R - - - K B N R \n", board.toString());
+    }
+
+    @Test
+    public void threefoldRepetitionTest() {
+        GameInfo gameInfo = new GameInfo();
+        MoveInfo moveInfoWhiteFirst = new MoveInfo(new Coord(1, 0), new Coord(2, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT);
+        MoveInfo moveInfoWhiteSecond = new MoveInfo(new Coord(2, 2), new Coord(1, 0), MoveType.USUAL_MOVE, Figure.W_KNIGHT);
+        MoveInfo moveInfoBlackFirst = new MoveInfo(new Coord(6, 7), new Coord(5, 5), MoveType.USUAL_MOVE, Figure.B_KNIGHT);
+        MoveInfo moveInfoBlackSecond = new MoveInfo(new Coord(5, 5), new Coord(6, 7), MoveType.USUAL_MOVE, Figure.B_KNIGHT);
+        gameInfo.updateBoard(moveInfoWhiteFirst);
+        gameInfo.updateBoard(moveInfoBlackFirst);
+        gameInfo.updateBoard(moveInfoWhiteSecond);
+        gameInfo.updateBoard(moveInfoBlackSecond);
+        gameInfo.updateBoard(moveInfoWhiteFirst);
+        gameInfo.updateBoard(moveInfoBlackFirst);
+        gameInfo.updateBoard(moveInfoWhiteSecond);
+        gameInfo.updateBoard(moveInfoBlackSecond);
+        assertEquals(gameInfo.getGameStatus(), GameStatus.THREEFOLD_REPETITION);
+    }
+
+    @Test
+    public void fiftyMovesDrawTest() {
+        GameInfo gameInfo = new GameInfo("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 99 50");
+        MoveInfo moveInfoWhiteFirst = new MoveInfo(new Coord(1, 0), new Coord(2, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT);
+        gameInfo.updateBoard(moveInfoWhiteFirst);
+        assertEquals(gameInfo.getGameStatus(), GameStatus.FIFTY_MOVES_RULE);
     }
 
 

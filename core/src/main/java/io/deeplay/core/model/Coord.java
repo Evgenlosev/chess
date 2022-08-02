@@ -1,5 +1,7 @@
 package io.deeplay.core.model;
 
+import io.deeplay.core.logic.BitUtils;
+
 import java.util.Objects;
 
 public class Coord {
@@ -44,7 +46,7 @@ public class Coord {
 
     @Override
     public String toString() {
-        return "Coord{" + getIndexAsOneDimension() +
+        return "Coord{" + BitUtils.SQUARES_STRING[getIndexAsOneDimension()] +
                 '}';
     }
 

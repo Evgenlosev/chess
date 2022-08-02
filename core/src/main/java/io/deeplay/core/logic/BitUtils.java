@@ -100,9 +100,11 @@ public class BitUtils {
     public static final long G8 = F8 << 1;
     public static final long H8 = G8 << 1;
 
+    // TODO: удалить
     /**
      * Little endian rank-file (LERF) mapping.
      * Returns the square bitboard for a given bit index.
+     * Заменяет битовый сдвиг (1L << index) = SQUARES[index]
      */
     public static final long[] SQUARES = {
             A1, B1, C1, D1, E1, F1, G1, H1,
@@ -113,6 +115,17 @@ public class BitUtils {
             A6, B6, C6, D6, E6, F6, G6, H6,
             A7, B7, C7, D7, E7, F7, G7, H7,
             A8, B8, C8, D8, E8, F8, G8, H8
+    };
+
+    public static final String[] SQUARES_STRING = {
+            "A1", "B1", "C1", "D1", "E1", "F1", "G1", "H1",
+            "A2", "B2", "C2", "D2", "E2", "F2", "G2", "H2",
+            "A3", "B3", "C3", "D3", "E3", "F3", "G3", "H3",
+            "A4", "B4", "C4", "D4", "E4", "F4", "G4", "H4",
+            "A5", "B5", "C5", "D5", "E5", "F5", "G5", "H5",
+            "A6", "B6", "C6", "D6", "E6", "F6", "G6", "H6",
+            "A7", "B7", "C7", "D7", "E7", "F7", "G7", "H7",
+            "A8", "B8", "C8", "D8", "E8", "F8", "G8", "H8"
     };
 
     /**
@@ -329,8 +342,11 @@ public class BitUtils {
         return String.format("%" + Long.SIZE + "s", Long.toBinaryString(bitboard)).replace(' ', '0');
     }
 
-
-    // если не соединяемы по диагонали/вертикали/горизонтали, то возвращает 0, иначе соединяет единицами
+    // TODO: вычислять заполнение между клетками при инициализации, заносить результат в массив inBetween[x][y] - который содержит все виды соединений клеток
+    // если соединяемы по диагонали/вертикали/горизонтали, то соединяет единицами
+    // иначе, оставляет единицы в squareIndex1 и в squareIndex2 бите, это удобно, т.к. метод используется для короля
+    // а раз уж inBetween всегда включает позицию короля и для линейно-ходящих фигур,
+    // то стоит сохранить эту тенденцию и для других фигур (коня)
     public static long inBetween(int squareIndex1, int squareIndex2) {
         final int sq1 = Math.min(squareIndex1, squareIndex2);
         final int sq2 = Math.max(squareIndex1, squareIndex2);
@@ -345,7 +361,6 @@ public class BitUtils {
             long x = 0L;
             for (int i = sq1; i <= sq2; i += 8) {
                 x |= 1L << i;
-                printBitboard(x);
             }
             return x;
         }
@@ -369,7 +384,7 @@ public class BitUtils {
             return x;
         }
 
-        return 0L;
+        return (1L << squareIndex1) | (1L << squareIndex2);
     }
 
 }

@@ -1,22 +1,7 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.api.BitboardHandler;
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.Figure;
-import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.MoveType;
-import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.logic.FENBoard;
-import org.junit.Test;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-
 public class TestPawnBitboardHandler {
-
+/*
     @Test
     public void testPawnAtStartPositionClassic() {
         FENBoard FENBoard = new FENBoard("rnbqkbnr/ppp1p1pp/8/3p1p2/4P3/1P6/P1PP1PPP/RNBQKBNR b KQkq - 0 1");
@@ -144,5 +129,5 @@ public class TestPawnBitboardHandler {
 
         assertEquals(expectedMoveInfoSet, BitboardHandler.getPawnMoves(FENBoard, new Coord(BitUtils.BitIndex.F4_IDX.ordinal())));
     }
-
+*/
 }

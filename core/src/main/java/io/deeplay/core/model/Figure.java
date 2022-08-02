@@ -17,7 +17,12 @@ public enum Figure {
 
     public final int weight;
     private boolean moved;
+
     Figure(final int weight, final boolean moved) {
         this.weight = weight;
+    }
+
+    public int getWeight() {
+        return weight;
     }
 }
