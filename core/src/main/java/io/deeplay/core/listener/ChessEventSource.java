@@ -11,7 +11,11 @@ import java.util.List;
  * Use GameInfoGroup instead
  */
 public class ChessEventSource {
-    private final List<ChessListener> listeners = new ArrayList<>();
+    protected final List<ChessListener> listeners;
+
+    public ChessEventSource() {
+        listeners = new ArrayList<>();
+    }
 
     public void addListener(ChessListener listener) {
         this.listeners.add(listener);
