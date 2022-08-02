@@ -186,15 +186,4 @@ public class TestFen {
         assertTrue(FENParser.containsUnordered(FENParser.getCastlingRights(fenNotation), "Kq"));
     }
 
-    @Test
-    public void testBits() {
-        // white cells 0b0101010110101010010101011010101001010101101010100101010110101010L
-        // black cells 0b1010101001010101101010100101010110101010010101011010101001010101L
-        // white queenSide 7L << 2
-        // white kingSide 7L << 4
-        // black kingSide 7L << 60
-        // black queenSide 7L << 58
-        long bitOperations = 7L << 57;
-        BitUtils.printBitboard(bitOperations);
-    }
 }
