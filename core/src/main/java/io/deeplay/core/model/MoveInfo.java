@@ -22,7 +22,6 @@ public class MoveInfo {
         this.promoteTo = promoteTo;
     }
 
-
     public MoveInfo(final Coord cellFrom, final Coord cellTo, final MoveType moveType, final Figure figure) {
         this(cellFrom, cellTo, moveType, figure, null);
     }

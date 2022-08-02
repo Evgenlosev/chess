@@ -1,91 +1,107 @@
 package io.deeplay.core.api;
 
-import io.deeplay.core.logic.BitboardPatternsInitializer;
-import io.deeplay.core.model.*;
+import io.deeplay.core.logic.newlogic.SimpleBitboardHandler;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.bitboard.CheckType;
+import io.deeplay.core.model.bitboard.ChessBitboard;
+import io.deeplay.core.model.bitboard.SideBitboards;
 import io.deeplay.core.parser.FENParser;
 
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
-import static io.deeplay.core.api.BitboardHandler.getAllPossibleMovesWrapped;
+import static io.deeplay.core.logic.newlogic.SimpleBitboardHandler.getCurrentProcessingSideAllMoves;
+
 
 public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
     public boolean isMate(final String fenNotation) {
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenNotation);
-        Side mySide = FENParser.getTurnSide(fenNotation);
-        ChessBitboard chessBitboard = null;
-        // Определяем стороны
-        if (mySide == Side.WHITE)
-            chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
-        if (mySide == Side.BLACK)
-            chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        Objects.requireNonNull(chessBitboard);
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
 
-        CheckData mySideCheckData = BitboardHandler.getCheckData(chessBitboard);
-        final ChessBitboard opponentChessBitboard =
-                new ChessBitboard(chessBitboard.getOpponentBitboards(), chessBitboard.getMyBitboards()); // инвертируем стороны
-        CheckData opponentSideCheckData = BitboardHandler.getCheckData(opponentChessBitboard);
-        if (opponentSideCheckData.getCheckType().ordinal() > 0) {
-            throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
+        SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
+        SideBitboards opponentSideBitboards = currentSideChessBitboard.getOpponentSideBitboards();
+
+        ChessBitboard opponentChessBitboard = new ChessBitboard(currentTurnSideBitboards, opponentSideBitboards);
+        opponentChessBitboard.setProcessingSideCheckData(SimpleBitboardHandler
+                .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards))); // invertedClone()?
+
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
-        final int kingIndex = Long.numberOfTrailingZeros(chessBitboard.getMyBitboards().getKing());
-        long kingMoves = BitboardPatternsInitializer.kingMoveBitboards[kingIndex]
-                & ~mySideCheckData.getAllAttacks() & ~chessBitboard.getMyPieces();
         // мат проверяем только для нашей стороны (т.к. отсекается случай когда противник под шахом, а ход наш)
-        if (mySideCheckData.getCheckType() == CheckType.TWO && kingMoves == 0) {
+        if (currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.TWO &&
+                currentSideChessBitboard.getProcessingSideBitboards()
+                        .getKingPieceBitboards().getMovesUnderRestrictions(currentSideChessBitboard) == 0) {
             return true;
         }
-        if (mySideCheckData.getCheckType() == CheckType.TWO && kingMoves != 0) {
-            return true;
-        }
-        Map<Integer, Long> myAllPossibleMoves = BitboardHandler.getAllPossibleMoves(chessBitboard, mySideCheckData);
-        final long allMoves = myAllPossibleMoves.values().stream().reduce((x, y) -> x | y).orElse(0L);
-        return mySideCheckData.getCheckType() == CheckType.ONE && allMoves == 0L;
+        return currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
 
     @Override
     public boolean isStalemate(final String fenNotation) {
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenNotation);
-        Side mySide = FENParser.getTurnSide(fenNotation);
-        ChessBitboard chessBitboard = null;
-        // Определяем стороны
-        if (mySide == Side.WHITE)
-            chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
-        if (mySide == Side.BLACK)
-            chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        Objects.requireNonNull(chessBitboard);
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
 
-        CheckData mySideCheckData = BitboardHandler.getCheckData(chessBitboard);
-        final ChessBitboard opponentChessBitboard =
-                new ChessBitboard(chessBitboard.getOpponentBitboards(), chessBitboard.getMyBitboards()); // инвертируем стороны
-        CheckData opponentSideCheckData = BitboardHandler.getCheckData(opponentChessBitboard);
-        if (opponentSideCheckData.getCheckType().ordinal() > 0) {
-            throw new IllegalArgumentException("Шах противнику, однако ход наш, такое не возможно");
+        SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
+        SideBitboards opponentSideBitboards = currentSideChessBitboard.getOpponentSideBitboards();
+
+        ChessBitboard opponentChessBitboard = new ChessBitboard(currentTurnSideBitboards, opponentSideBitboards);
+        opponentChessBitboard.setProcessingSideCheckData(SimpleBitboardHandler
+                .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards)));
+        SimpleBitboardHandler.countAllPossibleMoves(opponentChessBitboard);
+
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
+                && opponentChessBitboard.getCountFiguresThatCanMove() == 0)
+            return true;
+        return currentSideChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
+                && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
+    }
 
-        Map<Integer, Long> myAllPossibleMoves = BitboardHandler.getAllPossibleMoves(chessBitboard, mySideCheckData);
-        return myAllPossibleMoves.entrySet().stream().noneMatch(x -> x.getValue() > 0L);
+    @Override
+    public boolean isDrawByPieceShortage(final String fenNotation) {
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
+
+        SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
+        SideBitboards opponentSideBitboards = currentSideChessBitboard.getOpponentSideBitboards();
+
+        ChessBitboard opponentChessBitboard = new ChessBitboard(currentTurnSideBitboards, opponentSideBitboards);
+        opponentChessBitboard.setProcessingSideCheckData(SimpleBitboardHandler
+                .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards)));
+        SimpleBitboardHandler.countAllPossibleMoves(opponentChessBitboard);
+
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
+        }
+        final boolean isBishopsAndKingsLeft = (currentSideChessBitboard.getProcessingSideBitboards().getKing() |
+                currentSideChessBitboard.getProcessingSideBitboards().getBishops() |
+                currentSideChessBitboard.getOpponentSideBitboards().getKing() |
+                currentSideChessBitboard.getOpponentSideBitboards().getBishops()) ==
+                currentSideChessBitboard.getOccupied();
+
+        final boolean isKnightsAndKingsLeft = (currentSideChessBitboard.getProcessingSideBitboards().getKing() |
+                currentSideChessBitboard.getProcessingSideBitboards().getKnights() |
+                currentSideChessBitboard.getOpponentSideBitboards().getKing() |
+                currentSideChessBitboard.getOpponentSideBitboards().getKnights()) ==
+                currentSideChessBitboard.getOccupied();
+
+        if ((currentSideChessBitboard.getProcessingSideBitboards().getKing() |
+                currentSideChessBitboard.getOpponentSideBitboards().getKing()) ==
+                currentSideChessBitboard.getOccupied())
+            return true;
+
+        if (currentSideChessBitboard.isOneBishop() && isBishopsAndKingsLeft)
+            return true;
+
+        if (currentSideChessBitboard.isOneKnight() && isKnightsAndKingsLeft)
+            return true;
+        return currentSideChessBitboard.isLeftBishopsOnAlikeCellColors() && isBishopsAndKingsLeft;
     }
 
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
-        Map<Side, SideBitboards> sideBitboards = FENParser.parseFENToBitboards(fenNotation);
-        Side mySide = FENParser.getTurnSide(fenNotation);
-        ChessBitboard chessBitboard = null;
-        // Определяем стороны
-        if (mySide == Side.WHITE)
-            chessBitboard = new ChessBitboard(sideBitboards.get(Side.WHITE), sideBitboards.get(Side.BLACK));
-        if (mySide == Side.BLACK)
-            chessBitboard = new ChessBitboard(sideBitboards.get(Side.BLACK), sideBitboards.get(Side.WHITE));
-        Objects.requireNonNull(chessBitboard);
-
-        CheckData mySideCheckData = BitboardHandler.getCheckData(chessBitboard);
-
-        Map<Integer, Long> myAllPossibleMoves = BitboardHandler.getAllPossibleMoves(chessBitboard, mySideCheckData);
-        return getAllPossibleMovesWrapped(chessBitboard, myAllPossibleMoves);
+        return getCurrentProcessingSideAllMoves(FENParser.parseFENToBitboards(fenNotation));
     }
 
 }
