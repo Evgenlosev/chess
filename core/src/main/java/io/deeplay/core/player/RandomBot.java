@@ -18,7 +18,7 @@ public class RandomBot extends Player {
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
         //TODO: должен быть реализован метод, который возвращает set
-        Set<MoveInfo> allMoves = gameInfo.getAvailableMoves(this.getSide());
+        Set<MoveInfo> allMoves = gameInfo.getAvailableMoves();
         // TODO: исправить IllegalArgumentException: bound must be positive, не работает с нулем, лучше просто проверку на ноль, а после проверить на мат и пат
         int randomMoveNumber = new Random().nextInt(allMoves.size());
         int i = 0;
