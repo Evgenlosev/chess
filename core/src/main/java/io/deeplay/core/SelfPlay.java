@@ -55,7 +55,7 @@ public class SelfPlay {
             LOGGER.info("Ходят {}", currentPlayerToMove.getSide());
             final MoveInfo moveInfo = currentPlayerToMove.getAnswer(gameInfo);
             gameInfoGroup.playerActed(currentPlayerToMove.getSide(), moveInfo);
-            LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide(), gameInfo.getFenBoard());
+            LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide(), moveInfo);
             LOGGER.info("\n" + gameInfo.getBoard().toString());
             changeCurrentPlayerToMove();
         }
