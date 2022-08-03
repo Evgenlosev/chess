@@ -13,7 +13,6 @@
         <module>server</module>
         <module>bot</module>
         <module>interaction</module>
-        <module>logic</module>
         <module>statistics</module>
     </modules>
     <packaging>pom</packaging>
@@ -24,7 +23,4 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-
-
-
 </project>
