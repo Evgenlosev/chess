@@ -38,4 +38,9 @@ public abstract class Player {
 
     public abstract PlayerType getPlayerType();
 
+    @Override
+    public String toString() {
+        return getPlayerType() + " " + side;
+
+    }
 }
