@@ -16,7 +16,7 @@ public class PlayerFactory {
             case RANDOM_BOT:
                 player = new RandomBot(side);
                 break;
-            case REMOTE_PLAYER:
+            case CLIENT:
                 player = new Client(side);
                 break;
             case HUMAN:

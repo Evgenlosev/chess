@@ -34,10 +34,10 @@ public class SelfPlay {
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
 
         //Если Player является клиентом, добавляем его в список слушателей игровых событий
-        if (firstPlayer.getPlayerType() == PlayerType.REMOTE_PLAYER) {
+        if (firstPlayer.getPlayerType() == PlayerType.CLIENT) {
             gameInfoGroup.addListener((ChessListener) firstPlayer);
         }
-        if (secondPlayer.getPlayerType() == PlayerType.REMOTE_PLAYER) {
+        if (secondPlayer.getPlayerType() == PlayerType.CLIENT) {
             gameInfoGroup.addListener((ChessListener) secondPlayer);
         }
     }

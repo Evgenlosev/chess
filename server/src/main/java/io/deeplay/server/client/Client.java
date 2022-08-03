@@ -56,7 +56,7 @@ public class Client extends Player implements ChessListener {
 
     @Override
     public PlayerType getPlayerType() {
-        return PlayerType.REMOTE_PLAYER;
+        return PlayerType.CLIENT;
     }
 
     @Override
