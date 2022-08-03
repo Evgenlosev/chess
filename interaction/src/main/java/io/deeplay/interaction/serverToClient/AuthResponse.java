@@ -15,20 +15,23 @@ public class AuthResponse extends Command {
             @JsonProperty("isAuthorized") final boolean isAuthorized,
             @JsonProperty("userId") final int userId,
             @JsonProperty("errorMessage") final String errorMessage) {
-        super(CommandType.AUTH_RESPONSE);
         this.isAuthorized = isAuthorized;
         this.userId = userId;
         this.errorMessage = errorMessage;
     }
 
-    public AuthResponse(final boolean isAuthorized, final int userId) {
-        super(CommandType.AUTH_RESPONSE);
+    public AuthResponse(final boolean isAuthorized, final String errorMessage) {
         this.isAuthorized = isAuthorized;
-        this.userId = userId;
+        this.userId = 0;
+        this.errorMessage = errorMessage;
+    }
+
+    public AuthResponse(final boolean isAuthorized) {
+        this.isAuthorized = isAuthorized;
+        this.userId = 0;
     }
 
     public AuthResponse() {
-        super(CommandType.AUTH_RESPONSE);
         this.isAuthorized = false;
         this.userId = 0;
     }
@@ -50,11 +53,16 @@ public class AuthResponse extends Command {
         this.errorMessage = errorMessage;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.AUTH_RESPONSE;
+    }
+
     @Override
     public String toString() {
         return "AuthResponse{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", isAuthorized=" + isAuthorized +
+                "isAuthorized=" + isAuthorized +
                 ", userId=" + userId +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';

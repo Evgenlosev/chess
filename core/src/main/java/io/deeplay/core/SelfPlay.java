@@ -52,10 +52,10 @@ public class SelfPlay {
         LOGGER.info("Партия началась");
         //Пока игра не закончена, рассылаем всем слушателям ходы игроков
         while (gameInfo.isGameOver()) {
-            LOGGER.info("Ходят {}", currentPlayerToMove.getSide());
+            LOGGER.info("Ходят {}", currentPlayerToMove.getSide().getDescription());
             final MoveInfo moveInfo = currentPlayerToMove.getAnswer(gameInfo);
             gameInfoGroup.playerActed(currentPlayerToMove.getSide(), moveInfo);
-            LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide(), moveInfo);
+            LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide().getDescription(), moveInfo.toString());
             LOGGER.info("\n" + gameInfo.getBoard().toString());
             changeCurrentPlayerToMove();
         }
