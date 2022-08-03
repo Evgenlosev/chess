@@ -1,32 +1,37 @@
 package io.deeplay.interaction.clientToServer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 
 @JsonTypeName("AuthRequest")
 public class AuthRequest extends Command {
-    private final String userName;
+    private final Side side;
 
-    public AuthRequest(final String userName) {
-        super(CommandType.AUTH_REQUEST);
-        this.userName = userName;
+    public AuthRequest(final Side side) {
+        this.side = side;
     }
 
     public AuthRequest() {
-        super(CommandType.AUTH_REQUEST);
-        this.userName = null;
+        this.side = null;
     }
 
-    public String getUserName() {
-        return userName;
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.AUTH_REQUEST;
+    }
+
+    public Side getSide() {
+        return side;
     }
 
     @Override
     public String toString() {
         return "AuthRequest{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", userName='" + userName + '\'' +
+                "side='" + side + '\'' +
                 '}';
     }
 }

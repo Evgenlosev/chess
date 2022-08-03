@@ -20,7 +20,7 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) {
-        LOGGER.info("Подключлся новый клиент");
+        LOGGER.info("Подключился новый клиент");
         LOGGER.info("Ожидаем подтверждения версии протокола");
     }
 

@@ -5,7 +5,7 @@ import io.deeplay.client.ChessClient;
 import io.deeplay.client.nettyClient.handlers.ClientInPingHandler;
 import io.deeplay.client.nettyClient.handlers.ClientInboundObjectDecoder;
 import io.deeplay.client.nettyClient.handlers.ClientOutBoundCommandEncoder;
-import io.deeplay.client.nettyClient.handlers.InboundProtocolVersionResponseHandler;
+import io.deeplay.client.nettyClient.handlers.ClientProtocolVersionHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -45,7 +45,7 @@ public class ChessNettyClient implements ChessClient {
                                     new ClientOutBoundCommandEncoder(),
                                     new ClientInboundObjectDecoder(),
                                     new ClientInPingHandler(),
-                                    new InboundProtocolVersionResponseHandler());
+                                    new ClientProtocolVersionHandler());
                         }
                     });
             //Запуск клиента

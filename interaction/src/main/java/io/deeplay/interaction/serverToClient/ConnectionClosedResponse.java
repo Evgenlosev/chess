@@ -1,5 +1,6 @@
 package io.deeplay.interaction.serverToClient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
@@ -9,11 +10,9 @@ public class ConnectionClosedResponse extends Command {
     private String errorMessage;
 
     public ConnectionClosedResponse() {
-        super(CommandType.CONNECTION_CLOSED_RESPONSE);
     }
 
     public ConnectionClosedResponse(final String errorMessage) {
-        super(CommandType.CONNECTION_CLOSED_RESPONSE);
         this.errorMessage = errorMessage;
     }
 
@@ -25,10 +24,15 @@ public class ConnectionClosedResponse extends Command {
         this.errorMessage = errorMessage;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.CONNECTION_CLOSED_RESPONSE;
+    }
+
     @Override
     public String toString() {
         return "ConnectionClosedResponse{" +
-                "commandType='" + super.getCommandType() + '\'' +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';
     }

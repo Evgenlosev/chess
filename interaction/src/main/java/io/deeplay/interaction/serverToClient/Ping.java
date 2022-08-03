@@ -1,5 +1,6 @@
 package io.deeplay.interaction.serverToClient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
@@ -8,13 +9,17 @@ import io.deeplay.interaction.CommandType;
 public class Ping extends Command {
 
     public Ping() {
-        super(CommandType.PING);
+    }
+
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.PING;
     }
 
     @Override
     public String toString() {
         return "Ping{" +
-                "commandType='" + super.getCommandType() + '\'' +
                 "}";
     }
 }

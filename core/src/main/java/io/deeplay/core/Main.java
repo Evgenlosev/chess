@@ -5,7 +5,7 @@ import io.deeplay.core.player.RandomBot;
 
 public class Main {
     public static void main(final String[] args) {
-        SelfPlay selfPlay = new SelfPlay(new RandomBot(Side.WHITE, 0), new RandomBot(Side.BLACK, 1));
+        SelfPlay selfPlay = new SelfPlay(new RandomBot(Side.WHITE), new RandomBot(Side.BLACK));
         selfPlay.play();
     }
 }
