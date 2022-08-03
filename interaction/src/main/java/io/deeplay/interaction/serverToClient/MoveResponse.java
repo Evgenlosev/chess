@@ -1,27 +1,33 @@
 package io.deeplay.interaction.serverToClient;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 
 @JsonTypeName("MoveResponse")
 public class MoveResponse extends Command {
-    private final boolean isMoveCorrect;
-    //TODO Здесь передаем объект класса доски с текущем положением фигур
-    @JsonCreator
-    public MoveResponse(@JsonProperty("isMoveCorrect") final boolean isMoveCorrect) {
-        this.isMoveCorrect = isMoveCorrect;
+    private final MoveInfo moveInfo;
+    private final Side side;
+
+    public MoveResponse(final MoveInfo moveInfo, final Side side) {
+        this.moveInfo = moveInfo;
+        this.side = side;
     }
 
-    public MoveResponse() {
-        this.isMoveCorrect = false;
+    private MoveResponse() {
+        this.moveInfo = null;
+        this.side = null;
     }
-    @JsonProperty("isMoveCorrect")
-    public boolean isMoveCorrect() {
-        return isMoveCorrect;
+
+    public MoveInfo getMoveInfo() {
+        return moveInfo;
+    }
+
+    public Side getSide() {
+        return side;
     }
 
     @JsonIgnore
@@ -33,7 +39,8 @@ public class MoveResponse extends Command {
     @Override
     public String toString() {
         return "MoveResponse{" +
-                "isMoveCorrect=" + isMoveCorrect +
+                "moveInfo=" + moveInfo +
+                ", side=" + side +
                 '}';
     }
 }
