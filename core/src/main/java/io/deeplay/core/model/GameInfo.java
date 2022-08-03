@@ -32,11 +32,6 @@ public class GameInfo implements ChessListener {
         gameStatus = GameStatus.ACTIVE;
     }
 
-    public GameInfo(final ChessBoard board) {
-        this.board = board;
-        this.gameStatus = GameStatus.INACTIVE;
-    }
-
     public ChessBoard getBoard() {
         return board;
     }
@@ -91,7 +86,12 @@ public class GameInfo implements ChessListener {
     public Set<MoveInfo> getAvailableMoves() {
         Set<MoveInfo> moves = logic.getMoves(board.getFEN());
         if (moves == null || moves.size() < 1) {
-            gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+            if (logic.isMate(board.getFEN())) {
+                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+            }
+            else {
+                gameStatus = GameStatus.STALEMATE;
+            }
         }
         return moves;
     }
@@ -201,6 +201,5 @@ public class GameInfo implements ChessListener {
      */
     @Override
     public void gameOver() {
-        gameStatus = GameStatus.INACTIVE;
     }
 }
