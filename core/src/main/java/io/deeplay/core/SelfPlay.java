@@ -1,10 +1,12 @@
 package io.deeplay.core;
 
+import io.deeplay.core.listener.ChessListener;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
+import io.deeplay.core.player.PlayerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +32,14 @@ public class SelfPlay {
         }
         this.currentPlayerToMove = firstPlayer;
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
+
+        //Если Player является клиентом, добавляем его в список слушателей игровых событий
+        if (firstPlayer.getPlayerType() == PlayerType.REMOTE_PLAYER) {
+            gameInfoGroup.addListener((ChessListener) firstPlayer);
+        }
+        if (secondPlayer.getPlayerType() == PlayerType.REMOTE_PLAYER) {
+            gameInfoGroup.addListener((ChessListener) secondPlayer);
+        }
     }
 
     /**
@@ -45,9 +55,9 @@ public class SelfPlay {
 
     public void play() {
         gameInfoGroup.playerSeated(firstPlayer.getSide());
-        LOGGER.info("Игрок присоединился к партии за белых");
+        LOGGER.info("{} присоединился к партии за белых", firstPlayer);
         gameInfoGroup.playerSeated(secondPlayer.getSide());
-        LOGGER.info("Игрок присоединился к партии за черных");
+        LOGGER.info("{} присоединился к партии за черных", secondPlayer);
         gameInfoGroup.gameStarted();
         LOGGER.info("Партия началась");
         //Пока игра не закончена, рассылаем всем слушателям ходы игроков
