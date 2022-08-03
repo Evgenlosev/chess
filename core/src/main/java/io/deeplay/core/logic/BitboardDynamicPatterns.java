@@ -28,9 +28,8 @@ public class BitboardDynamicPatterns {
     private static final long whiteQueenSideShouldBeEmptySquares = 7L << 1;
     private static final long blackKingSideShouldBeEmptySquares = 3L << 61;
     private static final long blackQueenSideShouldBeEmptySquares = 7L << 57;
-    // Отрицание атак с маской рокировки
 
-    public static Set<MoveBitboard> possibleWhiteKingMoves(final ChessBitboard chessBitboard, final int from) {
+    public static Set<MoveBitboard> possibleWhiteKingMoves(final ChessBitboard chessBitboard, final int from) { // TODO: from не используется
         if (chessBitboard.getProcessingSide() != Side.WHITE)
             throw new IllegalArgumentException("Calculation method for white pieces is impossible for black pieces.");
         Set<MoveBitboard> moves = new HashSet<>();
