@@ -100,7 +100,6 @@ public class BitUtils {
     public static final long G8 = F8 << 1;
     public static final long H8 = G8 << 1;
 
-    // TODO: удалить
     /**
      * Little endian rank-file (LERF) mapping.
      * Returns the square bitboard for a given bit index.

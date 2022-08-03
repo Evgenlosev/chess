@@ -53,7 +53,7 @@ public class BitboardDynamicPatterns {
         if (chessBitboard.isWhiteQueenSideCastlingRight()
                 && containsSameBits(notUnderAttack, whiteQueenSideShouldBeSafeMask)
                 && !containsSameBits(whiteQueenSideShouldBeEmptySquares, occupied))
-            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 2));
+            moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 2));
 
         return moves;
     }
@@ -81,12 +81,11 @@ public class BitboardDynamicPatterns {
         if (chessBitboard.isBlackQueenSideCastlingRight()
                 && containsSameBits(notUnderAttack, blackQueenSideShouldBeSafeMask)
                 && !containsSameBits(blackQueenSideShouldBeEmptySquares, occupied))
-            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 58));
+            moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 58));
 
         return moves;
     }
 
-    // TODO: удалить не нужные методы
     public static Set<MoveBitboard> possibleWhitePawnMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.WHITE)
             throw new IllegalArgumentException("Calculation method for white pieces is impossible for black pieces.");

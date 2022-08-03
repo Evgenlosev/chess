@@ -95,8 +95,11 @@ public class SimpleBitboardHandler {
             allAttacks |= pieceMoves;
         }
         allAttacks |= chessBitboard.getOpponentSideBitboards().getKingPieceBitboards().getAllMovesBitboard();
-        if (countChecks > 1)
+        if (countChecks > 1) {
+            // 0L в threatPieceBitboard и threateningPiecePositionBitboard,
+            // чтобы остальные фигуры не могли спасти короля, т.к. при двойном шахе может походить только король
             return new CheckData(CheckType.TWO, 0L, 0L, allAttacks);
+        }
         if (countChecks == 1)
             return new CheckData(CheckType.ONE,
                     threatPieceBitboard ^ myKingBitboard,
@@ -207,7 +210,7 @@ public class SimpleBitboardHandler {
                 }
             }
         }
-        // считаем допустимые ходы для короля
+        // Считаем допустимые ходы для короля
         chessBitboard.getProcessingSideBitboards().getKingPieceBitboards().addRestriction(
                 ~chessBitboard.getProcessingSideCheckData().getAllAttacks() // Клетки НЕ под атакой.
                         & ~chessBitboard.getProcessingSidePieces()); // Нельзя нападать на своих.
