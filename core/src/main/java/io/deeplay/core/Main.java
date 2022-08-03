@@ -8,7 +8,7 @@ import io.deeplay.core.player.RandomBot;
 public class Main {
     public static void main(String[] args) {
         BoardDrawer.draw(null);
-        SelfPlay selfPlay = new SelfPlay(new RandomBot(Side.WHITE, 0), new RandomBot(Side.BLACK, 1));
+        SelfPlay selfPlay = new SelfPlay(new RandomBot(Side.WHITE, 0L), new RandomBot(Side.BLACK, 0L));
         selfPlay.play();
 
     }
