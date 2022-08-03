@@ -53,7 +53,7 @@ public class BitboardDynamicPatterns {
         if (chessBitboard.isWhiteQueenSideCastlingRight()
                 && containsSameBits(notUnderAttack, whiteQueenSideShouldBeSafeMask)
                 && !containsSameBits(whiteQueenSideShouldBeEmptySquares, occupied))
-            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 2));
+            moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 2));
 
         return moves;
     }
@@ -81,7 +81,7 @@ public class BitboardDynamicPatterns {
         if (chessBitboard.isBlackQueenSideCastlingRight()
                 && containsSameBits(notUnderAttack, blackQueenSideShouldBeSafeMask)
                 && !containsSameBits(blackQueenSideShouldBeEmptySquares, occupied))
-            moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 58));
+            moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 58));
 
         return moves;
     }
