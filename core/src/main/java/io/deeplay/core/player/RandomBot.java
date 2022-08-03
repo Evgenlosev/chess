@@ -1,33 +1,39 @@
 package io.deeplay.core.player;
 
+import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 import java.util.Set;
 
 public class RandomBot extends Player {
-    private final PlayerType playerType;
 
-    public RandomBot(final Side side, final int id) {
-        super(side, id);
-        this.playerType = PlayerType.RANDOM_BOT;
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomBot.class);
+    private final Random random;
+
+    public RandomBot(final Side side) {
+        super(side);
+        long seed = System.currentTimeMillis();
+        this.random = new Random(seed);
+        LOGGER.info("Для {} установлен seed - {}", this, seed);
     }
 
     @Override
+    public PlayerType getPlayerType() {
+        return PlayerType.RANDOM_BOT;
+    }
+
+    /**
+     * Возвращает рандомный ход
+     * @param gameInfo - текущее состоние партии
+     */
+    @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
-        //TODO: должен быть реализован метод, который возвращает set
         Set<MoveInfo> allMoves = gameInfo.getAvailableMoves();
-        // TODO: исправить IllegalArgumentException: bound must be positive, не работает с нулем, лучше просто проверку на ноль, а после проверить на мат и пат
-        int randomMoveNumber = new Random().nextInt(allMoves.size());
-        int i = 0;
-        for (MoveInfo moveInfo : allMoves) {
-            if (i == randomMoveNumber) {
-                return moveInfo;
-            }
-            i++;
-        }
-        return null;
+        int randomMoveNumber = random.nextInt(allMoves.size());
+        return (MoveInfo) allMoves.toArray()[randomMoveNumber];
     }
 }

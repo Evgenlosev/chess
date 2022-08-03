@@ -15,7 +15,6 @@ public class ClientInboundCommandHandler extends SimpleChannelInboundHandler<Com
      */
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
-        LOGGER.info("Поступила команда от сервера: {}", command);
     }
 
     @Override

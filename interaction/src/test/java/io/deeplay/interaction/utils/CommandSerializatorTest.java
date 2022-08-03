@@ -1,6 +1,7 @@
 package io.deeplay.interaction.utils;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.AuthRequest;
 import io.deeplay.interaction.clientToServer.MoveRequest;
@@ -15,13 +16,13 @@ public class CommandSerializatorTest {
 
     @Test
     public void testSerializeCommand() throws IOException {
-        Command command = new AuthRequest("Bob");
+        Command command = new AuthRequest(Side.WHITE);
         byte[] bytes = CommandSerializator.serializeCommand(command);
         Command result = CommandSerializator.deserializeByteArray(bytes);
 
         Assert.assertEquals(command.getClass(), result.getClass());
         Assert.assertEquals(command.getCommandType(), result.getCommandType());
-        Assert.assertEquals(((AuthRequest) command).getUserName(), ((AuthRequest) result).getUserName());
+        Assert.assertEquals(((AuthRequest) command).getSide(), ((AuthRequest) result).getSide());
     }
 
     @Test

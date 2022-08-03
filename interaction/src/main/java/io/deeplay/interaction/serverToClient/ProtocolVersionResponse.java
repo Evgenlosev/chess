@@ -1,6 +1,7 @@
 package io.deeplay.interaction.serverToClient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
@@ -12,20 +13,17 @@ public class ProtocolVersionResponse extends Command {
     private String errorMessage;
 
     public ProtocolVersionResponse(final boolean isVersionMatch) {
-        super(CommandType.PROTOCOL_VERSION_RESPONSE);
         this.isVersionMatch = isVersionMatch;
     }
     @JsonCreator
     public ProtocolVersionResponse(
             @JsonProperty("isVersionMatch") final boolean isVersionMatch,
             @JsonProperty("errorMessage") final String errorMessage) {
-        super(CommandType.PROTOCOL_VERSION_RESPONSE);
         this.isVersionMatch = isVersionMatch;
         this.errorMessage = errorMessage;
     }
 
     public ProtocolVersionResponse() {
-        super(CommandType.PROTOCOL_VERSION_RESPONSE);
         this.isVersionMatch = false;
     }
 
@@ -42,11 +40,16 @@ public class ProtocolVersionResponse extends Command {
         this.errorMessage = errorMessage;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.PROTOCOL_VERSION_RESPONSE;
+    }
+
     @Override
     public String toString() {
         return "ProtocolVersionResponse{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", isVersionMatch=" + isVersionMatch +
+                "isVersionMatch=" + isVersionMatch +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';
     }

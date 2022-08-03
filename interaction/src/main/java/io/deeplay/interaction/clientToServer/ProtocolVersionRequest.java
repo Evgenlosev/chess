@@ -1,5 +1,6 @@
 package io.deeplay.interaction.clientToServer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
@@ -9,12 +10,10 @@ public class ProtocolVersionRequest extends Command {
     private final String protocolVersion;
 
     public ProtocolVersionRequest(final String protocolVersion) {
-        super(CommandType.PROTOCOL_VERSION_REQUEST);
         this.protocolVersion = protocolVersion;
     }
 
     public ProtocolVersionRequest() {
-        super(CommandType.PROTOCOL_VERSION_REQUEST);
         this.protocolVersion = null;
     }
 
@@ -22,11 +21,16 @@ public class ProtocolVersionRequest extends Command {
         return protocolVersion;
     }
 
+    @JsonIgnore
+    @Override
+    public CommandType getCommandType() {
+        return CommandType.PROTOCOL_VERSION_REQUEST;
+    }
+
     @Override
     public String toString() {
         return "ProtocolVersionRequest{" +
-                "commandType='" + super.getCommandType() + '\'' +
-                ", protocolVersion='" + protocolVersion + '\'' +
+                "protocolVersion='" + protocolVersion + '\'' +
                 '}';
     }
 }
