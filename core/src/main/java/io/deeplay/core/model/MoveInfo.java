@@ -26,6 +26,14 @@ public class MoveInfo {
         this(cellFrom, cellTo, moveType, figure, null);
     }
 
+    public MoveInfo() {
+        this.cellFrom = null;
+        this.cellTo = null;
+        this.moveType = null;
+        this.figure = null;
+        this.promoteTo = null;
+    }
+
     public Coord getCellFrom() {
         return cellFrom;
     }
@@ -47,7 +55,7 @@ public class MoveInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MoveInfo moveInfo = (MoveInfo) o;
