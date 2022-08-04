@@ -33,6 +33,7 @@ public class SelfPlay {
         }
         this.currentPlayerToMove = firstPlayer;
         consoleCommands = new ConsoleCommands();
+        this.currentPlayerToMove = this.firstPlayer;
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
 //        gameInfoGroup.addListener(consoleCommands);
         gameInfoGroup.addListener(firstPlayer);
