@@ -20,7 +20,7 @@ public class BoardDrawer {
     public static void draw(final String fen) {
         // Очистить экран
         System.out.print("\033[H\033[J");
-        ChessBoard board = new ChessBoard("rnbqkbnr/p1ppp2p/8/1pP1PPp1/3p4/8/PPP3PP/RNBQKBNR w KQkq b6 0 1");
+        ChessBoard board = new ChessBoard(fen);
         String unzipBoard = board.unzipFen(board.getFEN()).replace("/", "");
         unzipBoard = unzipBoard.replace("p", "\u265F");
         unzipBoard = unzipBoard.replace("r", "\u265C");

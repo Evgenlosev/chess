@@ -13,7 +13,6 @@ public class RandomBot extends Player {
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomBot.class);
     private final Random random;
-    private long seed;
 
 
     public RandomBot(final Side side) {
@@ -27,13 +26,8 @@ public class RandomBot extends Player {
         super(side);
         this.random = new Random(seed);
         LOGGER.info("Для {} установлен seed - {}", this, seed);
-        this.seed = seed;
     }
 
-    @Override
-    public PlayerType getPlayerType() {
-        return PlayerType.RANDOM_BOT;
-    }
 
     /**
      * Возвращает рандомный ход

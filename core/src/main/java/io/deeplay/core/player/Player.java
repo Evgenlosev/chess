@@ -1,21 +1,15 @@
 package io.deeplay.core.player;
 
+import io.deeplay.core.listener.ChessListener;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
-public abstract class Player {
+public abstract class Player implements ChessListener {
     private Side side;
-    private int id;
-
-    public Player(final Side side, final int id) {
-        this.side = side;
-        this.id = id;
-    }
 
     public Player(final Side side) {
         this.side = side;
-        this.id = 0;
     }
 
     public Side getSide() {
@@ -26,21 +20,66 @@ public abstract class Player {
         this.side = side;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(final int id) {
-        this.id = id;
-    }
-
     public abstract MoveInfo getAnswer(GameInfo gameInfo);
-
-    public abstract PlayerType getPlayerType();
 
     @Override
     public String toString() {
-        return getPlayerType() + " " + side;
+        return side.toString();
+
+    }
+
+    @Override
+    public void gameStarted() {
+
+    }
+
+    @Override
+    public void playerSeated(Side side) {
+
+    }
+
+    @Override
+    public void playerActed(Side side, MoveInfo moveInfo) {
+
+    }
+
+    @Override
+    public void offerDraw(Side side) {
+
+    }
+
+    @Override
+    public void acceptDraw(Side side) {
+
+    }
+
+    @Override
+    public void playerRequestsTakeBack(Side side) {
+
+    }
+
+    @Override
+    public void playerAgreesTakeBack(Side side) {
+
+    }
+
+    @Override
+    public void playerResigned(Side side) {
+
+    }
+
+    @Override
+    public void draw() {
+
+    }
+
+    @Override
+    public void playerWon(Side side) {
+
+    }
+
+    @Override
+    public void gameOver() {
 
     }
 }
