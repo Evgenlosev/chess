@@ -30,7 +30,7 @@ public class SelfPlay {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-        this.currentPlayerToMove = firstPlayer;
+        this.currentPlayerToMove = this.firstPlayer;
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
 
         //Если Player является клиентом, добавляем его в список слушателей игровых событий
