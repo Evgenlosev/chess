@@ -2,6 +2,8 @@ package io.deeplay.client.nettyClient.handlers;
 
 import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
+import io.deeplay.interaction.CommandType;
+import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
@@ -23,4 +25,15 @@ public class ClientInboundCommandHandler extends SimpleChannelInboundHandler<Com
         LOGGER.error("Прервано соединение с сервером", cause);
         ctx.close();
     }
+
+    private void gameOverHandler(final ChannelHandlerContext ctx, final Command command) {
+        if (command.getCommandType() == CommandType.GAME_OVER_REQUEST) {
+            final GameOverResponse gameOverResponse = (GameOverResponse) command;
+            if (gameOverResponse.isGameOvered()) {
+                LOGGER.info("Игра завершилась с результатом: " + gameOverResponse.getGameStatus());
+                // TODO: TUI отрисовывает результат
+            }
+        }
+    }
+
 }

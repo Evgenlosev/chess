@@ -2,11 +2,12 @@ package io.deeplay.server.handlers;
 
 import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
-import io.deeplay.interaction.clientToServer.MoveRequest;
-import io.deeplay.server.client.Client;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.GameOverRequest;
+import io.deeplay.interaction.clientToServer.MoveRequest;
+import io.deeplay.server.client.Client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,9 @@ import org.slf4j.LoggerFactory;
 
 public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(InboundCommandHandler.class);
-    private Client client;
+    private final Client client;
+    // TODO: gameInfo с chessBoard нужен здесь
+
 
     public InboundCommandHandler(final Client client) {
         this.client = client;
@@ -31,7 +34,9 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
                     client.setCurrentMove(moveInfo);
                 }
                 break;
-            gameOverHandler(channelHandlerContext, command);
+            case GAME_OVER_REQUEST:
+                resignHandler(ctx, command);
+                break;
         }
     }
 
@@ -41,21 +46,24 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
         ctx.close();
     }
 
-    private void gameOverHandler(final ChannelHandlerContext ctx, final Command command) { // Как отправить ответ обоим игрокам?
+    // Метод обработки события когда игрок сдался
+    private void resignHandler(final ChannelHandlerContext ctx, final Command command) { // Как отправить ответ обоим игрокам?
         if (command.getCommandType() == CommandType.GAME_OVER_REQUEST) {
-            GameOverRequest gameOverRequest = (GameOverRequest) command;
+            final GameOverRequest gameOverRequest = (GameOverRequest) command;
             if (gameOverRequest.getSide() != null) {
-                // По хорошему надо получить клиентов, и если сторона из запроса не равна одному из клиентов, то тот и победил
-                //GameSession thisGame = new GameSession(client, new RandomBot(Side.otherSide(client.getSide())));
-                //LOGGER.info("Начало партии");
-                //ctx.writeAndFlush(new StartGameResponse(true));
-                //Если сессия создана, удаляем из конвейера текущий хэндлер и добавляем StartGameHandler
+                final Side gameOverInitiator = gameOverRequest.getSide();
+                LOGGER.info("Сторона " + gameOverInitiator + " - сдалась.");
+                client.playerResigned(gameOverInitiator); // Уведомляем сами себя о конце игры, а надо бы обоих клиентов
+                client.gameOver(); // TODO: игра окончена
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new StartGameHandler()); // Пересоздаем игру
+                ctx.channel().pipeline().close(); // TODO: Пересоздаем игру (по хорошему должен быть хэндлер настройки игры перед стартом игры)
             }
             // Если все же null, то мы не знаем какая сторона вышла, кто победил
             // Ping должен предупредить, что определенный клиент пропал и тогда статус игры
             // с победой оставшегося игрока надо передать только одному (ну либо выйдет время на ход)
+
+            // TODO: кто то должен инициировать конец игры в случае если игра закончилась по правилам
+            // Нету GameInfo как понять что игра закончилась по правилам? После каждого MoveRequest проверять на конец игры
         }
     }
 }

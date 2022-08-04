@@ -2,10 +2,12 @@ package io.deeplay.server.client;
 
 import io.deeplay.core.listener.ChessListener;
 import io.deeplay.core.model.GameInfo;
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.core.player.PlayerType;
+import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -96,17 +98,23 @@ public class Client extends Player implements ChessListener {
 
     @Override
     public void playerResigned(final Side side) {
-
+        ctx.writeAndFlush(new GameOverResponse(true,
+                side == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON,
+                null));
     }
 
     @Override
     public void draw() {
-
+        ctx.writeAndFlush(new GameOverResponse(true,
+                GameStatus.DRAW, // Как то передавать разные виды ничей
+                null));
     }
 
     @Override
     public void playerWon(final Side side) {
-
+        ctx.writeAndFlush(new GameOverResponse(true,
+                side == Side.WHITE ? GameStatus.WHITE_WON : GameStatus.BLACK_WON,
+                null));
     }
 
     @Override

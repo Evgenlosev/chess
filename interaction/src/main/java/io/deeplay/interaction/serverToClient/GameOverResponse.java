@@ -8,11 +8,6 @@ import io.deeplay.core.model.GameStatus;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 
-// TODO: должно от слушателей узнавать об обновленном статусе игры и посылать его
-// 2 варианта
-// клиент сам прервал игру и уведомит об этом
-// игра закончилась по правилам и уведомить, всех клиентов партии, о её конце, должен сервер
-
 @JsonTypeName("GameOverResponse")
 public class GameOverResponse extends Command {
     private final boolean isGameOvered;

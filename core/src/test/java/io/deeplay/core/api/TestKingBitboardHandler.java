@@ -1,13 +1,96 @@
 package io.deeplay.core.api;
 
 
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.Figure;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.MoveType;
+import org.junit.Test;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.deeplay.core.logic.BitUtils.BitIndex.E1_IDX;
+import static io.deeplay.core.logic.BitUtils.BitIndex.E2_IDX;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class TestKingBitboardHandler {
+
     // TODO: тест на невозможность королю срубить фигуру под защитой
     // TODO: тест на "дуэль королей" (они не могут подойти ближе 1 клетки)
     // TODO: тест на невозможность пройти линию атаки фигуры, которая связана
     // TODO: тест на невозможность пройти линию атаки
     // TODO: тест на рокировку (с 2 сторон, невозможность совершить рокировку (т.к. потеряно право)
     // TODO: тесты с фигурами на пути рокировки(возможности рокировки быть не должно)
+
+    @Test
+    public void testGetMovesKingDuel() {
+        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+        String fenNotation = "8/8/8/8/2k5/8/3K4/8 b - - 0 1";
+
+        assertEquals(6, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.B_KING).count());
+    }
+
+    @Test
+    public void testGetWhiteKingMovesAtStartingPosition() {
+        /*
+         * Check possible E1 king's moves in default position
+         */
+        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        assertTrue(simpleLogicAppeal.getMoves(fenNotation)
+                .stream().anyMatch(pieceMoves -> pieceMoves.getFigure() != Figure.W_KING));
+    }
+
+    @Test
+    public void testGetBlackKingMovesAtStartingPosition() {
+        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
+
+        System.out.println(simpleLogicAppeal.getMoves(fenNotation));
+        assertTrue(simpleLogicAppeal.getMoves(fenNotation)
+                .stream().anyMatch(pieceMoves -> pieceMoves.getFigure() != Figure.B_KING));
+    }
+
+    @Test
+    public void testGetKingMovesAfterPawnInFrontOfKingMove() {
+        /*
+         * Check possible E1 king's moves after e4e5
+         */
+        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+        String fenNotation = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 1";
+
+        Set<MoveInfo> kingMoves = Stream.of(
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(E2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING)
+        ).collect(Collectors.toSet());
+
+        assertEquals(1, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).count());
+        assertEquals(kingMoves, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void testGetKingMoves() {
+        /*
+         * Check possible E1 king's moves after e4e5
+         */
+        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+        String fenNotation = "rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq e6 0 1";
+
+        Set<MoveInfo> kingMoves = Stream.of(
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(E2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING)
+        ).collect(Collectors.toSet());
+
+        assertEquals(1, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).count());
+        assertEquals(kingMoves, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).collect(Collectors.toSet()));
+    }
     /*
     @Test
     public void getKingMovesTest() {

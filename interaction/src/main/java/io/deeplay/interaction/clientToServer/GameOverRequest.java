@@ -10,8 +10,6 @@ import io.deeplay.interaction.CommandType;
 @JsonTypeName("GameOverRequest")
 public class GameOverRequest extends Command {
     private final Side side;
-    // Думаю сюда так же надо будет передавать GameStatus, если оба игрока согласятся на ничью,
-    // однако запросов на ничью пока никаких нет. Без gameStatus, GameOverRequest означает, что игрок закрыл игру
 
     public GameOverRequest(final Side side) {
         this.side = side;
