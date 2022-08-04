@@ -24,7 +24,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<Command> {
                 RemotePlayer client = new RemotePlayer(authRequest.getSide(), ctx);
                 LOGGER.info("Пользователь авторизован, сторона - {}", authRequest.getSide());
                 ctx.writeAndFlush(new AuthResponse(true));
-                //Если авторизация подтверждена, удаляем из конвеера текущий хэндлер и добавляем StartGameHandler
+                //Если авторизация подтверждена, удаляем из конвейера текущий хэндлер и добавляем StartGameHandler
                 ctx.channel().pipeline().remove(this);
                 ctx.channel().pipeline().addLast(new StartGameHandler(client));
             } else {

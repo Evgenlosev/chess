@@ -10,11 +10,12 @@ public class ClientInboundCommandHandler extends SimpleChannelInboundHandler<Com
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientInboundCommandHandler.class);
 
     /**
-     * @param ctx ссылка на контекст между сервером  клиеном
+     * @param ctx     ссылка на контекст между сервером и клиентом
      * @param command в этом блоке получаем на вход десериализованный объект класса Command
      */
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
+
     }
 
     @Override
