@@ -164,7 +164,12 @@ public class ChessBoard implements Cloneable {
                 break;
             case PAWN_TO_FIGURE_ATTACK:
             case PAWN_TO_FIGURE:
-                throw new RuntimeException("Transformation has not been done yet.");
+                if (moveInfo.getPromoteTo() == null) {
+                    board[to.getRow()][to.getColumn()].setFigure(whoseMove == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN);
+                } else {
+                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getPromoteTo());
+                }
+                break;
             case CASTLE_LONG:
                 if ((moveInfo.getFigure() == Figure.B_KING ||
                         moveInfo.getFigure() == Figure.W_KING) &&

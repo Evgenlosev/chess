@@ -5,7 +5,7 @@ import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.AuthRequest;
 import io.deeplay.interaction.serverToClient.AuthResponse;
-import io.deeplay.server.session.RemotePlayer;
+import io.deeplay.server.client.Client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,8 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<Command> {
         if (command.getCommandType() == CommandType.AUTH_REQUEST) {
             AuthRequest authRequest = (AuthRequest) command;
             if (authRequest.getSide() != null) {
-                RemotePlayer client = new RemotePlayer(authRequest.getSide(), ctx);
-                LOGGER.info("Пользователь авторизован, сторона - {}", authRequest.getSide());
+                Client client = new Client(authRequest.getSide(), ctx);
+                LOGGER.info("Пользователь авторизован, сторона - {}", authRequest.getSide().getDescription());
                 ctx.writeAndFlush(new AuthResponse(true));
                 //Если авторизация подтверждена, удаляем из конвейера текущий хэндлер и добавляем StartGameHandler
                 ctx.channel().pipeline().remove(this);

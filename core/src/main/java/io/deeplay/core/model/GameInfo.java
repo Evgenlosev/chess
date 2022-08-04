@@ -32,11 +32,6 @@ public class GameInfo implements ChessListener {
         gameStatus = GameStatus.ACTIVE;
     }
 
-    public GameInfo(final ChessBoard board) {
-        this.board = board;
-        this.gameStatus = GameStatus.INACTIVE;
-    }
-
     public ChessBoard getBoard() {
         return board;
     }
@@ -53,6 +48,9 @@ public class GameInfo implements ChessListener {
     public void updateBoard(final MoveInfo moveInfo) {
         board.updateBoard(moveInfo);
         checkMatingMaterial();
+        if (logic.isMate(board.getFEN())) {
+            gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+        }
         if (board.isThreefoldRepetition()) {
             gameStatus = GameStatus.THREEFOLD_REPETITION;
         }
@@ -64,28 +62,7 @@ public class GameInfo implements ChessListener {
 
     // Проверяет достаточно ли материала для мата. Если нет, меняет статус игры.
     private void checkMatingMaterial() {
-        // TODO:: реализовать функцию проверки материала на битбордах, и вызывать её тут.
-        // Данная функция некорректна!
-        List<Figure> figuresLeft = getAllFigures();
-        int blackFiguresCounter = 0;
-        int whiteFiguresCounter = 0;
-        if (figuresLeft.contains(Figure.B_ROOK) ||
-                figuresLeft.contains(Figure.B_PAWN) ||
-                figuresLeft.contains(Figure.B_QUEEN) ||
-                figuresLeft.contains(Figure.W_QUEEN) ||
-                figuresLeft.contains(Figure.W_ROOK) ||
-                figuresLeft.contains(Figure.W_PAWN)) {
-            return;
-        }
-        for (Figure figure : figuresLeft) {
-            if (MapsStorage.BLACK_FIGURES.contains(figure)) {
-                blackFiguresCounter++;
-            } else {
-                whiteFiguresCounter++;
-            }
-        }
-        if (blackFiguresCounter < 2 && whiteFiguresCounter < 3 ||
-                blackFiguresCounter < 3 && whiteFiguresCounter < 2 ) {
+        if (logic.isDrawByPieceShortage(board.getFEN())) {
             gameStatus = GameStatus.INSUFFICIENT_MATING_MATERIAL;
         }
     }
@@ -107,7 +84,16 @@ public class GameInfo implements ChessListener {
 
     // Возвращает список всех возможных ходов для конкретной стороны side.
     public Set<MoveInfo> getAvailableMoves() {
-        return logic.getMoves(board.getFEN());
+        Set<MoveInfo> moves = logic.getMoves(board.getFEN());
+        if (moves == null || moves.size() < 1) {
+            if (logic.isMate(board.getFEN())) {
+                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+            }
+            else {
+                gameStatus = GameStatus.STALEMATE;
+            }
+        }
+        return moves;
     }
 
     /**
@@ -215,6 +201,5 @@ public class GameInfo implements ChessListener {
      */
     @Override
     public void gameOver() {
-        gameStatus = GameStatus.INACTIVE;
     }
 }
