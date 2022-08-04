@@ -14,10 +14,10 @@ import static io.deeplay.core.logic.BitUtils.BitIndex.*;
 import static org.junit.Assert.*;
 
 public class TestSimpleLogic {
+    private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
 
     @Test
     public void testGetMovesKnightCanAttackThreatToSaveKing() {
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "7q/1k6/8/5N2/4K2r/8/8/2b5 w - - 0 1";
 
         Set<MoveInfo> saveKingMoves = Stream.of(
@@ -32,7 +32,6 @@ public class TestSimpleLogic {
 
     @Test
     public void testGetMovesOnlyKingCanMoveBecauseOfTwoChecks() { // Тут коню невозможно срубить ладью, т.к. двойной шах
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "7q/1k6/8/5N2/4K2r/2n5/8/2b5 w - - 0 1";
 
         Set<MoveInfo> saveKingMoves = Stream.of(
@@ -44,8 +43,15 @@ public class TestSimpleLogic {
     }
 
     @Test
+    public void testGetMovesEvenIfOpponentPieceIsPinnedHisAttackSquaresCheckKing() {
+        String fenNotation = "8/3Q4/8/3r2K1/8/8/8/3k4 w - - 0 1";
+
+        assertEquals(6, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).count());
+    }
+
+    @Test
     public void testMateIsFalseBecauseQueenCanSaveKing() {
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "8/8/3r4/k7/2r1r3/1Q6/3K4/3N3B w - - 0 1";
         assertFalse(simpleLogicAppeal.isMate(fenNotation));
         MoveInfo saveKingMove = new MoveInfo(
@@ -57,7 +63,6 @@ public class TestSimpleLogic {
 
     @Test
     public void testMateIsTrueBecauseKingStuckUnderCheck() {
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "8/8/3r4/k7/2r1r3/8/3K4/3N3B w - - 0 1";
         assertTrue(simpleLogicAppeal.isMate(fenNotation));
         assertTrue(simpleLogicAppeal.getMoves(fenNotation).isEmpty());
@@ -65,7 +70,6 @@ public class TestSimpleLogic {
 
     @Test
     public void testMateIsFalseBecauseBishopCanSaveKing() {
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "5B2/8/3r4/k7/2r1r3/8/3K4/3N3B w - - 0 1";
         assertFalse(simpleLogicAppeal.isMate(fenNotation));
         MoveInfo saveKingMove = new MoveInfo(
@@ -77,7 +81,6 @@ public class TestSimpleLogic {
 
     @Test
     public void testMateIsFalseBecauseCanAttackKnight() {
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "8/8/8/k7/2r1r3/3N1n2/3K4/3N3B w - - 0 1";
         assertFalse(simpleLogicAppeal.isMate(fenNotation));
         MoveInfo saveKingMove = new MoveInfo(
@@ -89,7 +92,6 @@ public class TestSimpleLogic {
 
     @Test
     public void testStalemateIsTrueBlackSideHasNoMoves() {
-        SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
         String fenNotation = "4k3/8/3Q3N/8/8/8/8/3K4 b - - 0 1";
         assertTrue(simpleLogicAppeal.isStalemate(fenNotation));
         assertTrue(simpleLogicAppeal.getMoves(fenNotation).isEmpty());
