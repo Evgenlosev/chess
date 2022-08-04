@@ -2,30 +2,24 @@ package io.deeplay.interaction.clientToServer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import io.deeplay.core.model.MoveInfo;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 
 @JsonTypeName("MoveRequest")
 public class MoveRequest extends Command {
-    private final int moveFrom;
-    private final int moveTo;
+    private final MoveInfo moveInfo;
 
-    public MoveRequest(final int moveFrom, final int moveTo) {
-        this.moveFrom = moveFrom;
-        this.moveTo = moveTo;
+    public MoveRequest(final MoveInfo moveInfo) {
+        this.moveInfo = moveInfo;
     }
 
     public MoveRequest() {
-        this.moveFrom = 0;
-        this.moveTo = 0;
+        this.moveInfo = null;
     }
 
-    public int getMoveFrom() {
-        return moveFrom;
-    }
-
-    public int getMoveTo() {
-        return moveTo;
+    public MoveInfo getMoveInfo() {
+        return moveInfo;
     }
 
     @JsonIgnore
@@ -37,8 +31,7 @@ public class MoveRequest extends Command {
     @Override
     public String toString() {
         return "MoveRequest{" +
-                "moveFrom=" + moveFrom +
-                ", moveTo=" + moveTo +
+                "moveInfo=" + moveInfo +
                 '}';
     }
 }

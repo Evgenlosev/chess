@@ -1,10 +1,11 @@
 package io.deeplay.server.session;
 
+import io.deeplay.core.SelfPlay;
 import io.deeplay.core.player.Player;
 
 import java.util.UUID;
 
-public class GameSession {
+public class GameSession implements Runnable {
     private final String sessionToken;
     private final Player firstPlayer;
     private final Player secondPlayer;
@@ -13,5 +14,10 @@ public class GameSession {
         this.sessionToken = UUID.randomUUID().toString();
         this.firstPlayer = firstPlayer;
         this.secondPlayer = secondPlayer;
+    }
+
+    @Override
+    public void run() {
+        new SelfPlay(firstPlayer, secondPlayer).play();
     }
 }

@@ -1,5 +1,6 @@
 package io.deeplay.core.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.deeplay.core.logic.BitUtils;
 
 import java.util.Objects;
@@ -14,14 +15,17 @@ public class Coord {
     private int row;
     private int column;
 
-    public Coord(int indexAsOneDimension){
+    public Coord(final int indexAsOneDimension) {
         this.row = indexAsOneDimension / BOARD_WIDTH;
         this.column = indexAsOneDimension % BOARD_WIDTH;
     }
 
-    public Coord(int column, int row) {
+    public Coord(final int column, final int row) {
         this.row = row;
         this.column = column;
+    }
+
+    public Coord() {
     }
 
     public int getRow() {
@@ -40,7 +44,8 @@ public class Coord {
         this.column = column;
     }
 
-    public int getIndexAsOneDimension(){
+    @JsonIgnore
+    public int getIndexAsOneDimension() {
         return row * BOARD_WIDTH + column;
     }
 
@@ -51,7 +56,7 @@ public class Coord {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Coord coord = (Coord) o;
