@@ -100,6 +100,7 @@ public class FENParser {
     public static String promotePawnToFigureUpdateFen(final String fen, final MoveInfo moveInfo) {
         Objects.requireNonNull(moveInfo.getPromoteTo());
         validatePromotion(moveInfo);
+        final String unzippedFen = unzipFen(fen);
         StringBuilder updateFen = new StringBuilder(unzipFen(fen));
         final String parsePiecePlacement = splitFEN(updateFen.toString()).get(0);
         final int lastIndex = BOARD_SIZE * BOARD_SIZE - 1;
@@ -111,7 +112,7 @@ public class FENParser {
             for (char ignored : rank.toCharArray()) {
                 currentIndexWithSkips = (lastIndex - (rowCount * BOARD_SIZE + backwardPrinting));
                 if (currentIndexWithSkips == moveInfo.getCellFrom().getIndexAsOneDimension()) {
-                    validatePieceAtIndexIsOnBoard(fen, moveInfo.getFigure(), charCount);
+                    validatePieceAtIndexIsOnBoard(unzippedFen, moveInfo.getFigure(), charCount);
                     updateFen.replace(charCount, charCount + 1, "1");
                 }
                 if (currentIndexWithSkips == moveInfo.getCellTo().getIndexAsOneDimension()) {

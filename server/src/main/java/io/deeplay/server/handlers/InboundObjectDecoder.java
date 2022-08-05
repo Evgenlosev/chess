@@ -31,7 +31,7 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
         try {
             buf.readBytes(bytes);
             Command inputCommand = CommandSerializator.deserializeByteArray(bytes);
-            LOGGER.info("Принята комманда от клиента {}", inputCommand);
+            LOGGER.info("Принята команда от клиента {}", inputCommand);
             ctx.fireChannelRead(inputCommand);
         } catch (IOException e) {
             LOGGER.error("Ошибка про десериализации входящего сообщение", e);

@@ -1,5 +1,6 @@
 package io.deeplay.server;
 
+import ch.qos.logback.classic.Logger;
 import io.deeplay.server.handlers.InboundObjectDecoder;
 import io.deeplay.server.handlers.OutBoundCommandEncoder;
 import io.deeplay.server.handlers.PingPongHandler;
@@ -13,7 +14,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,7 @@ public class ChessNettyServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(final SocketChannel ch) {
-                            // настройка конвеера для каждого подключившегося клиента
+                            // настройка конвейера для каждого подключившегося клиента
                             ch.pipeline().addLast(
                                     new IdleStateHandler(60, 30, 0, TimeUnit.SECONDS),
                                     new OutBoundCommandEncoder(),
