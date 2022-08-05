@@ -1,6 +1,9 @@
 package io.deeplay.core.api;
 
 public class TestPawnBitboardHandler {
+    // TODO: пешка не может атаковать и ходить будучи связанной по вертикали
+    // TODO: пешка может только ходить будучи связанной по вертикали
+
 /*
     @Test
     public void testPawnAtStartPositionClassic() {

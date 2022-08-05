@@ -1,6 +1,5 @@
 package io.deeplay.core.api;
 
-
 import io.deeplay.core.model.Coord;
 import io.deeplay.core.model.Figure;
 import io.deeplay.core.model.MoveInfo;

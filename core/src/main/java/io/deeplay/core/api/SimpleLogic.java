@@ -34,7 +34,9 @@ public class SimpleLogic implements SimpleLogicAppeal {
                         .getKingPieceBitboards().getMovesUnderRestrictions(currentSideChessBitboard) == 0) {
             return true;
         }
-        return currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
+
+        return currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.ONE &&
+                currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
 
     @Override
