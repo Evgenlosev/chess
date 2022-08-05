@@ -124,9 +124,7 @@ public class GameInfo implements ChessListener {
      * @param side За какую сторону сел игрок
      */
     @Override
-    public void playerSeated(final Side side) {
-
-    }
+    public void playerSeated(final Side side) {}
 
     /**
      * Совершенный ход
@@ -198,11 +196,6 @@ public class GameInfo implements ChessListener {
                 break;
         }
     }
-
-    /**
-     *
-     */
     @Override
-    public void gameOver() {
-    }
+    public void gameOver() {}
 }

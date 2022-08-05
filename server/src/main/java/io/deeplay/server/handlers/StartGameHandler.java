@@ -3,11 +3,10 @@ package io.deeplay.server.handlers;
 import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
+import io.deeplay.core.player.RandomBot;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
-import io.deeplay.interaction.serverToClient.StartGameResponse;
-import io.deeplay.server.client.PlayerFactory;
 import io.deeplay.server.session.GameSession;
 import io.deeplay.server.client.Client;
 import io.netty.channel.ChannelHandlerContext;
@@ -29,21 +28,13 @@ public class StartGameHandler extends SimpleChannelInboundHandler<Command> {
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
         if (command.getCommandType() == CommandType.START_GAME_REQUEST) {
             StartGameRequest startGameRequest = (StartGameRequest) command;
-            if (startGameRequest.getEnemyPlayerType() != null) {
-                Player enemy = PlayerFactory.getPlayerByTypeAndSide(
-                        startGameRequest.getEnemyPlayerType(),
-                        Side.otherSide(client.getSide()));
-                GameSession thisGame = new GameSession(client, enemy);
-                LOGGER.info("Начало партии");
-                new Thread(thisGame).start();
-                //Если сессия создана, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
-                ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new InboundCommandHandler(client));
-            } else {
-                LOGGER.info("Игра не создана.");
-                ctx.writeAndFlush(new StartGameResponse(false,
-                        "Не удалось создать игру по заданным параметрам."));
-            }
+            Player enemy = new RandomBot(Side.otherSide(client.getSide()));
+            GameSession thisGame = new GameSession(client, enemy);
+            LOGGER.info("Начало партии");
+            new Thread(thisGame).start();
+            //Если сессия создана, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+            ctx.channel().pipeline().remove(this);
+            ctx.channel().pipeline().addLast(new InboundCommandHandler(client));
         }
     }
 }

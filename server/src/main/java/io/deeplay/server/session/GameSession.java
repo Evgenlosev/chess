@@ -18,6 +18,10 @@ public class GameSession implements Runnable {
 
     @Override
     public void run() {
-        new SelfPlay(firstPlayer, secondPlayer).play();
+        try {
+            new SelfPlay(firstPlayer, secondPlayer).play();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
