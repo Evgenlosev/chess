@@ -54,6 +54,8 @@ public class SimpleLogic implements SimpleLogicAppeal {
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
             throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
+        // Для противника считать пат не надо, т.к. если мы ходим, то пат противнику может пропасть
+
         return currentSideChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
                 && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }

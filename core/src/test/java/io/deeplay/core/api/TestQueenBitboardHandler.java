@@ -1,6 +1,50 @@
 package io.deeplay.core.api;
 
+import io.deeplay.core.logic.BitUtils;
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.Figure;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.MoveType;
+import org.junit.Test;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.deeplay.core.logic.BitUtils.BitIndex.D4_IDX;
+import static io.deeplay.core.logic.BitUtils.BitIndex.D5_IDX;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class TestQueenBitboardHandler {
+
+    private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+
+    @Test
+    public void testGetQueenMovesAtStartingPosition() {
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        assertTrue(simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_QUEEN
+                ).collect(Collectors.toSet()).isEmpty());
+    }
+
+    @Test
+    public void testGetQueenMoves() {
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        BitUtils.BitIndex startingPosition = D4_IDX;
+
+        Set<MoveInfo> pawnMoves = Stream.of(
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(D5_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_PAWN)
+        ).collect(Collectors.toSet());
+
+        assertEquals(pawnMoves, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_PAWN
+                        && pieceMoves.getCellFrom().getIndexAsOneDimension() == startingPosition.ordinal()
+                ).collect(Collectors.toSet()));
+    }
+
 /*
     @Test
     public void testQueenAtStartPositionClassic() {

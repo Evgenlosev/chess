@@ -135,7 +135,7 @@ public class TestFen {
     @Test
     public void testTest() {
         String fenNotation = "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1";
-        assertFalse(FENParser.getCastlingRights(fenNotation).contains("Kq")); // классический contains
+        assertFalse(FENParser.getCastlingRights(fenNotation).contains("Kq")); // классический contains от String
         assertTrue(FENParser.containsUnordered(FENParser.getCastlingRights(fenNotation), "Kq"));
     }
 
