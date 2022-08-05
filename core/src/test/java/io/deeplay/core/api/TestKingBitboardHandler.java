@@ -42,7 +42,6 @@ public class TestKingBitboardHandler {
     public void testGetBlackKingMovesAtStartingPosition() {
         String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
 
-        System.out.println(simpleLogicAppeal.getMoves(fenNotation));
         assertTrue(simpleLogicAppeal.getMoves(fenNotation)
                 .stream().anyMatch(pieceMoves -> pieceMoves.getFigure() != Figure.B_KING));
     }
@@ -124,21 +123,40 @@ public class TestKingBitboardHandler {
     }
 
     @Test
-    public void testGetKingMoves() {
-        String fenNotation = "8/8/8/8/5n2/k7/6p1/6K1 w - - 0 1";
+    public void testGetKingMovesCastlingPossibleOnQueenSide() {
+        String fenNotation = "4k3/8/8/8/5r2/8/8/R3K2R w KQ - 0 1";
 
         Set<MoveInfo> kingMoves = Stream.of(
-                new MoveInfo(new Coord(G1_IDX.ordinal()), new Coord(F2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
-                new MoveInfo(new Coord(G1_IDX.ordinal()), new Coord(H2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING)
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(D1_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(E2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(D2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(C1_IDX.ordinal()), MoveType.CASTLE_LONG, Figure.W_KING)
         ).collect(Collectors.toSet());
 
-        assertEquals(2, simpleLogicAppeal.getMoves(fenNotation)
+        assertEquals(4, simpleLogicAppeal.getMoves(fenNotation)
                 .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).count());
         assertEquals(kingMoves, simpleLogicAppeal.getMoves(fenNotation)
                 .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).collect(Collectors.toSet()));
     }
 
-    // TODO: тест на рокировку (с 2 сторон, невозможность совершить рокировку (т.к. потеряно право)
-    // TODO: тесты с фигурами на пути рокировки(возможности рокировки быть не должно)
+    @Test
+    public void testGetKingMovesCastlingPossibleOnKingSide() {
+        String fenNotation = "4k3/8/8/8/2r5/8/8/R3K2R w KQ - 0 1";
+
+        Set<MoveInfo> kingMoves = Stream.of(
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(D1_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(D2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(E2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(F1_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(F2_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KING),
+                new MoveInfo(new Coord(E1_IDX.ordinal()), new Coord(G1_IDX.ordinal()), MoveType.CASTLE_SHORT, Figure.W_KING)
+        ).collect(Collectors.toSet());
+
+        assertEquals(6, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).count());
+        assertEquals(kingMoves, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KING).collect(Collectors.toSet()));
+    }
+
 
 }

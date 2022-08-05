@@ -36,7 +36,7 @@ public class BitboardDynamicPatterns {
         final long occupied = chessBitboard.getOccupied();
         final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
         final long notOpponentPieces = ~chessBitboard.getOpponentPieces();
-        final long notUnderAttack = ~chessBitboard.getProcessingSideCheckData().getAllAttacks();
+        final long underAttack = chessBitboard.getProcessingSideCheckData().getAllAttacks();
         final PieceBitboard kingPieceBitboard = chessBitboard.getProcessingSideBitboards().getKingPieceBitboards();
         final long kingMoves = kingPieceBitboard.getMovesUnderRestrictions(chessBitboard);
         for (long possibleMove : BitUtils.segregatePositions(kingMoves)) {
@@ -46,11 +46,11 @@ public class BitboardDynamicPatterns {
                 moves.add(new MoveBitboard(MoveType.USUAL_MOVE, possibleMove));
         }
         if (chessBitboard.isWhiteKingSideCastlingRight()
-                && containsSameBits(notUnderAttack, whiteKingSideShouldBeSafeMask)
+                && !containsSameBits(whiteKingSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(whiteKingSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 6)); // конечная позиция короля после рокировки
         if (chessBitboard.isWhiteQueenSideCastlingRight()
-                && containsSameBits(notUnderAttack, whiteQueenSideShouldBeSafeMask)
+                && !containsSameBits(whiteQueenSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(whiteQueenSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 2));
 
@@ -64,7 +64,7 @@ public class BitboardDynamicPatterns {
         final long occupied = chessBitboard.getOccupied();
         final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
         final long notOpponentPieces = ~chessBitboard.getOpponentPieces();
-        final long notUnderAttack = ~chessBitboard.getProcessingSideCheckData().getAllAttacks();
+        final long underAttack = chessBitboard.getProcessingSideCheckData().getAllAttacks();
         final PieceBitboard kingPieceBitboard = chessBitboard.getProcessingSideBitboards().getKingPieceBitboards();
         final long kingMoves = kingPieceBitboard.getMovesUnderRestrictions(chessBitboard);
         for (long possibleMove : BitUtils.segregatePositions(kingMoves)) {
@@ -74,11 +74,11 @@ public class BitboardDynamicPatterns {
                 moves.add(new MoveBitboard(MoveType.USUAL_MOVE, possibleMove));
         }
         if (chessBitboard.isBlackKingSideCastlingRight()
-                && containsSameBits(notUnderAttack, blackKingSideShouldBeSafeMask)
+                && !containsSameBits(blackKingSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(blackKingSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 62)); // конечная позиция короля после рокировки
         if (chessBitboard.isBlackQueenSideCastlingRight()
-                && containsSameBits(notUnderAttack, blackQueenSideShouldBeSafeMask)
+                && !containsSameBits(blackQueenSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(blackQueenSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 58));
 
