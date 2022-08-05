@@ -12,6 +12,9 @@ import java.util.Set;
 import static io.deeplay.core.logic.newlogic.SimpleBitboardHandler.getCurrentProcessingSideAllMoves;
 
 
+/**
+ * Класс реализует интерфейс логики на основе обработчика битбордов - SimpleBitboardHandler.
+ */
 public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
@@ -104,7 +107,20 @@ public class SimpleLogic implements SimpleLogicAppeal {
     public Set<MoveInfo> getMoves(final String fenNotation) {
         // Проверку на isDrawByPieceShortage перед ходом, чтобы в случае конца игры вернуть 0 ходов, вынести метод с параметром ChessBitboard
         // А так же другие проверки по правилам шахмат лучше вынести
-        return getCurrentProcessingSideAllMoves(FENParser.parseFENToBitboards(fenNotation));
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
+
+        SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
+        SideBitboards opponentSideBitboards = currentSideChessBitboard.getOpponentSideBitboards();
+
+        ChessBitboard opponentChessBitboard = new ChessBitboard(currentTurnSideBitboards, opponentSideBitboards);
+        opponentChessBitboard.setProcessingSideCheckData(SimpleBitboardHandler
+                .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards)));
+
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
+        }
+
+        return getCurrentProcessingSideAllMoves(currentSideChessBitboard);
     }
 
 }

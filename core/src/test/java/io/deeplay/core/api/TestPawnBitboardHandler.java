@@ -19,7 +19,7 @@ public class TestPawnBitboardHandler {
     private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
 
     @Test
-    public void testGetHorizontallyPinnedBlackPawnCantMove() {
+    public void testGetMovesHorizontallyPinnedBlackPawn() {
         String fenNotation = "8/8/8/2k2p1R/4P1N1/8/8/K7 b - - 0 1";
 
         assertTrue(simpleLogicAppeal.getMoves(fenNotation)
@@ -29,7 +29,7 @@ public class TestPawnBitboardHandler {
     }
 
     @Test
-    public void testGetVerticallyPinnedWhitePawnCantAttack() {
+    public void testGetMovesVerticallyPinnedWhitePawn() {
         String fenNotation = "k2r4/8/8/2q1n3/3P4/8/8/3K4 w - - 0 1";
 
         BitUtils.BitIndex startingPosition = D4_IDX;

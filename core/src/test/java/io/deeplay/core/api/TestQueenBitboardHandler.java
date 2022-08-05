@@ -30,7 +30,7 @@ public class TestQueenBitboardHandler {
 
     @Test
     public void testGetQueenMovesAtMiddleGamePosition() {
-        String fenNotation = "8/N1k1r1R1/P1P1b2P/1P2Q1b1/4P3/1nN3K1/8/3r1r2 w - - 0 1";
+        String fenNotation = "k7/N3r1R1/P1P1b2P/1P2Q1b1/4P3/1nN3K1/8/3r1r2 w - - 0 1";
 
         BitUtils.BitIndex startingPosition = E5_IDX;
 
@@ -43,7 +43,9 @@ public class TestQueenBitboardHandler {
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(F5_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(G5_IDX.ordinal()), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(D4_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(F4_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN)
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(F4_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(C7_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(B8_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN)
         ).collect(Collectors.toSet());
 
         assertEquals(queenMoves, simpleLogicAppeal.getMoves(fenNotation)
@@ -53,7 +55,7 @@ public class TestQueenBitboardHandler {
 
     @Test
     public void testGetQueenMoves() {
-        String fenNotation = "8/8/3pnB2/R3QK2/4pn2/2k5/8/8 w - - 0 1";
+        String fenNotation = "8/8/3pnB2/R3QK2/4pn2/2B1k3/8/8 w - - 0 1";
 
         BitUtils.BitIndex startingPosition = E5_IDX;
 
@@ -61,18 +63,12 @@ public class TestQueenBitboardHandler {
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(D6_IDX.ordinal()), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(E6_IDX.ordinal()), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(B5_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
-
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(C5_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(D4_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(E4_IDX.ordinal()), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
-
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(F4_IDX.ordinal()), MoveType.USUAL_ATTACK, Figure.W_QUEEN),
                 new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(D5_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_QUEEN)
         ).collect(Collectors.toSet());
-
-        System.out.println(simpleLogicAppeal.getMoves(fenNotation)
-                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_QUEEN
-                ).collect(Collectors.toSet()));
 
         assertEquals(queenMoves, simpleLogicAppeal.getMoves(fenNotation)
                 .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_QUEEN
