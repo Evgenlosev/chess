@@ -58,16 +58,18 @@ public class SimpleBitboardHandler {
     public static final QuadFunction<ChessBitboard, Long, Long, Integer, Long> getBlackPawnMovesBitboard =
             (chessBitboard, ignoredPiece, restriction, from) ->
                     BitboardDynamicPatterns.possibleBlackPawnMovesBitboard(chessBitboard, from) & restriction;
-    /**
-     * Пешки двигаются по-разному, в зависимости от стороны, поэтому нужно учитывать какая сторона будет двигать пешку.
-     * В мапе хранятся только атаки пешек, остальные виды передвижений пешек, считаются отдельно,
-     * в классе {@link io.deeplay.core.logic.BitboardDynamicPatterns}.
-     */
-    private static final Map<Side, List<Long>> sidePawnAttacks = new EnumMap<>(
-            Map.ofEntries(
-                    entry(Side.WHITE, BitboardPatternsInitializer.whitePawnMoveBitboards),
-                    entry(Side.BLACK, BitboardPatternsInitializer.blackPawnMoveBitboards)
-            ));
+    public static final BiFunction<ChessBitboard, PieceBitboard, Set<MoveInfo>>
+            getPawnWrappedMovesGenerator =
+            (chessBitboard, pieceBitboard) -> {
+                Set<MoveInfo> moveInfos = new HashSet<>();
+                Set<MoveBitboard> moves = getPawnSideWrappedUpMoves(chessBitboard, pieceBitboard.getPositionIndex()); // получили ходы без ограничений
+                for (MoveBitboard moveBitboard : moves)
+                    if (containsSameBits(moveBitboard.getMoveBitboard(), pieceBitboard.getAllRestrictionsBitboard())) // выбираем ходы удовлетворяющие ограничениям
+                        moveInfos.add(new MoveInfo(new Coord(pieceBitboard.getPositionIndex()),
+                                new Coord(Long.numberOfTrailingZeros(moveBitboard.getMoveBitboard())),
+                                moveBitboard.getMoveType(), pieceBitboard.getFigure()));
+                return moveInfos;
+            };
 
     public static QuadFunction<ChessBitboard, Long, Long, Integer, Long> getPawnFunction(final Side side) {
         return side == Side.WHITE ? getWhitePawnMovesBitboard : getBlackPawnMovesBitboard;
@@ -95,8 +97,11 @@ public class SimpleBitboardHandler {
             allAttacks |= pieceMoves;
         }
         allAttacks |= chessBitboard.getOpponentSideBitboards().getKingPieceBitboards().getAllMovesBitboard();
-        if (countChecks > 1)
+        if (countChecks > 1) {
+            // 0L в threatPieceBitboard и threateningPiecePositionBitboard,
+            // чтобы остальные фигуры не могли спасти короля, т.к. при двойном шахе может походить только король
             return new CheckData(CheckType.TWO, 0L, 0L, allAttacks);
+        }
         if (countChecks == 1)
             return new CheckData(CheckType.ONE,
                     threatPieceBitboard ^ myKingBitboard,
@@ -136,18 +141,16 @@ public class SimpleBitboardHandler {
                             moveBitboard.getMoveType(), pieceBitboard.getFigure()));
                 return moveInfos;
             };
-    public static final BiFunction<ChessBitboard, PieceBitboard, Set<MoveInfo>>
-            getPawnWrappedMovesGenerator =
-            (chessBitboard, pieceBitboard) -> {
-                Set<MoveInfo> moveInfos = new HashSet<>();
-                Set<MoveBitboard> moves = getPawnSideWrappedUpMoves(chessBitboard, pieceBitboard.getPositionIndex());
-                for (MoveBitboard moveBitboard : moves)
-                    if (containsSameBits(moveBitboard.getMoveBitboard(), pieceBitboard.getAllRestrictionsBitboard()))
-                        moveInfos.add(new MoveInfo(new Coord(pieceBitboard.getPositionIndex()),
-                                new Coord(Long.numberOfTrailingZeros(moveBitboard.getMoveBitboard())),
-                                moveBitboard.getMoveType(), pieceBitboard.getFigure()));
-                return moveInfos;
-            };
+    /**
+     * Пешки двигаются по-разному, в зависимости от стороны, поэтому нужно учитывать какая сторона будет двигать пешку.
+     * В мапе хранятся только АТАКИ пешек, остальные виды ПЕРЕДВИЖЕНИЙ пешек, считаются отдельно,
+     * в классе {@link io.deeplay.core.logic.BitboardDynamicPatterns}.
+     */
+    private static final Map<Side, List<Long>> sidePawnAttacks = new EnumMap<>(
+            Map.ofEntries(
+                    entry(Side.WHITE, BitboardPatternsInitializer.whitePawnMoveBitboards),
+                    entry(Side.BLACK, BitboardPatternsInitializer.blackPawnMoveBitboards)
+            ));
 
     /**
      * Считает все допустимые ходы.
@@ -207,7 +210,7 @@ public class SimpleBitboardHandler {
                 }
             }
         }
-        // считаем допустимые ходы для короля
+        // Считаем допустимые ходы для короля
         chessBitboard.getProcessingSideBitboards().getKingPieceBitboards().addRestriction(
                 ~chessBitboard.getProcessingSideCheckData().getAllAttacks() // Клетки НЕ под атакой.
                         & ~chessBitboard.getProcessingSidePieces()); // Нельзя нападать на своих.

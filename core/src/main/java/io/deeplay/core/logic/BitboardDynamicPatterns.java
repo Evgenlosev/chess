@@ -28,16 +28,15 @@ public class BitboardDynamicPatterns {
     private static final long whiteQueenSideShouldBeEmptySquares = 7L << 1;
     private static final long blackKingSideShouldBeEmptySquares = 3L << 61;
     private static final long blackQueenSideShouldBeEmptySquares = 7L << 57;
-    // Отрицание атак с маской рокировки
 
-    public static Set<MoveBitboard> possibleWhiteKingMoves(final ChessBitboard chessBitboard, final int from) {
+    public static Set<MoveBitboard> possibleWhiteKingMoves(final ChessBitboard chessBitboard, final int from) { // TODO: from не используется
         if (chessBitboard.getProcessingSide() != Side.WHITE)
             throw new IllegalArgumentException("Calculation method for white pieces is impossible for black pieces.");
         Set<MoveBitboard> moves = new HashSet<>();
         final long occupied = chessBitboard.getOccupied();
         final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
         final long notOpponentPieces = ~chessBitboard.getOpponentPieces();
-        final long notUnderAttack = ~chessBitboard.getProcessingSideCheckData().getAllAttacks();
+        final long underAttack = chessBitboard.getProcessingSideCheckData().getAllAttacks();
         final PieceBitboard kingPieceBitboard = chessBitboard.getProcessingSideBitboards().getKingPieceBitboards();
         final long kingMoves = kingPieceBitboard.getMovesUnderRestrictions(chessBitboard);
         for (long possibleMove : BitUtils.segregatePositions(kingMoves)) {
@@ -47,11 +46,11 @@ public class BitboardDynamicPatterns {
                 moves.add(new MoveBitboard(MoveType.USUAL_MOVE, possibleMove));
         }
         if (chessBitboard.isWhiteKingSideCastlingRight()
-                && containsSameBits(notUnderAttack, whiteKingSideShouldBeSafeMask)
+                && !containsSameBits(whiteKingSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(whiteKingSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 6)); // конечная позиция короля после рокировки
         if (chessBitboard.isWhiteQueenSideCastlingRight()
-                && containsSameBits(notUnderAttack, whiteQueenSideShouldBeSafeMask)
+                && !containsSameBits(whiteQueenSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(whiteQueenSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 2));
 
@@ -65,7 +64,7 @@ public class BitboardDynamicPatterns {
         final long occupied = chessBitboard.getOccupied();
         final long notMyPieces = ~chessBitboard.getProcessingSidePieces();
         final long notOpponentPieces = ~chessBitboard.getOpponentPieces();
-        final long notUnderAttack = ~chessBitboard.getProcessingSideCheckData().getAllAttacks();
+        final long underAttack = chessBitboard.getProcessingSideCheckData().getAllAttacks();
         final PieceBitboard kingPieceBitboard = chessBitboard.getProcessingSideBitboards().getKingPieceBitboards();
         final long kingMoves = kingPieceBitboard.getMovesUnderRestrictions(chessBitboard);
         for (long possibleMove : BitUtils.segregatePositions(kingMoves)) {
@@ -75,18 +74,17 @@ public class BitboardDynamicPatterns {
                 moves.add(new MoveBitboard(MoveType.USUAL_MOVE, possibleMove));
         }
         if (chessBitboard.isBlackKingSideCastlingRight()
-                && containsSameBits(notUnderAttack, blackKingSideShouldBeSafeMask)
+                && !containsSameBits(blackKingSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(blackKingSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_SHORT, 1L << 62)); // конечная позиция короля после рокировки
         if (chessBitboard.isBlackQueenSideCastlingRight()
-                && containsSameBits(notUnderAttack, blackQueenSideShouldBeSafeMask)
+                && !containsSameBits(blackQueenSideShouldBeSafeMask, underAttack)
                 && !containsSameBits(blackQueenSideShouldBeEmptySquares, occupied))
             moves.add(new MoveBitboard(MoveType.CASTLE_LONG, 1L << 58));
 
         return moves;
     }
 
-    // TODO: удалить не нужные методы
     public static Set<MoveBitboard> possibleWhitePawnMoves(final ChessBitboard chessBitboard, final int from) {
         if (chessBitboard.getProcessingSide() != Side.WHITE)
             throw new IllegalArgumentException("Calculation method for white pieces is impossible for black pieces.");

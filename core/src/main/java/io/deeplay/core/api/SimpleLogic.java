@@ -34,7 +34,9 @@ public class SimpleLogic implements SimpleLogicAppeal {
                         .getKingPieceBitboards().getMovesUnderRestrictions(currentSideChessBitboard) == 0) {
             return true;
         }
-        return currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
+
+        return currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.ONE &&
+                currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
 
     @Override
@@ -52,9 +54,6 @@ public class SimpleLogic implements SimpleLogicAppeal {
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
             throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
-        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
-                && opponentChessBitboard.getCountFiguresThatCanMove() == 0)
-            return true;
         return currentSideChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
                 && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
@@ -101,6 +100,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
+        // TODO: проверку на isDrawByPieceShortage перед ходом, чтобы в случае конца игры вернуть 0 ходов, вынести метод с параметром ChessBitboard
         return getCurrentProcessingSideAllMoves(FENParser.parseFENToBitboards(fenNotation));
     }
 

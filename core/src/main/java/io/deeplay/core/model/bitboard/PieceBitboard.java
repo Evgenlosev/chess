@@ -37,7 +37,7 @@ public class PieceBitboard {
         this.positionBitboard = positionBitboard;
         this.movesGenerationFunction = movesGenerationFunction;
         this.wrappedMovesGenerationFunction = wrappedMovesGenerationFunction;
-        this.allRestrictionsBitboard = ~0L;
+        this.allRestrictionsBitboard = ~0L; // изначально ограничений - нет, ходить можно везде
     }
 
     public void initializeMoves(final ChessBitboard chessBitboard) {
