@@ -51,6 +51,9 @@ public class GameInfo implements ChessListener {
         if (logic.isMate(board.getFEN())) {
             gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
         }
+        if (logic.isStalemate(board.getFEN())) {
+            gameStatus = GameStatus.STALEMATE;
+        }
         if (board.isThreefoldRepetition()) {
             gameStatus = GameStatus.THREEFOLD_REPETITION;
         }
