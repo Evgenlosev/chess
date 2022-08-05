@@ -57,13 +57,12 @@ public class ChessBoard implements Cloneable {
 
     // Получает из переменных параметры строки fen.
     private String getProperties() {
-        String properties = " " +
+        return " " +
                 whoseMove + " " +
                 castleAvailable + " " +
                 pawnLongMoveInfo + " " +
                 movesWithoutAttackOrPawnMove + " " +
                 moveCounter;
-        return properties;
     }
 
     public String unzipFen(final String fen) {

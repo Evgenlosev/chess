@@ -1,7 +1,6 @@
 package io.deeplay.core;
 
 import io.deeplay.core.console.BoardDrawer;
-import io.deeplay.core.console.ConsoleCommands;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
@@ -17,7 +16,6 @@ public class SelfPlay {
     private final GameInfo gameInfo;
     private final GameInfoGroup gameInfoGroup;
     private Player currentPlayerToMove;
-    private final ConsoleCommands consoleCommands;
 
     public SelfPlay(final Player firstPlayer, final Player secondPlayer) {
         if (firstPlayer.getSide() == secondPlayer.getSide()) {
@@ -31,11 +29,26 @@ public class SelfPlay {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-        this.currentPlayerToMove = firstPlayer;
-        consoleCommands = new ConsoleCommands();
         this.currentPlayerToMove = this.firstPlayer;
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
-//        gameInfoGroup.addListener(consoleCommands);
+        gameInfoGroup.addListener(firstPlayer);
+        gameInfoGroup.addListener(secondPlayer);
+    }
+
+    public SelfPlay(final Player firstPlayer, final Player secondPlayer, final GameInfo gameInfo) {
+        if (firstPlayer.getSide() == secondPlayer.getSide()) {
+            throw new IllegalArgumentException("Соперники не могут играть одним цветом");
+        }
+        this.gameInfo = gameInfo;
+        if (firstPlayer.getSide() == Side.WHITE) {
+            this.firstPlayer = firstPlayer;
+            this.secondPlayer = secondPlayer;
+        } else {
+            this.firstPlayer = secondPlayer;
+            this.secondPlayer = firstPlayer;
+        }
+        this.currentPlayerToMove = this.firstPlayer;
+        this.gameInfoGroup = new GameInfoGroup(gameInfo);
         gameInfoGroup.addListener(firstPlayer);
         gameInfoGroup.addListener(secondPlayer);
     }
@@ -51,7 +64,7 @@ public class SelfPlay {
         currentPlayerToMove = firstPlayer;
     }
 
-    public void play() {
+    public void play() throws InterruptedException {
         gameInfoGroup.playerSeated(firstPlayer.getSide());
         LOGGER.info("{} присоединился к партии за белых", firstPlayer);
         gameInfoGroup.playerSeated(secondPlayer.getSide());
@@ -67,7 +80,10 @@ public class SelfPlay {
             LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide().getDescription(), moveInfo.toString());
             LOGGER.info("\n" + gameInfo.getBoard().toString());
             changeCurrentPlayerToMove();
+//            TimeUnit.SECONDS.sleep(1);
         }
+        BoardDrawer.draw(gameInfo.getFenBoard());
+        System.out.println("Игра закончена: " + gameInfo.getGameStatus().getMessage());
         gameInfoGroup.gameOver();
         LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
     }

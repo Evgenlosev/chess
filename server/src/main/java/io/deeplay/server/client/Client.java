@@ -6,7 +6,6 @@ import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
-import io.deeplay.core.player.PlayerType;
 import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
@@ -57,11 +56,6 @@ public class Client extends Player implements ChessListener {
     }
 
     @Override
-    public PlayerType getPlayerType() {
-        return PlayerType.CLIENT;
-    }
-
-    @Override
     public void gameStarted() {
         ctx.writeAndFlush(new StartGameResponse(true));
     }
@@ -78,22 +72,18 @@ public class Client extends Player implements ChessListener {
 
     @Override
     public void offerDraw(final Side side) {
-
     }
 
     @Override
     public void acceptDraw(final Side side) {
-
     }
 
     @Override
     public void playerRequestsTakeBack(final Side side) {
-
     }
 
     @Override
     public void playerAgreesTakeBack(final Side side) {
-
     }
 
     @Override

@@ -10,10 +10,8 @@ import java.util.Random;
 import java.util.Set;
 
 public class RandomBot extends Player {
-
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(RandomBot.class);
     private final Random random;
-
 
     public RandomBot(final Side side) {
         super(side);
@@ -22,7 +20,7 @@ public class RandomBot extends Player {
         LOGGER.info("Для {} установлен seed - {}", this, seed);
     }
 
-    public RandomBot(Side side, long seed) {
+    public RandomBot(final Side side, final long seed) {
         super(side);
         this.random = new Random(seed);
         LOGGER.info("Для {} установлен seed - {}", this, seed);
