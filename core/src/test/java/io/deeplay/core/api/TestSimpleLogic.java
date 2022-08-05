@@ -17,6 +17,16 @@ public class TestSimpleLogic {
     private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
 
     @Test
+    public void testGetMovesIsEmptyBecauseItsOtherSideTurn() {
+        String fenNotation = "1nbqkbn1/Pp2p1p1/7p/p5r1/7P/2p5/1PPPPPPp/RNBQKBN1 w - - 0 1";
+
+        assertTrue(simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.B_PAWN
+                        && pieceMoves.getCellFrom().getIndexAsOneDimension() == H2_IDX.ordinal()
+                ).collect(Collectors.toSet()).isEmpty());
+    }
+
+    @Test
     public void testGetMovesKnightCanAttackThreatToSaveKing() {
         String fenNotation = "7q/1k6/8/5N2/4K2r/8/8/2b5 w - - 0 1";
 

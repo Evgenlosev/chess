@@ -12,6 +12,9 @@ import java.util.Set;
 import static io.deeplay.core.logic.newlogic.SimpleBitboardHandler.getCurrentProcessingSideAllMoves;
 
 
+/**
+ * Класс реализует интерфейс логики на основе обработчика битбордов - SimpleBitboardHandler.
+ */
 public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
@@ -54,6 +57,8 @@ public class SimpleLogic implements SimpleLogicAppeal {
         if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
             throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
+        // Для противника считать пат не надо, т.к. если мы ходим, то пат противнику может пропасть
+
         return currentSideChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() == 0
                 && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
@@ -100,8 +105,22 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
-        // TODO: проверку на isDrawByPieceShortage перед ходом, чтобы в случае конца игры вернуть 0 ходов, вынести метод с параметром ChessBitboard
-        return getCurrentProcessingSideAllMoves(FENParser.parseFENToBitboards(fenNotation));
+        // Проверку на isDrawByPieceShortage перед ходом, чтобы в случае конца игры вернуть 0 ходов, вынести метод с параметром ChessBitboard
+        // А так же другие проверки по правилам шахмат лучше вынести и переиспользовать здесь, для соблюдения api
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
+
+        SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
+        SideBitboards opponentSideBitboards = currentSideChessBitboard.getOpponentSideBitboards();
+
+        ChessBitboard opponentChessBitboard = new ChessBitboard(currentTurnSideBitboards, opponentSideBitboards);
+        opponentChessBitboard.setProcessingSideCheckData(SimpleBitboardHandler
+                .getCheckData(new ChessBitboard(opponentSideBitboards, currentTurnSideBitboards)));
+
+        if (opponentChessBitboard.getProcessingSideCheckData().getCheckType().ordinal() > 0) {
+            throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
+        }
+
+        return getCurrentProcessingSideAllMoves(currentSideChessBitboard);
     }
 
 }
