@@ -1,7 +1,6 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import ch.qos.logback.classic.Logger;
-import io.deeplay.core.player.PlayerType;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -19,7 +18,7 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         //TODO у GUI или TUI запросить у пользователя тип соперника, с которым он хочет сыграть
-        ctx.writeAndFlush(new StartGameRequest(PlayerType.RANDOM_BOT));
+        ctx.writeAndFlush(new StartGameRequest());
     }
 
     @Override
@@ -32,7 +31,7 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
                 ctx.channel().pipeline().remove(this);
                 ctx.channel().pipeline().addLast(new ClientInboundCommandHandler());
             } else {
-                LOGGER.info("Игра не создана", startGameResponse.getErrorMessage());
+                LOGGER.info("Игра не создана {}", startGameResponse.getErrorMessage());
             }
         } else {
             LOGGER.info("Ожидаем от сервера подтверждение создания игры");
