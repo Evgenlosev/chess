@@ -106,7 +106,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
         // Проверку на isDrawByPieceShortage перед ходом, чтобы в случае конца игры вернуть 0 ходов, вынести метод с параметром ChessBitboard
-        // А так же другие проверки по правилам шахмат лучше вынести
+        // А так же другие проверки по правилам шахмат лучше вынести и переиспользовать здесь, для соблюдения api
         ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
 
         SideBitboards currentTurnSideBitboards = currentSideChessBitboard.getProcessingSideBitboards();
