@@ -1,7 +1,10 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import ch.qos.logback.classic.Logger;
+import io.deeplay.core.model.MoveInfo;
 import io.deeplay.interaction.Command;
+import io.deeplay.interaction.clientToServer.MoveRequest;
+import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,7 +20,16 @@ public class ClientInboundCommandHandler extends SimpleChannelInboundHandler<Com
      */
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
-
+        MoveInfo moveInfo = null;
+        switch (command.getCommandType()) {
+            case MOVE_RESPONSE:
+                MoveResponse moveResponse = (MoveResponse) command;
+                moveInfo = moveResponse.getMoveInfo();
+                LOGGER.info("Пришел ход: {}", moveInfo);
+        }
+        //Отправляем MoveRequest с этим же ходом обратно клиенту
+        MoveRequest moveRequest = new MoveRequest(moveInfo);
+        ctx.writeAndFlush(moveRequest);
     }
 
     @Override

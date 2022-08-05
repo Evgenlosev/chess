@@ -20,7 +20,7 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         //TODO с GUI или TUI запросить у пользователя цвет фигур, которыми он будет играть
-        ctx.writeAndFlush(new AuthRequest(Side.WHITE));
+        ctx.writeAndFlush(new AuthRequest(Side.BLACK));
     }
 
     @Override
