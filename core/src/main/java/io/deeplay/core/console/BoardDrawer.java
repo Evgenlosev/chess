@@ -1,27 +1,26 @@
 package io.deeplay.core.console;
 
 import io.deeplay.core.model.ChessBoard;
-import io.deeplay.core.model.Figure;
 
-import java.util.Map;
+import java.io.*;
 
+/**
+ * Класс для отрисовки доски в терминал
+ * Ячейка доски состоит из трех строк в каждой по семь символов.
+ */
 public class BoardDrawer {
-    static final String blackCell = "\033[48;5;116m\033[38;5;0m ";
-    static String whiteCell = "\033[48;5;230m\033[38;5;0m ";
-    static Map<Figure, String> whiteFigures = Map.of(
-            Figure.W_PAWN, "\u265F",
-            Figure.W_ROOK, "\u265C",
-            Figure.W_KNIGHT, "\u265E",
-            Figure.W_BISHOP, "\u265D",
-            Figure.W_KING, "\u265A",
-            Figure.W_QUEEN, "\u265B"
-    );
-    static String columns = "   a      b      c      d      e      f      g      h  ";
+    static final String BLACK_CELL = "\033[48;5;116m\033[38;5;0m ";
+    static final String WHITE_CELL = "\033[48;5;230m\033[38;5;0m ";
+    static final String COLUMNS = "   a      b      c      d      e      f      g      h  ";
     public static void draw(final String fen) {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringBuilder sb = new StringBuilder();
         // Очистить экран
         System.out.print("\033[H\033[J");
-        ChessBoard board = new ChessBoard("rnbqkbnr/p1ppp2p/8/1pP1PPp1/3p4/8/PPP3PP/RNBQKBNR w KQkq b6 0 1");
+        ChessBoard board = new ChessBoard(fen);
         String unzipBoard = board.unzipFen(board.getFEN()).replace("/", "");
+
+        // Замена символов строки фен на аски обозначения фигур.
         unzipBoard = unzipBoard.replace("p", "\u265F");
         unzipBoard = unzipBoard.replace("r", "\u265C");
         unzipBoard = unzipBoard.replace("n", "\u265E");
@@ -37,45 +36,53 @@ public class BoardDrawer {
         unzipBoard = unzipBoard.replace("1", " ");
 
         // Перенос курсора в позицию (0:0)
-        System.out.print("\033[0;0H");
+        sb.append("\033[0;0H");
         for (int i = 0; i < 8; i++) {
             for (int l = 0; l < 3; l++) {
                 if (l == 1) {
-                    System.out.print(8 - i);
-                    System.out.print(" ");
+                    sb.append(8 - i);
+                    sb.append(" ");
                 } else {
-                    System.out.print("  ");
+                    sb.append("  ");
                 }
                 for (int j = 0; j < 8; j++) {
                     for (int k = 0; k < 3; k++) {
                         boolean isWhiteCell = i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1;
                         if (l != 1) {
                             if (isWhiteCell) {
-                                System.out.print(blackCell.repeat(7));
+                                sb.append(BLACK_CELL.repeat(7));
                             } else {
-                                System.out.print(whiteCell.repeat(7));
+                                sb.append(WHITE_CELL.repeat(7));
                             }
                             break;
                         }
                         if (k == 1) {
+                            char currentFenSymbol = unzipBoard.charAt(i * 8 + j);
                             if (isWhiteCell) {
-                                System.out.print(blackCell + unzipBoard.charAt(i * 8 + j) + blackCell);
+                                sb.append(BLACK_CELL).append(currentFenSymbol).append(BLACK_CELL);
                             } else {
-                                System.out.print(whiteCell + unzipBoard.charAt(i * 8 + j) + whiteCell);
+                                sb.append(WHITE_CELL).append(currentFenSymbol).append(WHITE_CELL);
                             }
                         } else {
                             if (isWhiteCell) {
-                                System.out.print(blackCell.repeat(2));
+                                sb.append(BLACK_CELL.repeat(2));
                             } else {
-                                System.out.print(whiteCell.repeat(2));
+                                sb.append(WHITE_CELL.repeat(2));
                             }
                         }
                     }
                 }
-                System.out.println("\033[m");
+                // Очистка форматирования, чтобы оставшаяся часть строки не окрашивалась.
+                sb.append("\033[m\n");
             }
         }
-        System.out.println("  " + columns);
-        System.out.println("\033[m");
+        sb.append("  ").append(COLUMNS);
+        sb.append("\033[m\n");
+        try {
+            writer.write(sb.toString(), 0, sb.length());
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
