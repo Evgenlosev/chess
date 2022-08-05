@@ -64,7 +64,9 @@ public class SimpleBitboardHandler {
                 Set<MoveInfo> moveInfos = new HashSet<>();
                 Set<MoveBitboard> moves = getPawnSideWrappedUpMoves(chessBitboard, pieceBitboard.getPositionIndex()); // получили ходы без ограничений
                 for (MoveBitboard moveBitboard : moves)
-                    if (containsSameBits(moveBitboard.getMoveBitboard(), pieceBitboard.getAllRestrictionsBitboard())) // выбираем ходы удовлетворяющие ограничениям
+                    if (containsSameBits(moveBitboard.getMoveBitboard(), pieceBitboard.getAllRestrictionsBitboard()) // выбираем ходы удовлетворяющие ограничениям
+                            && !containsSameBits(moveBitboard.getMoveBitboard(),
+                            chessBitboard.getOpponentSideBitboards().getKing())) // Короля оппонента срубать нельзя
                         moveInfos.add(new MoveInfo(new Coord(pieceBitboard.getPositionIndex()),
                                 new Coord(Long.numberOfTrailingZeros(moveBitboard.getMoveBitboard())),
                                 moveBitboard.getMoveType(), pieceBitboard.getFigure()));
@@ -119,7 +121,8 @@ public class SimpleBitboardHandler {
                 for (long possibleMove :
                         BitUtils.segregatePositions(pieceBitboard.getMovesUnderRestrictions(chessBitboard))) {
 
-                    if (containsSameBits(possibleMove, chessBitboard.getOpponentPieces()))
+                    if (containsSameBits(possibleMove, chessBitboard.getOpponentPieces()
+                            ^ chessBitboard.getOpponentSideBitboards().getKing())) // Короля оппонента срубать нельзя
                         movesInfo.add(new MoveInfo(new Coord(pieceBitboard.getPositionIndex()),
                                 new Coord(Long.numberOfTrailingZeros(possibleMove)),
                                 MoveType.USUAL_ATTACK, pieceBitboard.getFigure()));
@@ -136,9 +139,11 @@ public class SimpleBitboardHandler {
                 Set<MoveInfo> moveInfos = new HashSet<>();
                 Set<MoveBitboard> moves = getKingSideWrappedUpMoves(chessBitboard, pieceBitboard.getPositionIndex());
                 for (MoveBitboard moveBitboard : moves)
-                    moveInfos.add(new MoveInfo(new Coord(pieceBitboard.getPositionIndex()),
-                            new Coord(Long.numberOfTrailingZeros(moveBitboard.getMoveBitboard())),
-                            moveBitboard.getMoveType(), pieceBitboard.getFigure()));
+                    if (!containsSameBits(moveBitboard.getMoveBitboard(),
+                            chessBitboard.getOpponentSideBitboards().getKing())) // Короля оппонента срубать нельзя
+                        moveInfos.add(new MoveInfo(new Coord(pieceBitboard.getPositionIndex()),
+                                new Coord(Long.numberOfTrailingZeros(moveBitboard.getMoveBitboard())),
+                                moveBitboard.getMoveType(), pieceBitboard.getFigure()));
                 return moveInfos;
             };
     /**

@@ -1,12 +1,31 @@
 package io.deeplay.core.api;
 
+import io.deeplay.core.model.Figure;
+import org.junit.Test;
+
+import java.util.stream.Collectors;
+
+import static io.deeplay.core.logic.BitUtils.BitIndex.A1_IDX;
+import static org.junit.Assert.assertTrue;
+
 // Мегаполезная штука: https://www.dailychess.com/chess/chess-fen-viewer.php - можно расставлять фигуры + есть FEN
 public class TestRookBitboardHandler {
     // TODO: связанная за своим королем ладья должна ходить только по линии атаки связывающей фигуры
-    // TODO: тест на невозможность походить из изначальной позиции
     // TODO: тест когда фигура связана и не может ходить
     // TODO: тест когда фигура связана и не может ходить, но есть возможность срубить НЕ связывающую фигуру
     // TODO: тест когда фигура связана и может срубить связывающую фигуру
+    private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+
+    @Test
+    public void testGetQueenMovesAtStartingPosition() {
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        assertTrue(simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_ROOK
+                        && pieceMoves.getCellFrom().getIndexAsOneDimension() == A1_IDX.ordinal()
+                ).collect(Collectors.toSet()).isEmpty());
+    }
+
 /*
     @Test
     public void testRookInMiddlePosition() {

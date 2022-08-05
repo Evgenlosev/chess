@@ -1,28 +1,60 @@
 package io.deeplay.core.api;
 
+import io.deeplay.core.logic.BitUtils;
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.Figure;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.MoveType;
+import org.junit.Test;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.deeplay.core.logic.BitUtils.BitIndex.*;
+import static org.junit.Assert.assertEquals;
+
 public class TestKnightBitboardHandler {
+
+    private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+
+    @Test
+    public void testGetWhiteKnightMovesAtStartingPosition() {
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        BitUtils.BitIndex startingPosition = B1_IDX;
+
+        Set<MoveInfo> knightMoves = Stream.of(
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(A3_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KNIGHT),
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(C3_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.W_KNIGHT)
+        ).collect(Collectors.toSet());
+
+        assertEquals(knightMoves, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_KNIGHT
+                        && pieceMoves.getCellFrom().getIndexAsOneDimension() == startingPosition.ordinal()
+                ).collect(Collectors.toSet()));
+    }
+
+    @Test
+    public void testGetBlackKnightMovesAtStartingPosition() {
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1";
+
+        BitUtils.BitIndex startingPosition = G8_IDX;
+
+        Set<MoveInfo> knightMoves = Stream.of(
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(F6_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.B_KNIGHT),
+                new MoveInfo(new Coord(startingPosition.ordinal()), new Coord(H6_IDX.ordinal()), MoveType.USUAL_MOVE, Figure.B_KNIGHT)
+        ).collect(Collectors.toSet());
+
+        assertEquals(knightMoves, simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.B_KNIGHT
+                        && pieceMoves.getCellFrom().getIndexAsOneDimension() == startingPosition.ordinal()
+                ).collect(Collectors.toSet()));
+    }
+
     /*
     @Test
     public void getKnightMovesTest() {
-        /*
-         * Check possible G1 knight's moves in default position (F3, H3)
-         *
-        FENBoard FENBoard = new FENBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-        Set<MoveInfo> expectedMoveInfoSet = Stream.of(
-                new MoveInfo(new Coord(6, 0), new Coord(7, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT),
-                new MoveInfo(new Coord(6, 0), new Coord(5, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT)
-        ).collect(Collectors.toSet());
-        assertEquals(expectedMoveInfoSet, BitboardHandler.getKnightMoves(FENBoard, new Coord(BitUtils.BitIndex.G1_IDX.ordinal())));
-
-        /*
-         * Check possible G1 knight's moves in default position (A3, C3)
-         *
-        expectedMoveInfoSet = Stream.of(
-                new MoveInfo(new Coord(1, 0), new Coord(0, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT),
-                new MoveInfo(new Coord(1, 0), new Coord(2, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT)
-        ).collect(Collectors.toSet());
-        assertEquals(expectedMoveInfoSet, BitboardHandler.getKnightMoves(FENBoard, new Coord(BitUtils.BitIndex.B1_IDX.ordinal())));
-
         /*
          * Check possible F7 knight's moves after
          * 1.e4e5 2.Nf3Nc6 3.Bc4Nf6 4.Ng5h6 5.Nxf7Nxe4

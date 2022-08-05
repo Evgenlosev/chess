@@ -1,7 +1,28 @@
 package io.deeplay.core.api;
 
+import io.deeplay.core.model.Figure;
+import org.junit.Test;
+
+import java.util.stream.Collectors;
+
+import static io.deeplay.core.logic.BitUtils.BitIndex.F1_IDX;
+import static org.junit.Assert.assertTrue;
+
 public class TestBishopBitboardHandler {
-/*
+
+    private final static SimpleLogicAppeal simpleLogicAppeal = new SimpleLogic();
+
+    @Test
+    public void testGetQueenMovesAtStartingPosition() {
+        String fenNotation = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        assertTrue(simpleLogicAppeal.getMoves(fenNotation)
+                .stream().filter(pieceMoves -> pieceMoves.getFigure() == Figure.W_BISHOP
+                        && pieceMoves.getCellFrom().getIndexAsOneDimension() == F1_IDX.ordinal()
+                ).collect(Collectors.toSet()).isEmpty());
+    }
+
+    /*
     @Test
     public void testBishopInMiddlePosition() {
         FENBoard FENBoard = new FENBoard("5rk1/K1P5/4B3/1p3P2/1Np5/8/3Q3R/8 w - - 0 1"); // белые
