@@ -2,13 +2,13 @@ package io.deeplay.core.model;
 
 import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
-import io.deeplay.core.listener.ChessListener;
+import io.deeplay.core.listener.ChessAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class GameInfo implements ChessListener {
+public class GameInfo extends ChessAdapter {
     private GameStatus gameStatus;
     private static final int BOARD_SIZE = 8;
     ChessBoard board;
@@ -149,8 +149,6 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * Игнорируется
-     *
      * @param side За какую сторону сел игрок
      */
     @Override
@@ -183,46 +181,6 @@ public class GameInfo implements ChessListener {
         updateBoard(moveInfo);
     }
 
-    /**
-     * @param side Сторона, предложившая ничью
-     */
-    @Override
-    public void offerDraw(final Side side) {
-        throw new RuntimeException("Offer draw hasn't been realized yet");
-    }
-
-    @Override
-    public void acceptDraw(final Side side) {
-        throw new RuntimeException("Offer draw hasn't been realized yet");
-    }
-
-    /**
-     * @param side сторона запросившая отмену хода
-     */
-    @Override
-    public void playerRequestsTakeBack(final Side side) {
-        throw new RuntimeException("Take back hasn't been realized yet");
-    }
-
-    /**
-     * @param side сторона согласившаяся на отмену хода
-     */
-    @Override
-    public void playerAgreesTakeBack(final Side side) {
-        throw new RuntimeException("Take back hasn't been realized yet");
-    }
-
-    /**
-     * @param side сдавшаяся сторона
-     */
-    @Override
-    public void playerResigned(final Side side) {
-        throw new RuntimeException("Resign hasn't been realized yet");
-    }
-
-    /**
-     *
-     */
     @Override
     public void draw() {
         gameStatus = GameStatus.DRAW;
@@ -241,9 +199,5 @@ public class GameInfo implements ChessListener {
                 gameStatus = GameStatus.WHITE_WON;
                 break;
         }
-    }
-
-    @Override
-    public void gameOver() {
     }
 }
