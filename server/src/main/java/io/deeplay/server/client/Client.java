@@ -96,7 +96,7 @@ public class Client extends Player implements ChessListener {
     @Override
     public void draw() {
         ctx.writeAndFlush(new GameOverResponse(true,
-                GameStatus.DRAW, // Как то передавать разные виды ничей
+                GameStatus.DRAW, // TODO: передавать разные виды ничей из GameInfo
                 null));
     }
 
