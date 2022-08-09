@@ -2,50 +2,34 @@ package io.deeplay.core.model;
 
 import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
-import io.deeplay.core.listener.ChessAdapter;
+import io.deeplay.core.listener.ChessListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class GameInfo extends ChessAdapter {
+public class GameInfo implements ChessListener {
     private GameStatus gameStatus;
-    private static final int BOARD_SIZE = 8;
     ChessBoard board;
     SimpleLogicAppeal logic;
-    boolean whiteIsPresent;
-    boolean blackIsPresent;
-    private Set<MoveInfo> availableMoves;
 
-
-    /**
-     * Стандартный конструктор
-     */
+    // Стандартный конструктор
     public GameInfo() {
-        this(ChessBoard.DEFAULT_FEN_STRING);
-    }
-
-    /**
-     * Конструктор для заданного расположения фигур.
-     *
-     * @param fen стартовая позиция
-     */
-    public GameInfo(final String fen) {
         gameStatus = GameStatus.INACTIVE;
         logic = new SimpleLogic();
+        board = new ChessBoard();
+    }
+
+    // Конструктор для заданного расположения фигур.
+    public GameInfo(final String fen) {
+        this.gameStatus = GameStatus.INACTIVE;
+        logic = new SimpleLogic();
         board = new ChessBoard(fen);
-        whiteIsPresent = false;
-        blackIsPresent = false;
-        availableMoves = logic.getMoves(board.getFEN());
     }
 
     @Override
     public void gameStarted() {
-        if (blackIsPresent && whiteIsPresent) {
-            gameStatus = GameStatus.ACTIVE;
-        } else {
-            throw new RuntimeException("Not enough players to play.");
-        }
+        gameStatus = GameStatus.ACTIVE;
     }
 
     public ChessBoard getBoard() {
@@ -60,24 +44,10 @@ public class GameInfo extends ChessAdapter {
         return board.getFEN();
     }
 
-    public MoveInfo getLastMove() {
-        return board.getLastMove();
-    }
-
-    public void undo() {
-        board = board.undo();
-        availableMoves = logic.getMoves(board.getFEN());
-    }
-
-    /**
-     * Обновляет доску, после обновления проверяет достаточно ли материала для мата и было ли трехкратное повторение.
-     *
-     * @param moveInfo Информация о совершенном ходе
-     */
+    // Обновляет доску, после обновления проверяет достаточно ли материала для мата и было ли трехкратное повторение.
     public void updateBoard(final MoveInfo moveInfo) {
         board.updateBoard(moveInfo);
         checkMatingMaterial();
-        availableMoves = logic.getMoves(board.getFEN());
         if (logic.isMate(board.getFEN())) {
             gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
         }
@@ -93,25 +63,15 @@ public class GameInfo extends ChessAdapter {
         }
     }
 
-    public void updateBoardWithoutUpdatingStatus(final MoveInfo moveInfo) {
-        board.updateBoard(moveInfo);
-        availableMoves = logic.getMoves(board.getFEN());
-    }
-
-    /**
-     * Проверяет достаточно ли материала для мата. Если нет, меняет статус игры.
-     */
+    // Проверяет достаточно ли материала для мата. Если нет, меняет статус игры.
     private void checkMatingMaterial() {
         if (logic.isDrawByPieceShortage(board.getFEN())) {
             gameStatus = GameStatus.INSUFFICIENT_MATING_MATERIAL;
         }
     }
 
-    /**
-     * Возвращает сторону, которая должна сделать ход.
-     *
-     * @return Сторону, которая должна сделать следующий ход
-     */
+
+    // Возвращает сторону, которая должна сделать ход.
     public Side whoseMove() {
         return board.getWhoseMove();
     }
@@ -120,30 +80,23 @@ public class GameInfo extends ChessAdapter {
         return gameStatus == GameStatus.ACTIVE;
     }
 
-    /**
-     * Проверка удовлетворяет ли ход правилам шахмат.
-     *
-     * @param moveInfo информация о ходе
-     * @return true если ход корректный
-     */
+    // Проверка удовлетворяет ли ход правилам шахмат.
     public boolean isMoveValid(final MoveInfo moveInfo) {
         return logic.getMoves(board.getFEN()).contains(moveInfo);
     }
 
-    /**
-     * Возвращает список всех возможных ходов для конкретной стороны side.
-     *
-     * @return возможные ходы
-     */
+    // Возвращает список всех возможных ходов для конкретной стороны side.
     public Set<MoveInfo> getAvailableMoves() {
-//        if (moves == null || moves.size() < 1) {
-//            if (logic.isMate(board.getFEN())) {
-//                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-//            } else {
-//                gameStatus = GameStatus.STALEMATE;
-//            }
-//        }
-        return availableMoves;
+        Set<MoveInfo> moves = logic.getMoves(board.getFEN());
+        if (moves == null || moves.size() < 1) {
+            if (logic.isMate(board.getFEN())) {
+                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+            }
+            else {
+                gameStatus = GameStatus.STALEMATE;
+            }
+        }
+        return moves;
     }
 
     /**
@@ -154,8 +107,8 @@ public class GameInfo extends ChessAdapter {
     public List<Figure> getAllFigures() {
         List<Figure> allFigures = new ArrayList<>();
         BoardCell[][] boardArray = board.getBoard();
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 if (MapsStorage.BLACK_FIGURES.contains(boardArray[i][j].getFigure()) ||
                         MapsStorage.WHITE_FIGURES.contains(boardArray[i][j].getFigure())) {
                     allFigures.add(boardArray[i][j].getFigure());
@@ -166,26 +119,12 @@ public class GameInfo extends ChessAdapter {
     }
 
     /**
+     * Игнорируется
+     *
      * @param side За какую сторону сел игрок
      */
     @Override
-    public void playerSeated(final Side side) {
-        if (side == Side.WHITE) {
-            if (whiteIsPresent) {
-                throw new RuntimeException("White is already present!");
-            } else {
-                whiteIsPresent = true;
-            }
-        } else if (side == Side.BLACK) {
-            if (blackIsPresent) {
-                throw new RuntimeException("Black is already present!");
-            } else {
-                blackIsPresent = true;
-            }
-        } else {
-            throw new RuntimeException("There is no side like that");
-        }
-    }
+    public void playerSeated(final Side side) {}
 
     /**
      * Совершенный ход
@@ -198,6 +137,46 @@ public class GameInfo extends ChessAdapter {
         updateBoard(moveInfo);
     }
 
+    /**
+     * @param side Сторона, предложившая ничью
+     */
+    @Override
+    public void offerDraw(final Side side) {
+        throw new RuntimeException("Offer draw hasn't been realized yet");
+    }
+
+    @Override
+    public void acceptDraw(final Side side) {
+        throw new RuntimeException("Offer draw hasn't been realized yet");
+    }
+
+    /**
+     * @param side сторона запросившая отмену хода
+     */
+    @Override
+    public void playerRequestsTakeBack(final Side side) {
+        throw new RuntimeException("Take back hasn't been realized yet");
+    }
+
+    /**
+     * @param side сторона согласившаяся на отмену хода
+     */
+    @Override
+    public void playerAgreesTakeBack(final Side side) {
+        throw new RuntimeException("Take back hasn't been realized yet");
+    }
+
+    /**
+     * @param side сдавшаяся сторона
+     */
+    @Override
+    public void playerResigned(final Side side) {
+        throw new RuntimeException("Resign hasn't been realized yet");
+    }
+
+    /**
+     *
+     */
     @Override
     public void draw() {
         gameStatus = GameStatus.DRAW;
@@ -217,4 +196,6 @@ public class GameInfo extends ChessAdapter {
                 break;
         }
     }
+    @Override
+    public void gameOver(GameStatus gameStatus) {}
 }

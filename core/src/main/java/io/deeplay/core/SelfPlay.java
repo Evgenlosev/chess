@@ -69,7 +69,7 @@ public class SelfPlay {
         }
         BoardDrawer.draw(gameInfo.getFenBoard());
         System.out.println("Игра закончена: " + gameInfo.getGameStatus().getMessage());
-        gameInfoGroup.gameOver();
+        gameInfoGroup.gameOver(gameInfo.getGameStatus());
         LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
     }
 }
