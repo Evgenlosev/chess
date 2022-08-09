@@ -12,7 +12,7 @@ import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
 
 
-public class Client extends Player implements ChessListener {
+public class Client extends Player {
 
     //Контекст общения клиента и сервера
     private ChannelHandlerContext ctx;
@@ -22,11 +22,6 @@ public class Client extends Player implements ChessListener {
     public Client(final Side side, final ChannelHandlerContext ctx) {
         super(side);
         this.ctx = ctx;
-        monitor = new Object();
-    }
-
-    public Client(final Side side) {
-        super(side);
         monitor = new Object();
     }
 

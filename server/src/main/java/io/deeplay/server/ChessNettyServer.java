@@ -23,7 +23,6 @@ public class ChessNettyServer {
     private static final int PORT = 8189;
     private static final String PROTOCOL_VERSION = "1.0";
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ChessNettyServer.class);
-    private static final Map<Integer, String> ACTIVE_CLIENTS = new HashMap<>();
     public void run() throws Exception {
         //Пул потоков для обработки подключений клиентов
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
@@ -66,24 +65,6 @@ public class ChessNettyServer {
         return PROTOCOL_VERSION;
     }
 
-    /**
-     * Добавляем пользователя в список activeClients
-     * @param userName - имя пользователя
-     * @return
-     * clientId - если имя успешно добавлено.
-     * 0 - если пользователь с таким именем уже есть в списке.
-     */
-    public static Integer addClient(final String userName) {
-        if (ACTIVE_CLIENTS.size() == 0) {
-            ACTIVE_CLIENTS.put(1, userName);
-            return 1;
-        }
-        if (ACTIVE_CLIENTS.containsValue(userName)) {
-            return 0;
-        }
-        ACTIVE_CLIENTS.put(ACTIVE_CLIENTS.size() + 1, userName);
-        return ACTIVE_CLIENTS.size();
-    }
 
     public static void main(final String[] args) throws Exception {
         new ChessNettyServer().run();
