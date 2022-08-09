@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class GameInfo implements ChessListener {
     private GameStatus gameStatus;
+    private static final int BOARD_SIZE = 8;
     ChessBoard board;
     SimpleLogicAppeal logic;
 
@@ -107,8 +108,8 @@ public class GameInfo implements ChessListener {
     public List<Figure> getAllFigures() {
         List<Figure> allFigures = new ArrayList<>();
         BoardCell[][] boardArray = board.getBoard();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 if (MapsStorage.BLACK_FIGURES.contains(boardArray[i][j].getFigure()) ||
                         MapsStorage.WHITE_FIGURES.contains(boardArray[i][j].getFigure())) {
                     allFigures.add(boardArray[i][j].getFigure());
