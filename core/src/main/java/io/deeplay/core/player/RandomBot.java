@@ -14,10 +14,7 @@ public class RandomBot extends Player {
     private final Random random;
 
     public RandomBot(final Side side) {
-        super(side);
-        long seed = System.currentTimeMillis();
-        this.random = new Random(seed);
-        LOGGER.info("Для {} установлен seed - {}", this, seed);
+        this(side, System.currentTimeMillis());
     }
 
     public RandomBot(final Side side, final long seed) {
@@ -26,15 +23,14 @@ public class RandomBot extends Player {
         LOGGER.info("Для {} установлен seed - {}", this, seed);
     }
 
-
     /**
      * Возвращает рандомный ход
      * @param gameInfo - текущее состоние партии
      */
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
-        Set<MoveInfo> allMoves = gameInfo.getAvailableMoves();
-        int randomMoveNumber = random.nextInt(allMoves.size());
+        final Set<MoveInfo> allMoves = gameInfo.getAvailableMoves();
+        final int randomMoveNumber = random.nextInt(allMoves.size());
         return (MoveInfo) allMoves.toArray()[randomMoveNumber];
     }
 }
