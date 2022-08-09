@@ -4,12 +4,9 @@ import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
 /**
- * Class should be implemented by each listener.
+ * Интерфейс должен быть имплементирован каждым слушателем.
  */
 public interface ChessListener {
-
-//        void setGameSettings(GameSettings gameSettings);
-
     // Игра началась
     void gameStarted();
     // Игрок занял сторону
