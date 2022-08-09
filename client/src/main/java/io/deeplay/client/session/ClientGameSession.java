@@ -30,7 +30,6 @@ public class ClientGameSession {
 
     public void start() {
         BoardDrawer.draw(gameInfo.getFenBoard());
-//        makeMove();
     }
 
     public void acceptCommand(Command command) {
@@ -52,13 +51,15 @@ public class ClientGameSession {
     public synchronized void updateBoard(MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
         BoardDrawer.draw(gameInfo.getFenBoard());
-//        makeMove();
     }
 
     private void makeMove() {
-        if (gameInfo.whoseMove() == player.getSide()) {
-            MoveInfo currentMove = player.getAnswer(gameInfo);
-            ctx.writeAndFlush(new MoveRequest(currentMove));
+        while (true) {
+            if (gameInfo.whoseMove() == player.getSide()) {
+                MoveInfo currentMove = player.getAnswer(gameInfo);
+                ctx.writeAndFlush(new MoveRequest(currentMove));
+                return;
+            }
         }
     }
 }

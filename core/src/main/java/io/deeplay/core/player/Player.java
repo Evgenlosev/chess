@@ -26,4 +26,5 @@ public abstract class Player extends ChessAdapter {
     public String toString() {
         return side.toString();
     }
+
 }
