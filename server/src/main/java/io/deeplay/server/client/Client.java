@@ -15,19 +15,14 @@ import io.netty.channel.ChannelHandlerContext;
 public class Client extends Player {
 
     //Контекст общения клиента и сервера
-    private ChannelHandlerContext ctx;
+    private final ChannelHandlerContext ctx;
     private final Object monitor;
     private MoveInfo currentMove;
-//    private boolean isMoveActual;
 
     public Client(final Side side, final ChannelHandlerContext ctx) {
         super(side);
         this.ctx = ctx;
         monitor = new Object();
-    }
-
-    public void setCtx(final ChannelHandlerContext ctx) {
-        this.ctx = ctx;
     }
 
     public void setCurrentMove(final MoveInfo currentMove) {
@@ -42,11 +37,6 @@ public class Client extends Player {
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
         ctx.writeAndFlush(new GetAnswer());
-
-//        if (isMoveActual) {
-//            isMoveActual = false;
-//            return currentMove;
-//        }
         synchronized (monitor) {
             try {
                 monitor.wait();
@@ -54,7 +44,6 @@ public class Client extends Player {
                 throw new RuntimeException(e);
             }
         }
-//        isMoveActual = false;
         return currentMove;
     }
 

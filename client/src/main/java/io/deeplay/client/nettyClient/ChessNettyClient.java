@@ -32,7 +32,7 @@ public class ChessNettyClient implements ChessClient {
     @Override
     public void start() {
         //Пул потоков для клиента
-        EventLoopGroup group = new NioEventLoopGroup(3);
+        EventLoopGroup group = new NioEventLoopGroup();
         try {
             //Настройки клиента
             Bootstrap b = new Bootstrap();
