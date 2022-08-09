@@ -47,12 +47,15 @@ public class ConsoleCommands implements ChessListener {
         userInput = scanner.nextLine().trim().toUpperCase().replace(" ", "");
         switch (userInput) {
             case moveRegex:
-//                processMove(userInput);
+                processMove(userInput);
                 break;
             case QUIT:
                 System.exit(0);
 
         }
+    }
+
+    private void processMove(final String userInput) {
     }
 
     @Override
