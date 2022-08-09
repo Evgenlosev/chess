@@ -3,7 +3,7 @@ package io.deeplay.core.listener;
 import io.deeplay.core.model.GameInfo;
 
 /**
- * Class stores all listeners and notify them, as a chessEventSource, except GameInfo is notified first.
+ * Расширяет класс ChessEventSource, GameInfo первым уведомляется о событиях в игре.
  */
 public class GameInfoGroup extends ChessEventSource {
     public GameInfoGroup(GameInfo gameInfo) {
