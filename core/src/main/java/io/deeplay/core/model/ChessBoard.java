@@ -150,7 +150,7 @@ public class ChessBoard implements Cloneable {
         if (board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
             board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
         } else {
-            throw new RuntimeException("Usual move tries to get occupied cell");
+            throw new RuntimeException("Usual move tries to get occupied cell " + moveInfo);
         }
     }
 
@@ -161,7 +161,7 @@ public class ChessBoard implements Cloneable {
                         MapsStorage.WHITE_FIGURES.contains(board[to.getRow()][to.getColumn()].getFigure())) {
             board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
         } else {
-            throw new RuntimeException("Attempt to attack empty cell or own figure");
+            throw new RuntimeException("Attempt to attack empty cell or own figure" + moveInfo);
         }
     }
 
@@ -170,7 +170,7 @@ public class ChessBoard implements Cloneable {
                 Math.abs(from.getRow() - to.getRow()) == 1) {
             board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
         } else {
-            throw new RuntimeException("Illegal pawn attack");
+            throw new RuntimeException("Illegal pawn attack " + moveInfo);
         }
     }
 
@@ -182,7 +182,7 @@ public class ChessBoard implements Cloneable {
             pawnLongMoveInfo = MapsStorage.NUMBERS_TO_LETTERS.get(moveInfo.getCellFrom().getColumn()) +
                     (whoseMove == Side.WHITE ? 3 : 6);
         } else {
-            throw new RuntimeException("Illegal long pawn move");
+            throw new RuntimeException("Illegal long pawn move " + moveInfo);
         }
     }
 
@@ -196,7 +196,7 @@ public class ChessBoard implements Cloneable {
                 board[4][to.getColumn()] = new BoardCell(Figure.NONE);
             }
         } else {
-            throw new RuntimeException("Illegal pawn on go attack");
+            throw new RuntimeException("Illegal pawn on go attack " + moveInfo);
         }
     }
 
@@ -217,7 +217,7 @@ public class ChessBoard implements Cloneable {
             board[to.getRow()][5].setFigure(board[to.getRow()][7].getFigure());
             board[to.getRow()][7].setFigure(Figure.NONE);
         } else {
-            throw new RuntimeException("Wrong short castling");
+            throw new RuntimeException("Wrong short castling " + moveInfo);
         }
     }
     private void processCastleLong(final MoveInfo moveInfo, final Coord from, final Coord to) {
@@ -229,7 +229,7 @@ public class ChessBoard implements Cloneable {
             board[to.getRow()][3].setFigure(board[to.getRow()][0].getFigure());
             board[to.getRow()][0].setFigure(Figure.NONE);
         } else {
-            throw new RuntimeException("Wrong long castling");
+            throw new RuntimeException("Wrong long castling " + moveInfo);
         }
     }
     private void updateCastle(final MoveInfo moveInfo) {
@@ -341,5 +341,13 @@ public class ChessBoard implements Cloneable {
         }
         chessBoard.board = cloneBoard;
         return chessBoard;
+    }
+
+    public ChessBoard undo() {
+        return previousChessBoard;
+    }
+
+    public MoveInfo getLastMove() {
+        return moveInfo;
     }
 }

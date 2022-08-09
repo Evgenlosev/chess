@@ -57,6 +57,14 @@ public class GameInfo extends ChessAdapter {
         return board.getFEN();
     }
 
+    public MoveInfo getLastMove() {
+        return board.getLastMove();
+    }
+
+    public void undo() {
+        board = board.undo();
+    }
+
     /**
      * Обновляет доску, после обновления проверяет достаточно ли материала для мата и было ли трехкратное повторение.
      *
@@ -78,6 +86,10 @@ public class GameInfo extends ChessAdapter {
         if (board.getMovesWithoutAttackOrPawnMove() > 99) {
             gameStatus = GameStatus.FIFTY_MOVES_RULE;
         }
+    }
+
+    public void updateBoardWithoutUpdatingStatus(final MoveInfo moveInfo) {
+        board.updateBoard(moveInfo);
     }
 
     /**
@@ -119,13 +131,13 @@ public class GameInfo extends ChessAdapter {
      */
     public Set<MoveInfo> getAvailableMoves() {
         Set<MoveInfo> moves = logic.getMoves(board.getFEN());
-        if (moves == null || moves.size() < 1) {
-            if (logic.isMate(board.getFEN())) {
-                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-            } else {
-                gameStatus = GameStatus.STALEMATE;
-            }
-        }
+//        if (moves == null || moves.size() < 1) {
+//            if (logic.isMate(board.getFEN())) {
+//                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+//            } else {
+//                gameStatus = GameStatus.STALEMATE;
+//            }
+//        }
         return moves;
     }
 
