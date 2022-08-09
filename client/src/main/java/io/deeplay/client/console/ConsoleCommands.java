@@ -1,14 +1,17 @@
 package io.deeplay.client.console;
 
-import io.deeplay.core.listener.ChessListener;
+import io.deeplay.core.listener.ChessAdapter;
 import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.model.*;
+import io.deeplay.core.model.Coord;
+import io.deeplay.core.model.GameInfo;
+import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Optional;
 import java.util.Scanner;
 
-public class ConsoleCommands implements ChessListener {
+public class ConsoleCommands extends ChessAdapter {
     private static final String QUIT = "QUIT";
     Scanner scanner = new Scanner(System.in);
     String userInput;
@@ -44,7 +47,7 @@ public class ConsoleCommands implements ChessListener {
         userInput = scanner.nextLine().trim().toUpperCase().replace(" ", "");
         switch (userInput) {
             case moveRegex:
-//                processMove(userInput);
+                processMove(userInput);
                 break;
             case QUIT:
                 System.exit(0);
@@ -52,59 +55,12 @@ public class ConsoleCommands implements ChessListener {
         }
     }
 
-    @Override
-    public void gameStarted() {
-        gameInfo.gameStarted();
-    }
-
-    @Override
-    public void playerSeated(Side side) {
-
+    private void processMove(final String userInput) {
     }
 
     @Override
     public void playerActed(Side side, MoveInfo moveInfo) {
         this.gameInfo.updateBoard(moveInfo);
-    }
-
-    @Override
-    public void offerDraw(Side side) {
-
-    }
-
-    @Override
-    public void acceptDraw(Side side) {
-
-    }
-
-    @Override
-    public void playerRequestsTakeBack(Side side) {
-
-    }
-
-    @Override
-    public void playerAgreesTakeBack(Side side) {
-
-    }
-
-    @Override
-    public void playerResigned(Side side) {
-
-    }
-
-    @Override
-    public void draw() {
-
-    }
-
-    @Override
-    public void playerWon(Side side) {
-
-    }
-
-    @Override
-    public void gameOver(GameStatus gameStatus) {
-
     }
 }
 

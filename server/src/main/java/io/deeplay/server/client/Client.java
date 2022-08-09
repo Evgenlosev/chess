@@ -1,6 +1,5 @@
 package io.deeplay.server.client;
 
-import io.deeplay.core.listener.ChessListener;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
@@ -13,7 +12,7 @@ import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
 
 
-public class Client extends Player implements ChessListener {
+public class Client extends Player {
 
     //Контекст общения клиента и сервера
     private ChannelHandlerContext ctx;
@@ -24,11 +23,6 @@ public class Client extends Player implements ChessListener {
     public Client(final Side side, final ChannelHandlerContext ctx) {
         super(side);
         this.ctx = ctx;
-        monitor = new Object();
-    }
-
-    public Client(final Side side) {
-        super(side);
         monitor = new Object();
     }
 
@@ -105,7 +99,7 @@ public class Client extends Player implements ChessListener {
     @Override
     public void draw() {
         ctx.writeAndFlush(new GameOverResponse(true,
-                GameStatus.DRAW, // Как то передавать разные виды ничей
+                GameStatus.DRAW, // TODO: передавать разные виды ничей из GameInfo
                 null));
     }
 

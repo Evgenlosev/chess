@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class stores all listeners and notify them.
- * Use GameInfoGroup instead
+ * Класс служит для хранения слушателей и уведомления каждого из них.
+ * Следует использовать наследника GameInfoGroup
  */
-public class ChessEventSource {
+public abstract class ChessEventSource {
     protected final List<ChessListener> listeners;
 
     public ChessEventSource() {
@@ -31,9 +31,9 @@ public class ChessEventSource {
     }
 
     /**
-     * Player has moved.
-     * @param side acted side color
-     * @param moveInfo moveInfo
+     * Игрок совершил ход
+     * @param side ходившая сторона
+     * @param moveInfo информация о совершенном ходе
      */
     public void playerActed(final Side side, final MoveInfo moveInfo) {
         listeners.forEach(listener -> listener.playerActed(side, moveInfo));
@@ -68,7 +68,7 @@ public class ChessEventSource {
     }
 
     /**
-     * GameOver event.
+     * Событие конца игры.
      */
     public void gameOver(GameStatus gameStatus) {
         listeners.forEach(listener -> listener.gameOver(gameStatus));
