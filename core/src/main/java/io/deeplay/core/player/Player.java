@@ -2,6 +2,7 @@ package io.deeplay.core.player;
 
 import io.deeplay.core.listener.ChessListener;
 import io.deeplay.core.model.GameInfo;
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
@@ -79,7 +80,7 @@ public abstract class Player implements ChessListener {
     }
 
     @Override
-    public void gameOver() {
+    public void gameOver(GameStatus gameStatus) {
 
     }
 }

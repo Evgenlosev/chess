@@ -7,6 +7,7 @@ import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.interaction.serverToClient.GameOverResponse;
+import io.deeplay.interaction.serverToClient.GetAnswer;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -18,6 +19,7 @@ public class Client extends Player implements ChessListener {
     private ChannelHandlerContext ctx;
     private final Object monitor;
     private MoveInfo currentMove;
+//    private boolean isMoveActual;
 
     public Client(final Side side, final ChannelHandlerContext ctx) {
         super(side);
@@ -45,6 +47,12 @@ public class Client extends Player implements ChessListener {
 
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
+        ctx.writeAndFlush(new GetAnswer());
+
+//        if (isMoveActual) {
+//            isMoveActual = false;
+//            return currentMove;
+//        }
         synchronized (monitor) {
             try {
                 monitor.wait();
@@ -52,6 +60,7 @@ public class Client extends Player implements ChessListener {
                 throw new RuntimeException(e);
             }
         }
+//        isMoveActual = false;
         return currentMove;
     }
 
@@ -108,8 +117,8 @@ public class Client extends Player implements ChessListener {
     }
 
     @Override
-    public void gameOver() {
-
+    public void gameOver(GameStatus gameStatus) {
+        ctx.writeAndFlush(new GameOverResponse(true, gameStatus));
     }
 
 }

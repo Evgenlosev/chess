@@ -197,5 +197,5 @@ public class GameInfo implements ChessListener {
         }
     }
     @Override
-    public void gameOver() {}
+    public void gameOver(GameStatus gameStatus) {}
 }

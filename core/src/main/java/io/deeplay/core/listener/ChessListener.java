@@ -1,5 +1,6 @@
 package io.deeplay.core.listener;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
@@ -31,5 +32,5 @@ public interface ChessListener {
     // Игрок победил
     void playerWon(final Side side);
     // Игра окончена
-    void gameOver();
+    void gameOver(GameStatus gameStatus);
 }

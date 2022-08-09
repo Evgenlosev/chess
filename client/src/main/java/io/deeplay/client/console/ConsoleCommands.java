@@ -2,10 +2,7 @@ package io.deeplay.client.console;
 
 import io.deeplay.core.listener.ChessListener;
 import io.deeplay.core.logic.BitUtils;
-import io.deeplay.core.model.Coord;
-import io.deeplay.core.model.GameInfo;
-import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.Side;
+import io.deeplay.core.model.*;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Optional;
@@ -106,7 +103,7 @@ public class ConsoleCommands implements ChessListener {
     }
 
     @Override
-    public void gameOver() {
+    public void gameOver(GameStatus gameStatus) {
 
     }
 }
