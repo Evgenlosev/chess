@@ -15,6 +15,8 @@ public class GameInfo extends ChessAdapter {
     SimpleLogicAppeal logic;
     boolean whiteIsPresent;
     boolean blackIsPresent;
+    private Set<MoveInfo> availableMoves;
+
 
     /**
      * Стандартный конструктор
@@ -34,6 +36,7 @@ public class GameInfo extends ChessAdapter {
         board = new ChessBoard(fen);
         whiteIsPresent = false;
         blackIsPresent = false;
+        availableMoves = logic.getMoves(board.getFEN());
     }
 
     @Override
@@ -63,6 +66,7 @@ public class GameInfo extends ChessAdapter {
 
     public void undo() {
         board = board.undo();
+        availableMoves = logic.getMoves(board.getFEN());
     }
 
     /**
@@ -73,6 +77,7 @@ public class GameInfo extends ChessAdapter {
     public void updateBoard(final MoveInfo moveInfo) {
         board.updateBoard(moveInfo);
         checkMatingMaterial();
+        availableMoves = logic.getMoves(board.getFEN());
         if (logic.isMate(board.getFEN())) {
             gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
         }
@@ -90,6 +95,7 @@ public class GameInfo extends ChessAdapter {
 
     public void updateBoardWithoutUpdatingStatus(final MoveInfo moveInfo) {
         board.updateBoard(moveInfo);
+        availableMoves = logic.getMoves(board.getFEN());
     }
 
     /**
@@ -130,7 +136,6 @@ public class GameInfo extends ChessAdapter {
      * @return возможные ходы
      */
     public Set<MoveInfo> getAvailableMoves() {
-        Set<MoveInfo> moves = logic.getMoves(board.getFEN());
 //        if (moves == null || moves.size() < 1) {
 //            if (logic.isMate(board.getFEN())) {
 //                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
@@ -138,7 +143,7 @@ public class GameInfo extends ChessAdapter {
 //                gameStatus = GameStatus.STALEMATE;
 //            }
 //        }
-        return moves;
+        return availableMoves;
     }
 
     /**

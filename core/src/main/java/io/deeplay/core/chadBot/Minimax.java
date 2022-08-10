@@ -6,10 +6,17 @@ import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 
 public class Minimax extends Player {
-    final EvalFunction evalFunction = new SimpleEvalFunction();
+    EvalFunction evalFunction;
+    final int depth;
 
     public Minimax(Side side) {
-        super(side);
+        this(side,3);
+    }
+
+    public Minimax(final Side side, final int depth) {
+        this.depth = depth;
+        this.side = side;
+        evalFunction = new SimpleEvalFunction();
     }
 
     public MoveInfo minimaxRoot(final GameInfo gameInfo, final int depth, final boolean isMaximising) {
@@ -28,7 +35,7 @@ public class Minimax extends Player {
     }
     private Double minimax(final GameInfo gameInfo, final int depth, double alpha, double beta, final boolean isMaximising) {
         if (depth == 0) {
-            return -evalFunction.eval(gameInfo);
+            return side == Side.WHITE? evalFunction.eval(gameInfo) : -evalFunction.eval(gameInfo);
         }
 
         double bestMoveValue;
@@ -60,6 +67,6 @@ public class Minimax extends Player {
 
     @Override
     public MoveInfo getAnswer(GameInfo gameInfo) {
-        return minimaxRoot(gameInfo, 5, true);
+        return minimaxRoot(gameInfo, depth, true);
     }
 }

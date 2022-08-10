@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 public class ChessBoard implements Cloneable {
     public static final int BOARD_SIZE = 8;
     public static final String DEFAULT_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    private String fen;
     private BoardCell[][] board;
     Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard;
@@ -30,6 +31,7 @@ public class ChessBoard implements Cloneable {
      * @param fen FEN string.
      */
     public ChessBoard(final String fen) {
+        this.fen = fen;
         if (fen.length() - fen.replace("/", "").length() != 7) {
             throw new RuntimeException("Wrong FEN string");
         }
@@ -144,6 +146,7 @@ public class ChessBoard implements Cloneable {
         updateCastle(moveInfo);
         whoseMove = Side.otherSide(whoseMove);
         board[from.getRow()][from.getColumn()] = new BoardCell(Figure.NONE);
+        updateFEN();
     }
 
     private void processUsualMove(final MoveInfo moveInfo, final Coord to) {
@@ -273,6 +276,10 @@ public class ChessBoard implements Cloneable {
     }
 
     public String getFEN() {
+        return fen;
+    }
+
+    private void updateFEN() {
         String str = this.toString();
         str = str.replace('\n', '/');
         str = str.substring(0, str.length() - 1);
@@ -280,7 +287,7 @@ public class ChessBoard implements Cloneable {
         str = str.replace(" ", "");
         str = zipFen(str);
         str += getProperties();
-        return str;
+        fen = str;
     }
 
     public BoardCell[][] getBoard() {
