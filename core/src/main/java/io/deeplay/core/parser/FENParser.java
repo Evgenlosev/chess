@@ -306,7 +306,8 @@ public class FENParser {
     private static List<String> splitFEN(final String fen) {
         final List<String> parseFenNotation = List.of(fen.split(" "));
         if (parseFenNotation.size() != 6)
-            throw new IllegalArgumentException("Incorrect, or incomplete notation, amount of elements in notation isn't equal to 6");
+            throw new IllegalArgumentException("Incorrect, or incomplete notation, amount of elements in notation isn't equal to 6: " +
+                    fen);
         return parseFenNotation;
     }
 
