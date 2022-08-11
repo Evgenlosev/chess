@@ -1,6 +1,5 @@
 package io.deeplay.server;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.server.handlers.InboundObjectDecoder;
 import io.deeplay.server.handlers.OutBoundCommandEncoder;
 import io.deeplay.server.handlers.PingPongHandler;
@@ -13,6 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class ChessNettyServer {
     private static final int PORT = 8189;
     private static final String PROTOCOL_VERSION = "1.0";
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ChessNettyServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChessNettyServer.class);
     private static final Map<Integer, String> ACTIVE_CLIENTS = new HashMap<>();
     public void run() throws Exception {
         //Пул потоков для обработки подключений клиентов

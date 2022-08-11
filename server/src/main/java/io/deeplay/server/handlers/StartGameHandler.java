@@ -1,6 +1,5 @@
 package io.deeplay.server.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.core.player.RandomBot;
@@ -11,13 +10,14 @@ import io.deeplay.server.session.GameSession;
 import io.deeplay.server.client.Client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * В этом хэндлере ожидаем от клиента StartGameRequest
  */
 public class StartGameHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(StartGameHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StartGameHandler.class);
     private final Client client;
 
     public StartGameHandler(final Client client) {

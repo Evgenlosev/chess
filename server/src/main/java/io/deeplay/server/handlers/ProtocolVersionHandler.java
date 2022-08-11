@@ -1,16 +1,16 @@
 package io.deeplay.server.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.ProtocolVersionRequest;
 import io.deeplay.interaction.serverToClient.ProtocolVersionResponse;
 import io.deeplay.server.ChessNettyServer;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ProtocolVersionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProtocolVersionHandler.class);
 
     /**
      * В этом хэндлере ожидаем от клиента ProtocolVersionRequest

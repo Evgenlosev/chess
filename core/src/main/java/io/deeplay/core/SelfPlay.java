@@ -9,6 +9,8 @@ import io.deeplay.core.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.TimeUnit;
+
 public class SelfPlay {
     private static final Logger LOGGER = LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
@@ -16,24 +18,6 @@ public class SelfPlay {
     private final GameInfo gameInfo;
     private final GameInfoGroup gameInfoGroup;
     private Player currentPlayerToMove;
-
-    public SelfPlay(final Player firstPlayer, final Player secondPlayer) {
-        if (firstPlayer.getSide() == secondPlayer.getSide()) {
-            throw new IllegalArgumentException("Соперники не могут играть одним цветом");
-        }
-        this.gameInfo = new GameInfo();
-        if (firstPlayer.getSide() == Side.WHITE) {
-            this.firstPlayer = firstPlayer;
-            this.secondPlayer = secondPlayer;
-        } else {
-            this.firstPlayer = secondPlayer;
-            this.secondPlayer = firstPlayer;
-        }
-        this.currentPlayerToMove = this.firstPlayer;
-        this.gameInfoGroup = new GameInfoGroup(gameInfo);
-        gameInfoGroup.addListener(firstPlayer);
-        gameInfoGroup.addListener(secondPlayer);
-    }
 
     public SelfPlay(final Player firstPlayer, final Player secondPlayer, final GameInfo gameInfo) {
         if (firstPlayer.getSide() == secondPlayer.getSide()) {
@@ -51,6 +35,10 @@ public class SelfPlay {
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
         gameInfoGroup.addListener(firstPlayer);
         gameInfoGroup.addListener(secondPlayer);
+    }
+
+    public SelfPlay(final Player firstPlayer, final Player secondPlayer) {
+        this(firstPlayer, secondPlayer, new GameInfo());
     }
 
     /**
