@@ -1,7 +1,7 @@
 package io.deeplay.core.model;
 
-import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
+import io.deeplay.core.api.SimpleLogicCache;
 import io.deeplay.core.listener.ChessListener;
 
 import java.util.ArrayList;
@@ -16,14 +16,14 @@ public class GameInfo implements ChessListener {
     // Стандартный конструктор
     public GameInfo() {
         gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogic();
+        logic = new SimpleLogicCache();
         board = new ChessBoard();
     }
 
     // Конструктор для заданного расположения фигур.
     public GameInfo(final String fen) {
         this.gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogic();
+        logic = new SimpleLogicCache();
         board = new ChessBoard(fen);
     }
 
