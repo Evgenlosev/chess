@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 
 public class ChessBoard implements Cloneable {
     public static final int BOARD_SIZE = 8;
+    static final int NUMBER_OF_SLASHES_IN_FEN_STRING = 7;
     public static final String DEFAULT_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private BoardCell[][] board;
     Logger logger = LoggerFactory.getLogger(ChessBoard.class);
@@ -30,7 +31,7 @@ public class ChessBoard implements Cloneable {
      * @param fen FEN string.
      */
     public ChessBoard(final String fen) {
-        if (fen.length() - fen.replace("/", "").length() != 7) {
+        if (fen.length() - fen.replace("/", "").length() != NUMBER_OF_SLASHES_IN_FEN_STRING) {
             throw new RuntimeException("Wrong FEN string");
         }
         previousChessBoard = null;
