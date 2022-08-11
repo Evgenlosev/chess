@@ -1,6 +1,5 @@
 package io.deeplay.server.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.utils.CommandSerializator;
 import io.netty.buffer.ByteBuf;
@@ -8,11 +7,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 
 public class OutBoundCommandEncoder extends ChannelOutboundHandlerAdapter {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(OutBoundCommandEncoder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OutBoundCommandEncoder.class);
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) {

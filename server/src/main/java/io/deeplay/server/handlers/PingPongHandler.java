@@ -1,6 +1,5 @@
 package io.deeplay.server.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.Pong;
@@ -11,6 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  * Принимает и отсылает команды поддержки соединения Ping и Pong.
  */
 public class PingPongHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(PingPongHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PingPongHandler.class);
 
     /**
      * Событие автоматически генерируется сервером, если по заданным таймаутам не выполнены операции чтения или

@@ -1,14 +1,14 @@
 package io.deeplay.core.model;
 
-import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class ChessBoard implements Cloneable {
     public static final int BOARD_SIZE = 8;
     public static final String DEFAULT_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private String fen;
     private BoardCell[][] board;
-    Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
+    Logger logger = LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard;
     private MoveInfo moveInfo = null;
     private String castleAvailable;
