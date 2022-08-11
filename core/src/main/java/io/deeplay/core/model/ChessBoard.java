@@ -57,6 +57,17 @@ public class ChessBoard implements Cloneable {
         moveCounter = Integer.parseInt(param[4]);
     }
 
+    public int countPiecesForSide(final Side side) {
+        final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
+        int countPieces = 0;
+        for (BoardCell[] boardCellRow : board)
+            for (BoardCell boardCellColumn : boardCellRow)
+                if (sideFigures.contains(boardCellColumn.getFigure()))
+                    countPieces++;
+        return countPieces;
+
+    }
+
     public int countPiecesValuesForSide(final Side side) {
         final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
         int score = 0;
