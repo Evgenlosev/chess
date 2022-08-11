@@ -294,6 +294,11 @@ public class FENParser {
         return splitFEN(fen).get(0);
     }
 
+    public static String getPiecePlacementAndWhoseTurn(final String fen) {
+        final List<String> fenParts = splitFEN(fen);
+        return fenParts.get(0) + " " + fenParts.get(1);
+    }
+
     public static Side getTurnSide(final String fen) {
         final String parseTurnSide = splitFEN(fen).get(1);
         final char turnSide = parseTurnSide.charAt(0);
