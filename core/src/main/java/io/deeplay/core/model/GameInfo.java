@@ -36,6 +36,10 @@ public class GameInfo implements ChessListener {
         return board;
     }
 
+    public BoardSituationInfo getBoardSituationInfo(final String fen) {
+        return logic.getBoardSituationInfo(fen);
+    }
+
     public GameStatus getGameStatus() {
         return gameStatus;
     }

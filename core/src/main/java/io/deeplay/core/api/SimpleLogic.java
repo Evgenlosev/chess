@@ -1,6 +1,7 @@
 package io.deeplay.core.api;
 
 import io.deeplay.core.logic.newlogic.SimpleBitboardHandler;
+import io.deeplay.core.model.BoardSituationInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.bitboard.CheckType;
 import io.deeplay.core.model.bitboard.ChessBitboard;
@@ -21,8 +22,12 @@ public class SimpleLogic implements SimpleLogicAppeal {
     public boolean isMate(final String fenNotation) {
         ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
         opponentShouldNotBeInCheck(currentSideChessBitboard);
-
         // мат проверяем только для нашей стороны (т.к. отсекается случай когда противник под шахом, а ход наш)
+        return isMate(currentSideChessBitboard);
+
+    }
+
+    private boolean isMate(final ChessBitboard currentSideChessBitboard) {
         if (currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.TWO &&
                 currentSideChessBitboard.getProcessingSideBitboards()
                         .getKingPieceBitboards().getMovesUnderRestrictions(currentSideChessBitboard) == 0) {
@@ -40,6 +45,10 @@ public class SimpleLogic implements SimpleLogicAppeal {
 
         // Для противника считать пат не надо, т.к. если мы ходим, то пат противнику может пропасть
 
+        return isStalemate(currentSideChessBitboard);
+    }
+
+    private boolean isStalemate(final ChessBitboard currentSideChessBitboard) {
         return currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.NONE
                 && currentSideChessBitboard.getCountFiguresThatCanMove() == 0;
     }
@@ -49,6 +58,10 @@ public class SimpleLogic implements SimpleLogicAppeal {
         ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
         opponentShouldNotBeInCheck(currentSideChessBitboard);
 
+        return isDrawByPieceShortage(currentSideChessBitboard);
+    }
+
+    private boolean isDrawByPieceShortage(final ChessBitboard currentSideChessBitboard) {
         final boolean isBishopsAndKingsLeft = (currentSideChessBitboard.getProcessingSideBitboards().getKing() |
                 currentSideChessBitboard.getProcessingSideBitboards().getBishops() |
                 currentSideChessBitboard.getOpponentSideBitboards().getKing() |
@@ -74,19 +87,26 @@ public class SimpleLogic implements SimpleLogicAppeal {
         return currentSideChessBitboard.isLeftBishopsOnAlikeCellColors() && isBishopsAndKingsLeft;
     }
 
-    // Проверку на isDrawByPieceShortage в начале getMoves, чтобы в случае конца игры вернуть 0 ходов,
-    // вынести метод с параметром ChessBitboard, а так же другие проверки, по правилам шахмат,
-    // лучше вынести и переиспользовать здесь, для соблюдения api(логика использующая интерфейс
-    // каждый ход проверяет на пат и мат, что расточительно).
-    // Лучше всего если будут возвращаться доски со всей информацией(будет final, без сеттеров),
-    // тогда достаточно будет иметь класс List<ChessBoard> - история ходов(никаких clone).
-    // Полученные состояние доски полезны ботам и при валидации ходов.
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
         ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
         opponentShouldNotBeInCheck(currentSideChessBitboard);
 
         return getCurrentProcessingSideAllMoves(currentSideChessBitboard);
+    }
+
+    @Override
+    public BoardSituationInfo getBoardSituationInfo(final String fenNotation) {
+        ChessBitboard currentSideChessBitboard = FENParser.parseFENToBitboards(fenNotation);
+        opponentShouldNotBeInCheck(currentSideChessBitboard);
+        final boolean isCheck = currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.ONE
+                || currentSideChessBitboard.getProcessingSideCheckData().getCheckType() == CheckType.TWO;
+
+        return new BoardSituationInfo(
+                isCheck,
+                isMate(currentSideChessBitboard),
+                isStalemate(currentSideChessBitboard),
+                isDrawByPieceShortage(currentSideChessBitboard));
     }
 
     private void opponentShouldNotBeInCheck(final ChessBitboard currentSideChessBitboard) {
@@ -102,5 +122,6 @@ public class SimpleLogic implements SimpleLogicAppeal {
             throw new IllegalArgumentException("Opponent is in check but it's our turn which is impossible");
         }
     }
+
 
 }
