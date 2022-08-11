@@ -3,6 +3,8 @@ package io.deeplay.core.model;
 import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+
 public class ChessBoard implements Cloneable {
     public final int boardSize = 8;
     private BoardCell[][] board;
@@ -55,6 +57,17 @@ public class ChessBoard implements Cloneable {
         moveCounter = Integer.parseInt(param[4]);
     }
 
+    public int countPiecesValuesForSide(final Side side) {
+        final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
+        int score = 0;
+        for (BoardCell[] boardCellRow : board)
+            for (BoardCell boardCellColumn : boardCellRow)
+                if (sideFigures.contains(boardCellColumn.getFigure()))
+                    score += MapsStorage.FIGURE_TO_COST.get(boardCellColumn.getFigure());
+        return score;
+
+    }
+
     // Получает из переменных параметры строки fen.
     private String getProperties() {
         return " " +
@@ -64,6 +77,7 @@ public class ChessBoard implements Cloneable {
                 movesWithoutAttackOrPawnMove + " " +
                 moveCounter;
     }
+
 
     public String unzipFen(final String fen) {
         StringBuilder sb = new StringBuilder();
