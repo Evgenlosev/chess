@@ -25,7 +25,10 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
     @Override
     public boolean isMate(final String fenNotation) {
         final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        // Не получится использовать computeIfAbsent, т.к. в методе, value ИСПОЛЬЗУЕТ тот же key для вычисления,
+        // а key(piecePlacement) это урезанная fenNotation
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
+            // Тут уже ВЫЧИСЛЯЕТСЯ getBoardSituationInfo(...), поэтому не получится использовать map.putIfAbsent
             boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
         }
         return boardSituationInfoMap.get(piecePlacement).isMate();
