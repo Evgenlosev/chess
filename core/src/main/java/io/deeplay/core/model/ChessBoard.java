@@ -3,11 +3,12 @@ package io.deeplay.core.model;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-public class ChessBoard implements Cloneable {
+public class ChessBoard {
     public static final int BOARD_SIZE = 8;
+    static final int NUMBER_OF_SLASHES_IN_FEN_STRING = 7;
     public static final String DEFAULT_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private String fen;
-    private BoardCell[][] board;
+    private final BoardCell[][] board;
     Logger logger = LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard;
     private MoveInfo moveInfo = null;
@@ -31,10 +32,10 @@ public class ChessBoard implements Cloneable {
      * @param fen FEN string.
      */
     public ChessBoard(final String fen) {
-        this.fen = fen;
-        if (fen.length() - fen.replace("/", "").length() != 7) {
+        if (fen.length() - fen.replace("/", "").length() != NUMBER_OF_SLASHES_IN_FEN_STRING) {
             throw new RuntimeException("Wrong FEN string");
         }
+        this.fen = fen;
         previousChessBoard = null;
         board = new BoardCell[BOARD_SIZE][BOARD_SIZE];
         String[] splitFiguresFromProperties = fen.split(" ", 2);
@@ -45,6 +46,18 @@ public class ChessBoard implements Cloneable {
         }
         String properties = splitFiguresFromProperties[1];
         setProperties(properties);
+    }
+
+    public ChessBoard(final ChessBoard chessBoard) {
+        this.fen = chessBoard.fen;
+        this.board = chessBoard.board;
+        this.previousChessBoard = chessBoard.previousChessBoard;
+        this.moveInfo = chessBoard.moveInfo;
+        this.castleAvailable = chessBoard.castleAvailable;
+        this.movesWithoutAttackOrPawnMove = chessBoard.movesWithoutAttackOrPawnMove;
+        this.moveCounter = chessBoard.moveCounter;
+        this.pawnLongMoveInfo = chessBoard.pawnLongMoveInfo;
+        this.whoseMove = chessBoard.whoseMove;
     }
 
     /**
@@ -105,11 +118,7 @@ public class ChessBoard implements Cloneable {
     }
 
     public void updateBoard(final MoveInfo moveInfo) {
-        try {
-            previousChessBoard = this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        previousChessBoard = this.copy();
         this.moveInfo = moveInfo;
         pawnLongMoveInfo = "-";
 
@@ -146,14 +155,14 @@ public class ChessBoard implements Cloneable {
         updateCastle(moveInfo);
         whoseMove = Side.otherSide(whoseMove);
         board[from.getRow()][from.getColumn()] = new BoardCell(Figure.NONE);
-        updateFEN();
+        updateFen();
     }
 
     private void processUsualMove(final MoveInfo moveInfo, final Coord to) {
         if (board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
             board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
         } else {
-            throw new RuntimeException("Usual move tries to get occupied cell " + moveInfo);
+            throw new RuntimeException("Usual move tries to get occupied cell");
         }
     }
 
@@ -164,7 +173,7 @@ public class ChessBoard implements Cloneable {
                         MapsStorage.WHITE_FIGURES.contains(board[to.getRow()][to.getColumn()].getFigure())) {
             board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
         } else {
-            throw new RuntimeException("Attempt to attack empty cell or own figure" + moveInfo);
+            throw new RuntimeException("Attempt to attack empty cell or own figure");
         }
     }
 
@@ -173,7 +182,7 @@ public class ChessBoard implements Cloneable {
                 Math.abs(from.getRow() - to.getRow()) == 1) {
             board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
         } else {
-            throw new RuntimeException("Illegal pawn attack " + moveInfo);
+            throw new RuntimeException("Illegal pawn attack");
         }
     }
 
@@ -185,7 +194,7 @@ public class ChessBoard implements Cloneable {
             pawnLongMoveInfo = MapsStorage.NUMBERS_TO_LETTERS.get(moveInfo.getCellFrom().getColumn()) +
                     (whoseMove == Side.WHITE ? 3 : 6);
         } else {
-            throw new RuntimeException("Illegal long pawn move " + moveInfo);
+            throw new RuntimeException("Illegal long pawn move");
         }
     }
 
@@ -199,7 +208,7 @@ public class ChessBoard implements Cloneable {
                 board[4][to.getColumn()] = new BoardCell(Figure.NONE);
             }
         } else {
-            throw new RuntimeException("Illegal pawn on go attack " + moveInfo);
+            throw new RuntimeException("Illegal pawn on go attack");
         }
     }
 
@@ -220,7 +229,7 @@ public class ChessBoard implements Cloneable {
             board[to.getRow()][5].setFigure(board[to.getRow()][7].getFigure());
             board[to.getRow()][7].setFigure(Figure.NONE);
         } else {
-            throw new RuntimeException("Wrong short castling " + moveInfo);
+            throw new RuntimeException("Wrong short castling");
         }
     }
     private void processCastleLong(final MoveInfo moveInfo, final Coord from, final Coord to) {
@@ -232,7 +241,7 @@ public class ChessBoard implements Cloneable {
             board[to.getRow()][3].setFigure(board[to.getRow()][0].getFigure());
             board[to.getRow()][0].setFigure(Figure.NONE);
         } else {
-            throw new RuntimeException("Wrong long castling " + moveInfo);
+            throw new RuntimeException("Wrong long castling");
         }
     }
     private void updateCastle(final MoveInfo moveInfo) {
@@ -279,7 +288,7 @@ public class ChessBoard implements Cloneable {
         return fen;
     }
 
-    private void updateFEN() {
+    public void updateFen() {
         String str = this.toString();
         str = str.replace('\n', '/');
         str = str.substring(0, str.length() - 1);
@@ -336,25 +345,7 @@ public class ChessBoard implements Cloneable {
     /**
      * @return clone
      */
-    @Override
-    protected ChessBoard clone() throws CloneNotSupportedException {
-        ChessBoard chessBoard = (ChessBoard) super.clone();
-        BoardCell[][] cloneBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                cloneBoard[i][j] = (BoardCell) board[i][j].clone();
-                cloneBoard[i][j].setFigure(board[i][j].getFigure());
-            }
-        }
-        chessBoard.board = cloneBoard;
-        return chessBoard;
-    }
-
-    public ChessBoard undo() {
-        return previousChessBoard;
-    }
-
-    public MoveInfo getLastMove() {
-        return moveInfo;
+    protected ChessBoard copy() {
+        return new ChessBoard(this);
     }
 }

@@ -1,15 +1,9 @@
 package io.deeplay.core;
 
-import io.deeplay.core.chadBot.ChadBot;
-import io.deeplay.core.chadBot.Minimax;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.HumanPlayer;
 import io.deeplay.core.player.RandomBot;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 //   mvn clean compile exec:java
 public class Main {
@@ -39,8 +33,8 @@ public class Main {
 //        SelfPlay selfPlay = new SelfPlay(new HumanPlayer(Side.WHITE), new HumanPlayer(Side.BLACK), gameInfo);
 //        selfPlay.play();
 
-        // Бот против бота
-        SelfPlay selfPlay = new SelfPlay(new RandomBot(Side.WHITE), new Minimax(Side.BLACK));
+        GameInfo gameInfo = new GameInfo("r7/3RK1k1/4P3/8/8/8/8/8 w - - 0 1");
+        SelfPlay selfPlay = new SelfPlay(new RandomBot(Side.WHITE), new RandomBot(Side.BLACK), gameInfo);
         selfPlay.play();
     }
 }
