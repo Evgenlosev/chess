@@ -290,6 +290,10 @@ public class FENParser {
         return splitFEN(fen).get(2);
     }
 
+    public static String getPiecePlacement(final String fen) {
+        return splitFEN(fen).get(0);
+    }
+
     public static Side getTurnSide(final String fen) {
         final String parseTurnSide = splitFEN(fen).get(1);
         final char turnSide = parseTurnSide.charAt(0);
