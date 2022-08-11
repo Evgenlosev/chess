@@ -4,7 +4,8 @@ import ch.qos.logback.classic.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChessBoard implements Cloneable {
-    public final int boardSize = 8;
+    public static final int BOARD_SIZE = 8;
+    public static final String DEFAULT_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     private BoardCell[][] board;
     Logger logger = (Logger) LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard;
@@ -12,7 +13,6 @@ public class ChessBoard implements Cloneable {
     private String castleAvailable;
     private int movesWithoutAttackOrPawnMove;
     private int moveCounter;
-    // column if there were a long move, -1 otherwise.
     private String pawnLongMoveInfo;
     private Side whoseMove = Side.WHITE;
 
@@ -21,7 +21,7 @@ public class ChessBoard implements Cloneable {
      * Default constructor to create default board;
      */
     public ChessBoard() {
-        this("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        this(DEFAULT_FEN_STRING);
     }
 
     /**
@@ -34,18 +34,22 @@ public class ChessBoard implements Cloneable {
             throw new RuntimeException("Wrong FEN string");
         }
         previousChessBoard = null;
-        board = new BoardCell[boardSize][boardSize];
+        board = new BoardCell[BOARD_SIZE][BOARD_SIZE];
         String[] splitFiguresFromProperties = fen.split(" ", 2);
         String unzippedFenWithoutProperties = unzipFen(splitFiguresFromProperties[0]).replace("/", "");
         for (int i = 0; i < unzippedFenWithoutProperties.length(); i++) {
-            board[7 - i / boardSize][i % boardSize] = new BoardCell(
+            board[BOARD_SIZE - 1 - i / BOARD_SIZE][i % BOARD_SIZE] = new BoardCell(
                     MapsStorage.SYMBOLS_TO_FIGURE.get(String.valueOf(unzippedFenWithoutProperties.charAt(i))));
         }
         String properties = splitFiguresFromProperties[1];
         setProperties(properties);
     }
 
-    // Устанавливает параметры из строки fen переменным.
+    /**
+     * Устанавливает параметры из строки fen переменным.
+     *
+     * @param properties параметры из строки ФЕН
+     */
     private void setProperties(final String properties) {
         String[] param = properties.split(" ");
         whoseMove = "w".equals(param[0]) ? Side.WHITE : Side.BLACK;
@@ -99,7 +103,6 @@ public class ChessBoard implements Cloneable {
     }
 
     public void updateBoard(final MoveInfo moveInfo) {
-        // TODO:: сделать проверку на цвет ходящего и обновлять его после каждого хода
         try {
             previousChessBoard = this.clone();
         } catch (CloneNotSupportedException e) {
@@ -113,86 +116,29 @@ public class ChessBoard implements Cloneable {
 
         switch (moveInfo.getMoveType()) {
             case USUAL_MOVE:
-                if (board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                } else {
-                    throw new RuntimeException("Usual move tries to get occupied cell");
-                }
+                processUsualMove(moveInfo, to);
                 break;
             case USUAL_ATTACK:
-                if (MapsStorage.WHITE_FIGURES.contains(board[from.getRow()][from.getColumn()].getFigure()) &&
-                        MapsStorage.BLACK_FIGURES.contains(board[to.getRow()][to.getColumn()].getFigure()) ||
-                        MapsStorage.BLACK_FIGURES.contains(board[from.getRow()][from.getColumn()].getFigure()) &&
-                                MapsStorage.WHITE_FIGURES.contains(board[to.getRow()][to.getColumn()].getFigure())) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                } else {
-                    throw new RuntimeException("Attempt to attack empty cell or own figure");
-                }
+                processUsualAttack(moveInfo, from, to);
                 break;
             case PAWN_ATTACK:
-                if (Math.abs(from.getColumn() - to.getColumn()) == 1 &&
-                        Math.abs(from.getRow() - to.getRow()) == 1) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                } else {
-                    throw new RuntimeException("Illegal pawn attack");
-                }
+                processPawnAttack(moveInfo, from, to);
                 break;
             case PAWN_LONG_MOVE:
-                if (from.getColumn() - to.getColumn() == 0 &&
-                        Math.abs(from.getRow() - to.getRow()) == 2 &&
-                        board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                    pawnLongMoveInfo = MapsStorage.NUMBERS_TO_LETTERS.get(moveInfo.getCellFrom().getColumn()) +
-                            (whoseMove == Side.WHITE ? 3 : 6);
-                } else {
-                    throw new RuntimeException("Illegal long pawn move");
-                }
+                processPawnLongMove(moveInfo, from, to);
                 break;
             case PAWN_ON_GO_ATTACK:
-                if (previousChessBoard.moveInfo.getMoveType() == MoveType.PAWN_LONG_MOVE &&
-                        previousChessBoard.moveInfo.getCellTo().getColumn() - to.getColumn() == 0) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                    if (MapsStorage.BLACK_FIGURES.contains(moveInfo.getFigure())) {
-                        board[3][to.getColumn()] = new BoardCell(Figure.NONE);
-                    } else {
-                        board[4][to.getColumn()] = new BoardCell(Figure.NONE);
-                    }
-                } else {
-                    throw new RuntimeException("Illegal pawn on go attack");
-                }
+                processPawnOnGoAttack(moveInfo, to);
                 break;
             case PAWN_TO_FIGURE_ATTACK:
             case PAWN_TO_FIGURE:
-                if (moveInfo.getPromoteTo() == null) {
-                    board[to.getRow()][to.getColumn()].setFigure(whoseMove == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN);
-                } else {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getPromoteTo());
-                }
+                processPawnToFigure(moveInfo, to);
                 break;
             case CASTLE_LONG:
-                if ((moveInfo.getFigure() == Figure.B_KING ||
-                        moveInfo.getFigure() == Figure.W_KING) &&
-                        from.getColumn() - to.getColumn() == 2) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                    // Теперь перемещаем ладью
-                    board[to.getRow()][3].setFigure(board[to.getRow()][0].getFigure());
-                    board[to.getRow()][0].setFigure(Figure.NONE);
-                } else {
-                    throw new RuntimeException("Wrong long castling");
-                }
+                processCastleLong(moveInfo, from, to);
                 break;
             case CASTLE_SHORT:
-                if ((moveInfo.getFigure() == Figure.B_KING ||
-                        moveInfo.getFigure() == Figure.W_KING) &&
-                        to.getColumn() - from.getColumn() == 2) {
-                    board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
-                    // Теперь перемещаем ладью
-                    board[to.getRow()][5].setFigure(board[to.getRow()][7].getFigure());
-                    board[to.getRow()][7].setFigure(Figure.NONE);
-                } else {
-                    throw new RuntimeException("Wrong short castling");
-                }
-
+                processCastleShort(moveInfo, from, to);
         }
         updateMoveCounters(moveInfo);
         updateCastle(moveInfo);
@@ -200,6 +146,92 @@ public class ChessBoard implements Cloneable {
         board[from.getRow()][from.getColumn()] = new BoardCell(Figure.NONE);
     }
 
+    private void processUsualMove(final MoveInfo moveInfo, final Coord to) {
+        if (board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+        } else {
+            throw new RuntimeException("Usual move tries to get occupied cell");
+        }
+    }
+
+    private void processUsualAttack(final MoveInfo moveInfo, final Coord from, final Coord to) {
+        if (MapsStorage.WHITE_FIGURES.contains(board[from.getRow()][from.getColumn()].getFigure()) &&
+                MapsStorage.BLACK_FIGURES.contains(board[to.getRow()][to.getColumn()].getFigure()) ||
+                MapsStorage.BLACK_FIGURES.contains(board[from.getRow()][from.getColumn()].getFigure()) &&
+                        MapsStorage.WHITE_FIGURES.contains(board[to.getRow()][to.getColumn()].getFigure())) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+        } else {
+            throw new RuntimeException("Attempt to attack empty cell or own figure");
+        }
+    }
+
+    private void processPawnAttack(final MoveInfo moveInfo, final Coord from, final Coord to) {
+        if (Math.abs(from.getColumn() - to.getColumn()) == 1 &&
+                Math.abs(from.getRow() - to.getRow()) == 1) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+        } else {
+            throw new RuntimeException("Illegal pawn attack");
+        }
+    }
+
+    private void processPawnLongMove(final MoveInfo moveInfo, final Coord from, final Coord to) {
+        if (from.getColumn() - to.getColumn() == 0 &&
+                Math.abs(from.getRow() - to.getRow()) == 2 &&
+                board[to.getRow()][to.getColumn()].getFigure() == Figure.NONE) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+            pawnLongMoveInfo = MapsStorage.NUMBERS_TO_LETTERS.get(moveInfo.getCellFrom().getColumn()) +
+                    (whoseMove == Side.WHITE ? 3 : 6);
+        } else {
+            throw new RuntimeException("Illegal long pawn move");
+        }
+    }
+
+    private void processPawnOnGoAttack(final MoveInfo moveInfo, final Coord to) {
+        if (previousChessBoard.moveInfo.getMoveType() == MoveType.PAWN_LONG_MOVE &&
+                previousChessBoard.moveInfo.getCellTo().getColumn() - to.getColumn() == 0) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+            if (MapsStorage.BLACK_FIGURES.contains(moveInfo.getFigure())) {
+                board[3][to.getColumn()] = new BoardCell(Figure.NONE);
+            } else {
+                board[4][to.getColumn()] = new BoardCell(Figure.NONE);
+            }
+        } else {
+            throw new RuntimeException("Illegal pawn on go attack");
+        }
+    }
+
+    private void processPawnToFigure(final MoveInfo moveInfo, final Coord to) {
+        if (moveInfo.getPromoteTo() == null) {
+            board[to.getRow()][to.getColumn()].setFigure(whoseMove == Side.WHITE ? Figure.W_QUEEN : Figure.B_QUEEN);
+        } else {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getPromoteTo());
+        }
+    }
+
+    private void processCastleShort(final MoveInfo moveInfo, final Coord from, final Coord to) {
+        if ((moveInfo.getFigure() == Figure.B_KING ||
+                moveInfo.getFigure() == Figure.W_KING) &&
+                to.getColumn() - from.getColumn() == 2) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+            // Теперь перемещаем ладью
+            board[to.getRow()][5].setFigure(board[to.getRow()][7].getFigure());
+            board[to.getRow()][7].setFigure(Figure.NONE);
+        } else {
+            throw new RuntimeException("Wrong short castling");
+        }
+    }
+    private void processCastleLong(final MoveInfo moveInfo, final Coord from, final Coord to) {
+        if ((moveInfo.getFigure() == Figure.B_KING ||
+                moveInfo.getFigure() == Figure.W_KING) &&
+                from.getColumn() - to.getColumn() == 2) {
+            board[to.getRow()][to.getColumn()].setFigure(moveInfo.getFigure());
+            // Теперь перемещаем ладью
+            board[to.getRow()][3].setFigure(board[to.getRow()][0].getFigure());
+            board[to.getRow()][0].setFigure(Figure.NONE);
+        } else {
+            throw new RuntimeException("Wrong long castling");
+        }
+    }
     private void updateCastle(final MoveInfo moveInfo) {
         if (moveInfo.getFigure() == Figure.B_KING) {
             castleAvailable = castleAvailable.replace("k", "");
@@ -249,7 +281,6 @@ public class ChessBoard implements Cloneable {
         str = zipFen(str);
         str += getProperties();
         return str;
-        // TODO:: Получить из массива строку фен, с указанием очередности хода, номером хода, количеством ходов без взятия фигур.
     }
 
     public BoardCell[][] getBoard() {
@@ -265,8 +296,8 @@ public class ChessBoard implements Cloneable {
         StringBuilder result = new StringBuilder();
         StringBuilder row = new StringBuilder();
 
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 row.append(MapsStorage.FIGURE_TO_SYMBOL.get(board[i][j].getFigure())).append(" ");
             }
             row.append("\n");
@@ -301,9 +332,9 @@ public class ChessBoard implements Cloneable {
     @Override
     protected ChessBoard clone() throws CloneNotSupportedException {
         ChessBoard chessBoard = (ChessBoard) super.clone();
-        BoardCell[][] cloneBoard = new BoardCell[boardSize][boardSize];
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
+        BoardCell[][] cloneBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 cloneBoard[i][j] = (BoardCell) board[i][j].clone();
                 cloneBoard[i][j].setFigure(board[i][j].getFigure());
             }
