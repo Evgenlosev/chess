@@ -24,7 +24,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public boolean isMate(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurn(fenNotation);
         // Не получится использовать computeIfAbsent, т.к. в методе, value ИСПОЛЬЗУЕТ тот же key для вычисления,
         // а key(piecePlacement) это урезанная fenNotation
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
@@ -36,7 +36,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public boolean isStalemate(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurn(fenNotation);
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
             boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
         }
@@ -45,7 +45,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public boolean isDrawByPieceShortage(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurn(fenNotation);
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
             boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
         }
@@ -59,7 +59,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public BoardSituationInfo getBoardSituationInfo(final String fenNotation) {
-        return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacement(fenNotation),
+        return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacementAndWhoseTurn(fenNotation),
                 simpleLogicAppeal::getBoardSituationInfo);
     }
 }
