@@ -1,18 +1,18 @@
 package io.deeplay.core;
 
+import ch.qos.logback.classic.Logger;
 import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
 public class SelfPlay {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SelfPlay.class);
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
     private final Player secondPlayer;
     private final GameInfo gameInfo;
@@ -68,10 +68,8 @@ public class SelfPlay {
             LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide().getDescription(), moveInfo.toString());
             LOGGER.info("\n" + gameInfo.getBoard().toString());
             changeCurrentPlayerToMove();
-//            TimeUnit.SECONDS.sleep(1);
         }
         BoardDrawer.draw(gameInfo.getFenBoard());
-        System.out.println("Игра закончена: " + gameInfo.getGameStatus().getMessage());
         gameInfoGroup.gameOver();
         LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
     }
