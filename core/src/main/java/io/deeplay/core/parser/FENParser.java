@@ -55,7 +55,7 @@ public class FENParser {
             );
 
     public static ChessBitboard parseFENToBitboards(final String fen) {
-        final String parsePiecePlacementData = splitFEN(fen).get(0);
+        final String piecePlacement = getPiecePlacement(fen);
         // TODO: проверка на то что есть символы "/pnbrqkPNBRQK" + меньше макс. длины fen, логирование, исключения
         // TODO: извлекаем charAt и считаем '/' а так же количество свободных фигур
         //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
@@ -68,7 +68,7 @@ public class FENParser {
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.put(ch, 0L);
         }
-        for (String rank : parsePiecePlacementData.split("/")) {
+        for (String rank : piecePlacement.split("/")) {
             for (char currentChar : rank.toCharArray()) {
                 if (Character.isDigit(currentChar)) {
                     backwardPrinting -= currentChar - '0'; // widening casting
