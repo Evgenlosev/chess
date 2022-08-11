@@ -23,31 +23,39 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
     }
 
     @Override
-    public boolean isMate(String fenNotation) {
-        return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacement(fenNotation),
-                simpleLogicAppeal::getBoardSituationInfo).isMate();
-
+    public boolean isMate(final String fenNotation) {
+        final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        if (!boardSituationInfoMap.containsKey(piecePlacement)) {
+            boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
+        }
+        return boardSituationInfoMap.get(piecePlacement).isMate();
     }
 
     @Override
-    public boolean isStalemate(String fenNotation) {
-        return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacement(fenNotation),
-                simpleLogicAppeal::getBoardSituationInfo).isStalemate();
+    public boolean isStalemate(final String fenNotation) {
+        final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        if (!boardSituationInfoMap.containsKey(piecePlacement)) {
+            boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
+        }
+        return boardSituationInfoMap.get(piecePlacement).isStalemate();
     }
 
     @Override
-    public boolean isDrawByPieceShortage(String fenNotation) {
-        return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacement(fenNotation),
-                simpleLogicAppeal::getBoardSituationInfo).isDrawByPieceShortage();
+    public boolean isDrawByPieceShortage(final String fenNotation) {
+        final String piecePlacement = FENParser.getPiecePlacement(fenNotation);
+        if (!boardSituationInfoMap.containsKey(piecePlacement)) {
+            boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
+        }
+        return boardSituationInfoMap.get(piecePlacement).isDrawByPieceShortage();
     }
 
     @Override
-    public Set<MoveInfo> getMoves(String fenNotation) {
+    public Set<MoveInfo> getMoves(final String fenNotation) {
         return simpleLogicAppeal.getMoves(fenNotation);
     }
 
     @Override
-    public BoardSituationInfo getBoardSituationInfo(String fenNotation) {
+    public BoardSituationInfo getBoardSituationInfo(final String fenNotation) {
         return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacement(fenNotation),
                 simpleLogicAppeal::getBoardSituationInfo);
     }
