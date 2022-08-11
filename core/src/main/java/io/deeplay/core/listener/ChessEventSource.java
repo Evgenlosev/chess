@@ -70,7 +70,7 @@ public abstract class ChessEventSource {
     /**
      * Событие конца игры.
      */
-    public void gameOver(GameStatus gameStatus) {
+    public void gameOver(final GameStatus gameStatus) {
         listeners.forEach(listener -> listener.gameOver(gameStatus));
     }
 }

@@ -18,7 +18,7 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientStartGameHandler.class);
     private final Player player;
 
-    public ClientStartGameHandler(Player player) {
+    public ClientStartGameHandler(final Player player) {
         this.player = player;
     }
     @Override

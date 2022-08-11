@@ -48,18 +48,15 @@ public class ClientGameSession {
         }
     }
 
-    public synchronized void updateBoard(MoveInfo moveInfo) {
+    public void updateBoard(MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
         BoardDrawer.draw(gameInfo.getFenBoard());
     }
 
     private void makeMove() {
-        while (true) {
-            if (gameInfo.whoseMove() == player.getSide()) {
-                MoveInfo currentMove = player.getAnswer(gameInfo);
-                ctx.writeAndFlush(new MoveRequest(currentMove));
-                return;
-            }
+        if (gameInfo.whoseMove() == player.getSide()) {
+            MoveInfo currentMove = player.getAnswer(gameInfo);
+            ctx.writeAndFlush(new MoveRequest(currentMove));
         }
     }
 }

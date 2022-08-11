@@ -25,9 +25,7 @@ public class GameOverResponse extends Command {
 
     public GameOverResponse(@JsonProperty("isGameOvered") final boolean isGameOvered,
                             @JsonProperty("gameStatus") final GameStatus gameStatus) {
-        this.isGameOvered = isGameOvered;
-        this.gameStatus = gameStatus;
-        this.errorMessage = null;
+        this(isGameOvered, gameStatus, "");
     }
 
     public GameOverResponse() {
