@@ -1,17 +1,9 @@
 package io.deeplay.core.model;
 
 
-public class BoardCell implements Cloneable {
+public class BoardCell {
 
     private Figure figure;
-
-    /**
-     * Переопределение, чтобы сделать метод публичным
-     */
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 
     public BoardCell(Figure figure) {
         this.figure = figure;

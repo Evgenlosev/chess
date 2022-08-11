@@ -105,6 +105,9 @@ public class TestChessBoard {
     @Test
     public void threefoldRepetitionTest() {
         GameInfo gameInfo = new GameInfo();
+        gameInfo.playerSeated(Side.WHITE);
+        gameInfo.playerSeated(Side.BLACK);
+        gameInfo.gameStarted();
         MoveInfo moveInfoWhiteFirst = new MoveInfo(new Coord(1, 0), new Coord(2, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT);
         MoveInfo moveInfoWhiteSecond = new MoveInfo(new Coord(2, 2), new Coord(1, 0), MoveType.USUAL_MOVE, Figure.W_KNIGHT);
         MoveInfo moveInfoBlackFirst = new MoveInfo(new Coord(6, 7), new Coord(5, 5), MoveType.USUAL_MOVE, Figure.B_KNIGHT);
@@ -117,7 +120,7 @@ public class TestChessBoard {
         gameInfo.updateBoard(moveInfoBlackFirst);
         gameInfo.updateBoard(moveInfoWhiteSecond);
         gameInfo.updateBoard(moveInfoBlackSecond);
-        assertEquals(gameInfo.getGameStatus(), GameStatus.THREEFOLD_REPETITION);
+        assertEquals(GameStatus.THREEFOLD_REPETITION, gameInfo.getGameStatus());
     }
 
     @Test
