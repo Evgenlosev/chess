@@ -36,8 +36,24 @@ public class GameInfo implements ChessListener {
         return board;
     }
 
-    public BoardSituationInfo getBoardSituationInfo(final String fen) {
-        return logic.getBoardSituationInfo(fen);
+    public boolean isMate(final ChessBoard chessBoard) {
+        return logic.isMate(chessBoard.getFEN());
+    }
+
+    public boolean isStalemate(final ChessBoard chessBoard) {
+        return logic.isStalemate(chessBoard.getFEN());
+    }
+
+    public boolean isDrawByPieceShortage(final ChessBoard chessBoard) {
+        return logic.isDrawByPieceShortage(chessBoard.getFEN());
+    }
+
+    public boolean isThreefoldRepetition(final ChessBoard chessBoard) {
+        return chessBoard.isThreefoldRepetition();
+    }
+
+    public boolean isMovesWithoutAttackOrPawnMove(final ChessBoard chessBoard) {
+        return chessBoard.getMovesWithoutAttackOrPawnMove() > 99;
     }
 
     public GameStatus getGameStatus() {
