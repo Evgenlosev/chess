@@ -50,7 +50,13 @@ public class ChessBoard {
 
     public ChessBoard(final ChessBoard chessBoard) {
         this.fen = chessBoard.fen;
-        this.board = chessBoard.board;
+        BoardCell[][] newBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                newBoard[i][j] = new BoardCell(chessBoard.board[i][j].getFigure());
+            }
+        }
+        this.board = newBoard;
         this.previousChessBoard = chessBoard.previousChessBoard;
         this.moveInfo = chessBoard.moveInfo;
         this.castleAvailable = chessBoard.castleAvailable;
