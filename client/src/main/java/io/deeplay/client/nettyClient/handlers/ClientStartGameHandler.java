@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER =LoggerFactory.getLogger(ClientStartGameHandler.class);
 
+    public ClientStartGameHandler(final Player player) {
+        this.player = player;
+    }
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         //TODO у GUI или TUI запросить у пользователя тип соперника, с которым он хочет сыграть
@@ -27,9 +30,12 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
             StartGameResponse startGameResponse = (StartGameResponse) command;
             if (startGameResponse.isGameStarted()) {
                 LOGGER.info("Начало игры");
+                //Создаем и запускаем игровую сессию по параметрам, заданным пользователем
+                ClientGameSession session = new ClientGameSession(player, ctx);
+                session.start();
                 //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientInboundCommandHandler());
+                ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
             } else {
                 LOGGER.info("Игра не создана {}", startGameResponse.getErrorMessage());
             }

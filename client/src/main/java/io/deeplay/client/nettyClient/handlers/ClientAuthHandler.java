@@ -1,6 +1,9 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import io.deeplay.core.model.Side;
+import io.deeplay.core.player.HumanPlayer;
+import io.deeplay.core.player.Player;
+import io.deeplay.core.player.RandomBot;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.AuthRequest;
@@ -18,8 +21,9 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
-        //TODO с GUI или TUI запросить у пользователя цвет фигур, которыми он будет играть
-        ctx.writeAndFlush(new AuthRequest(Side.BLACK));
+        //TODO с GUI или TUI запросить у пользователя цвет фигур, которыми он будет играть и тип игрока, которым он
+        // хочет игарть
+        ctx.writeAndFlush(new AuthRequest(Side.WHITE));
     }
 
     @Override
@@ -28,9 +32,12 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
             AuthResponse authResponse = (AuthResponse) command;
             if (authResponse.isAuthorized()) {
                 LOGGER.info("Успешно авторизованы на сервере");
+                //TODO Создаем игрока по параметрам, заданным пользователем
+//                Player player = new HumanPlayer(Side.WHITE);
+                Player player = new RandomBot(Side.WHITE);
                 //Если авторизация прошла успешно, удаляем из конвеера текущий хэндлер и добавляем ClientStartGameHandler
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientStartGameHandler());
+                ctx.channel().pipeline().addLast(new ClientStartGameHandler(player));
             } else {
                 LOGGER.info("Авторизация не пройдена {}", authResponse.getErrorMessage());
             }

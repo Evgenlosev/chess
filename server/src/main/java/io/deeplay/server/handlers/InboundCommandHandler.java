@@ -12,6 +12,8 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 
 public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER = LoggerFactory.getLogger(InboundCommandHandler.class);
@@ -25,7 +27,6 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
-        LOGGER.info("Принята команда от клиента: {}", command);
         switch (command.getCommandType()) {
             case MOVE_REQUEST:
                 MoveRequest moveRequest = (MoveRequest) command;
@@ -54,7 +55,7 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
                 final Side gameOverInitiator = gameOverRequest.getSide();
                 LOGGER.info("Сторона " + gameOverInitiator + " - сдалась.");
                 client.playerResigned(gameOverInitiator); // Уведомляем сами себя о конце игры, а надо бы обоих клиентов
-                client.gameOver(); // TODO: игра окончена
+                client.gameOver(gameOverRequest.getGameStatus()); // TODO: игра окончена
                 ctx.channel().pipeline().remove(this);
                 ctx.channel().pipeline().close(); // TODO: Пересоздаем игру (по хорошему должен быть хэндлер настройки игры перед стартом игры)
             }

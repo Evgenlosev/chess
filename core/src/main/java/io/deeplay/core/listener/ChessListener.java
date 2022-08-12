@@ -1,5 +1,6 @@
 package io.deeplay.core.listener;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
@@ -78,5 +79,5 @@ public interface ChessListener {
     /**
      * Событие окончания игры
      */
-    void gameOver();
+    void gameOver(final GameStatus gameStatus);
 }

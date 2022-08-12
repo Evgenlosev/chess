@@ -11,6 +11,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class ChessNettyServer {
                             ch.pipeline().addLast(
                                     new IdleStateHandler(60, 30, 0, TimeUnit.SECONDS),
                                     new OutBoundCommandEncoder(),
+                                    new JsonObjectDecoder(),
                                     new InboundObjectDecoder(),
                                     new PingPongHandler(),
                                     new ProtocolVersionHandler());

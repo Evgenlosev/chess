@@ -1,5 +1,6 @@
 package io.deeplay.core.listener;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
@@ -10,37 +11,37 @@ public class ChessAdapter implements ChessListener{
     }
 
     @Override
-    public void playerSeated(Side side) {
+    public void playerSeated(final Side side) {
 
     }
 
     @Override
-    public void playerActed(Side side, MoveInfo moveInfo) {
+    public void playerActed(final Side side, final MoveInfo moveInfo) {
 
     }
 
     @Override
-    public void offerDraw(Side side) {
+    public void offerDraw(final Side side) {
 
     }
 
     @Override
-    public void acceptDraw(Side side) {
+    public void acceptDraw(final Side side) {
 
     }
 
     @Override
-    public void playerRequestsTakeBack(Side side) {
+    public void playerRequestsTakeBack(final Side side) {
 
     }
 
     @Override
-    public void playerAgreesTakeBack(Side side) {
+    public void playerAgreesTakeBack(final Side side) {
 
     }
 
     @Override
-    public void playerResigned(Side side) {
+    public void playerResigned(final Side side) {
 
     }
 
@@ -50,12 +51,12 @@ public class ChessAdapter implements ChessListener{
     }
 
     @Override
-    public void playerWon(Side side) {
+    public void playerWon(final Side side) {
 
     }
 
     @Override
-    public void gameOver() {
+    public void gameOver(final GameStatus gameStatus) {
 
     }
 }
