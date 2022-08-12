@@ -202,10 +202,10 @@ public class PeSTO implements Evaluation {
         int gamePhase = 0;
 
         /* evaluate each piece */
-        for (int i = 0; i < chessBoard.boardSize; i++) {
-            for (int j = 0; j < chessBoard.boardSize; j++) {
+        for (int i = 0; i < ChessBoard.BOARD_SIZE; i++) {
+            for (int j = 0; j < ChessBoard.BOARD_SIZE; j++) {
                 if (chessBoard.getBoard()[i][j].getFigure() != Figure.NONE) {
-                    final int sq = i * chessBoard.boardSize + j;
+                    final int sq = i * ChessBoard.BOARD_SIZE + j;
                     final int pc = PeSTO.figureToInt(chessBoard.getBoard()[i][j].getFigure());
                     final int cl = chessBoard.getWhoseMove() == Side.WHITE ? 0 : 1;
                     mg[cl] += mgTable[pc][sq];
