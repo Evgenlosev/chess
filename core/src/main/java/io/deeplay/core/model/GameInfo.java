@@ -1,7 +1,7 @@
 package io.deeplay.core.model;
 
-import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
+import io.deeplay.core.api.SimpleLogicCache;
 import io.deeplay.core.listener.ChessAdapter;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class GameInfo extends ChessAdapter {
      */
     public GameInfo(final String fen) {
         gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogic();
+        logic = new SimpleLogicCache();
         board = new ChessBoard(fen);
         whiteIsPresent = false;
         blackIsPresent = false;
@@ -47,6 +47,26 @@ public class GameInfo extends ChessAdapter {
 
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public boolean isMate(final ChessBoard chessBoard) {
+        return logic.isMate(chessBoard.getFEN());
+    }
+
+    public boolean isStalemate(final ChessBoard chessBoard) {
+        return logic.isStalemate(chessBoard.getFEN());
+    }
+
+    public boolean isDrawByPieceShortage(final ChessBoard chessBoard) {
+        return logic.isDrawByPieceShortage(chessBoard.getFEN());
+    }
+
+    public boolean isThreefoldRepetition(final ChessBoard chessBoard) {
+        return chessBoard.isThreefoldRepetition();
+    }
+
+    public boolean isMovesWithoutAttackOrPawnMove(final ChessBoard chessBoard) {
+        return chessBoard.getMovesWithoutAttackOrPawnMove() > 99;
     }
 
     public GameStatus getGameStatus() {
