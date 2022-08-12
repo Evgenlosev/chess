@@ -1,5 +1,6 @@
 package io.deeplay.client.nettyClient.handlers;
 
+import io.deeplay.client.session.ClientGameSession;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.serverToClient.MoveResponse;

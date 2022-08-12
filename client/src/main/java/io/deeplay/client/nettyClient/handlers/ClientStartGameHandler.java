@@ -1,5 +1,7 @@
 package io.deeplay.client.nettyClient.handlers;
 
+import io.deeplay.client.session.ClientGameSession;
+import io.deeplay.core.player.Player;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
  */
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER =LoggerFactory.getLogger(ClientStartGameHandler.class);
+    private final Player player;
 
     public ClientStartGameHandler(final Player player) {
         this.player = player;

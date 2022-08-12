@@ -70,7 +70,7 @@ public class ChessBoard implements Cloneable {
                 moveCounter;
     }
 
-    public String unzipFen(final String fen) {
+    public static String unzipFen(final String fen) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < fen.length(); i++) {
             if (String.valueOf(fen.charAt(i)).matches("[1-8]")) {
