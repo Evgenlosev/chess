@@ -18,7 +18,7 @@ public class BoardDrawer {
         // Очистить экран
         System.out.print("\033[H\033[J");
         ChessBoard board = new ChessBoard(fen);
-        String unzipBoard = board.unzipFen(board.getFEN()).replace("/", "");
+        String unzipBoard = new StringBuilder(board.unzipFen(board.getFEN()).replace("/", "").split(" ", 2)[0]).reverse().toString();
 
         // Замена символов строки фен на аски обозначения фигур.
         unzipBoard = unzipBoard.replace("p", "\u265F");

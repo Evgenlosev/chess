@@ -1,6 +1,5 @@
 package io.deeplay.server.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
@@ -11,12 +10,13 @@ import io.deeplay.server.client.Client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(InboundCommandHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InboundCommandHandler.class);
     private final Client client;
     // TODO: gameInfo с chessBoard нужен здесь
 

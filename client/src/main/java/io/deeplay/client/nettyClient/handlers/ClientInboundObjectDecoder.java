@@ -1,6 +1,5 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.client.nettyClient.ChessNettyClient;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.ProtocolVersionRequest;
@@ -9,11 +8,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 
 public class ClientInboundObjectDecoder extends ChannelInboundHandlerAdapter {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientInboundObjectDecoder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientInboundObjectDecoder.class);
 
     /**
      * После успешного подключения к серверу направляем команду ProtocolVersionRequest с актульной версией

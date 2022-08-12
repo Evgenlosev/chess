@@ -1,6 +1,5 @@
 package io.deeplay.server.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.AuthRequest;
@@ -9,12 +8,13 @@ import io.deeplay.server.client.Client;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * В этом хэндлере ожидаем от клиента AuthRequest
  */
 public class AuthorizationHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(AuthorizationHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationHandler.class);
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
