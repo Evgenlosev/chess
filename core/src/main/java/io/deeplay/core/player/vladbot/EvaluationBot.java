@@ -3,10 +3,7 @@ package io.deeplay.core.player.vladbot;
 import ch.qos.logback.classic.Logger;
 import io.deeplay.core.evaluation.Evaluation;
 import io.deeplay.core.evaluation.PeSTO;
-import io.deeplay.core.model.ChessBoard;
-import io.deeplay.core.model.GameInfo;
-import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.Side;
+import io.deeplay.core.model.*;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
@@ -42,18 +39,17 @@ public class EvaluationBot extends VBot {
         BoardSituationInfo currentMoveBoardSituation;
         // Пат - лучше проигрышного хода (если лучший ход = проигрышному -> берем пат)
         try {
-            ChessBoard virtualChessBoard = gameInfo.getBoard().clone();
+            ChessBoard virtualChessBoard = gameInfo.getBoard().clone(); // TODO: изменить на аналог
             for (MoveInfo moveInfo : allMoves) {
                 virtualChessBoard.updateBoard(moveInfo);
                 currentScore = sideCoeff * getEvaluation().evaluateBoard(virtualChessBoard);
-                currentMoveBoardSituation = gameInfo.getBoardSituationInfo(virtualChessBoard.getFEN());
-                if (currentMoveBoardSituation.isMate()) {
+                if (gameInfo.isMate(virtualChessBoard)) {
                     currentScore = Integer.MAX_VALUE;
                 }
-                if (currentMoveBoardSituation.isStalemate()
-                        || currentMoveBoardSituation.isDrawByPieceShortage()
-                        || virtualChessBoard.isThreefoldRepetition()
-                        || virtualChessBoard.getMovesWithoutAttackOrPawnMove() > 99) {
+                if (gameInfo.isStalemate(virtualChessBoard)
+                        || gameInfo.isDrawByPieceShortage(virtualChessBoard)
+                        || gameInfo.isThreefoldRepetition(virtualChessBoard)
+                        || gameInfo.isMovesWithoutAttackOrPawnMove(virtualChessBoard)) {
                     // Пат лучше, чем проигрыш, поэтому он ценнее на 1
                     currentScore = Integer.MIN_VALUE + 1;
                 }
@@ -61,7 +57,7 @@ public class EvaluationBot extends VBot {
                     bestScore = currentScore;
                     bestMove = moveInfo;
                 }
-                virtualChessBoard = virtualChessBoard.getPreviousChessBoard();
+                virtualChessBoard = virtualChessBoard.getPreviousChessBoard(); // TODO: изменить на аналог
             }
         } catch (CloneNotSupportedException e) {
             LOGGER.error("Ошибка при клонировании: " + e.getMessage());
