@@ -27,6 +27,14 @@ public class GameInfo implements ChessListener {
         board = new ChessBoard(fen);
     }
 
+    public GameInfo(final GameInfo gameInfo) {
+        this.gameStatus = gameInfo.gameStatus;
+        this.board = gameInfo.board.copy();
+        this.logic = gameInfo.logic;
+        this.whiteIsPresent = gameInfo.whiteIsPresent;
+        this.blackIsPresent = gameInfo.blackIsPresent;
+    }
+
     @Override
     public void gameStarted() {
         gameStatus = GameStatus.ACTIVE;
