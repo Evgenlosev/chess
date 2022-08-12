@@ -36,6 +36,14 @@ public class GameInfo extends ChessAdapter {
         blackIsPresent = false;
     }
 
+    public GameInfo(final GameInfo gameInfo) {
+        this.gameStatus = gameInfo.gameStatus;
+        this.board = gameInfo.board.copy();
+        this.logic = gameInfo.logic;
+        this.whiteIsPresent = gameInfo.whiteIsPresent;
+        this.blackIsPresent = gameInfo.blackIsPresent;
+    }
+
     @Override
     public void gameStarted() {
         if (blackIsPresent && whiteIsPresent) {
