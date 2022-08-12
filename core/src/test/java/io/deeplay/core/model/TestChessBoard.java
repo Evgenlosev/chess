@@ -3,6 +3,7 @@ package io.deeplay.core.model;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class TestChessBoard {
     @Test
@@ -131,5 +132,11 @@ public class TestChessBoard {
         assertEquals(gameInfo.getGameStatus(), GameStatus.FIFTY_MOVES_RULE);
     }
 
+    @Test
+    public void cloneTest() {
+        ChessBoard board = new ChessBoard();
+        ChessBoard secondBoard = new ChessBoard(board);
+        assertNotEquals(board.getBoard(), secondBoard.getBoard());
+    }
 
 }
