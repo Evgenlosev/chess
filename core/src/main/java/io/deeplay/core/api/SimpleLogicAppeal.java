@@ -1,5 +1,6 @@
 package io.deeplay.core.api;
 
+import io.deeplay.core.model.BoardSituationInfo;
 import io.deeplay.core.model.MoveInfo;
 
 import java.util.Set;
@@ -34,5 +35,12 @@ public interface SimpleLogicAppeal {
      * @return возвращает все возможные ходы для стороны с предстоящим ходом, если игра закончилась set = 0
      */
     Set<MoveInfo> getMoves(final String fenNotation);
+
+    /**
+     * @param fenNotation нотация Форсайта — Эдвардса
+     * @return возвращает информацию о ситуации на доске, о том мат ли противнику, пат или ничья,
+     * относительно ходящей стороны
+     */
+    BoardSituationInfo getBoardSituationInfo(final String fenNotation);
 
 }

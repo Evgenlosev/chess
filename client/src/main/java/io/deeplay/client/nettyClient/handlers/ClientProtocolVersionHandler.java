@@ -1,17 +1,17 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.serverToClient.ProtocolVersionResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * В этом блоке ожидаем подтверждение версии протокола взаимодействия с сервером.
  */
 public class ClientProtocolVersionHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientProtocolVersionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientProtocolVersionHandler.class);
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {

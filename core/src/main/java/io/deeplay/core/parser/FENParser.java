@@ -55,7 +55,7 @@ public class FENParser {
             );
 
     public static ChessBitboard parseFENToBitboards(final String fen) {
-        final String parsePiecePlacementData = splitFEN(fen).get(0);
+        final String piecePlacement = getPiecePlacement(fen);
         // TODO: проверка на то что есть символы "/pnbrqkPNBRQK" + меньше макс. длины fen, логирование, исключения
         // TODO: извлекаем charAt и считаем '/' а так же количество свободных фигур
         //  если разделителей ('/') будет не 7 штук или sum(свободных клеток + занятых) != 8, то ошибка
@@ -68,7 +68,7 @@ public class FENParser {
         for (char ch : allPiecesCharacterRepresentation) {
             piecesBitboard.put(ch, 0L);
         }
-        for (String rank : parsePiecePlacementData.split("/")) {
+        for (String rank : piecePlacement.split("/")) {
             for (char currentChar : rank.toCharArray()) {
                 if (Character.isDigit(currentChar)) {
                     backwardPrinting -= currentChar - '0'; // widening casting
@@ -290,6 +290,15 @@ public class FENParser {
         return splitFEN(fen).get(2);
     }
 
+    public static String getPiecePlacement(final String fen) {
+        return splitFEN(fen).get(0);
+    }
+
+    public static String getPiecePlacementAndWhoseTurn(final String fen) {
+        final List<String> fenParts = splitFEN(fen);
+        return fenParts.get(0) + " " + fenParts.get(1);
+    }
+
     public static Side getTurnSide(final String fen) {
         final String parseTurnSide = splitFEN(fen).get(1);
         final char turnSide = parseTurnSide.charAt(0);
@@ -302,7 +311,8 @@ public class FENParser {
     private static List<String> splitFEN(final String fen) {
         final List<String> parseFenNotation = List.of(fen.split(" "));
         if (parseFenNotation.size() != 6)
-            throw new IllegalArgumentException("Incorrect, or incomplete notation, amount of elements in notation isn't equal to 6");
+            throw new IllegalArgumentException("Incorrect, or incomplete notation, amount of elements in notation isn't equal to 6: " +
+                    fen);
         return parseFenNotation;
     }
 

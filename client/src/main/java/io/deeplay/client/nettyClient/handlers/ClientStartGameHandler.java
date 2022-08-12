@@ -1,6 +1,5 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -8,12 +7,13 @@ import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * В этом блоке направляем запрос на начало игры с заданными параметрами.
  */
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientStartGameHandler.class);
+    private static final Logger LOGGER =LoggerFactory.getLogger(ClientStartGameHandler.class);
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {

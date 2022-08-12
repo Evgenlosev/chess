@@ -1,6 +1,5 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.MoveRequest;
@@ -10,9 +9,10 @@ import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 public class ClientInboundCommandHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientInboundCommandHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientInboundCommandHandler.class);
 
     /**
      * @param ctx     ссылка на контекст между сервером и клиентом

@@ -1,6 +1,5 @@
 package io.deeplay.client.nettyClient;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.client.ChessClient;
 import io.deeplay.client.nettyClient.handlers.ClientInPingHandler;
 import io.deeplay.client.nettyClient.handlers.ClientInboundObjectDecoder;
@@ -14,6 +13,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.net.InetSocketAddress;
 
@@ -21,7 +21,7 @@ public class ChessNettyClient implements ChessClient {
     private final String host;
     private final int port;
     private static final String PROTOCOL_VERSION = "1.0";
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ChessNettyClient.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChessNettyClient.class);
 
     public ChessNettyClient(final String host, final int port) {
         this.host = host;
@@ -40,7 +40,7 @@ public class ChessNettyClient implements ChessClient {
                     .remoteAddress(new InetSocketAddress(host, port))
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        public void initChannel(final SocketChannel ch) throws Exception {
+                        public void initChannel(final SocketChannel ch) {
                             ch.pipeline().addLast(
                                     new ClientOutBoundCommandEncoder(),
                                     new ClientInboundObjectDecoder(),

@@ -1,39 +1,72 @@
 package io.deeplay.core.model;
 
-import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
-import io.deeplay.core.listener.ChessListener;
+import io.deeplay.core.api.SimpleLogicCache;
+import io.deeplay.core.listener.ChessAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class GameInfo implements ChessListener {
+public class GameInfo extends ChessAdapter {
     private GameStatus gameStatus;
+    private static final int BOARD_SIZE = 8;
     ChessBoard board;
     SimpleLogicAppeal logic;
+    boolean whiteIsPresent;
+    boolean blackIsPresent;
 
-    // Стандартный конструктор
+    /**
+     * Стандартный конструктор
+     */
     public GameInfo() {
-        gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogic();
-        board = new ChessBoard();
+        this(ChessBoard.DEFAULT_FEN_STRING);
     }
 
-    // Конструктор для заданного расположения фигур.
+    /**
+     * Конструктор для заданного расположения фигур.
+     *
+     * @param fen стартовая позиция
+     */
     public GameInfo(final String fen) {
-        this.gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogic();
+        gameStatus = GameStatus.INACTIVE;
+        logic = new SimpleLogicCache();
         board = new ChessBoard(fen);
+        whiteIsPresent = false;
+        blackIsPresent = false;
     }
 
     @Override
     public void gameStarted() {
-        gameStatus = GameStatus.ACTIVE;
+        if (blackIsPresent && whiteIsPresent) {
+            gameStatus = GameStatus.ACTIVE;
+        } else {
+            throw new RuntimeException("Not enough players to play.");
+        }
     }
 
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public boolean isMate(final ChessBoard chessBoard) {
+        return logic.isMate(chessBoard.getFEN());
+    }
+
+    public boolean isStalemate(final ChessBoard chessBoard) {
+        return logic.isStalemate(chessBoard.getFEN());
+    }
+
+    public boolean isDrawByPieceShortage(final ChessBoard chessBoard) {
+        return logic.isDrawByPieceShortage(chessBoard.getFEN());
+    }
+
+    public boolean isThreefoldRepetition(final ChessBoard chessBoard) {
+        return chessBoard.isThreefoldRepetition();
+    }
+
+    public boolean isMovesWithoutAttackOrPawnMove(final ChessBoard chessBoard) {
+        return chessBoard.getMovesWithoutAttackOrPawnMove() > 99;
     }
 
     public GameStatus getGameStatus() {
@@ -44,7 +77,11 @@ public class GameInfo implements ChessListener {
         return board.getFEN();
     }
 
-    // Обновляет доску, после обновления проверяет достаточно ли материала для мата и было ли трехкратное повторение.
+    /**
+     * Обновляет доску, после обновления проверяет достаточно ли материала для мата и было ли трехкратное повторение.
+     *
+     * @param moveInfo Информация о совершенном ходе
+     */
     public void updateBoard(final MoveInfo moveInfo) {
         board.updateBoard(moveInfo);
         checkMatingMaterial();
@@ -63,15 +100,20 @@ public class GameInfo implements ChessListener {
         }
     }
 
-    // Проверяет достаточно ли материала для мата. Если нет, меняет статус игры.
+    /**
+     * Проверяет достаточно ли материала для мата. Если нет, меняет статус игры.
+     */
     private void checkMatingMaterial() {
         if (logic.isDrawByPieceShortage(board.getFEN())) {
             gameStatus = GameStatus.INSUFFICIENT_MATING_MATERIAL;
         }
     }
 
-
-    // Возвращает сторону, которая должна сделать ход.
+    /**
+     * Возвращает сторону, которая должна сделать ход.
+     *
+     * @return Сторону, которая должна сделать следующий ход
+     */
     public Side whoseMove() {
         return board.getWhoseMove();
     }
@@ -80,19 +122,27 @@ public class GameInfo implements ChessListener {
         return gameStatus == GameStatus.ACTIVE;
     }
 
-    // Проверка удовлетворяет ли ход правилам шахмат.
+    /**
+     * Проверка удовлетворяет ли ход правилам шахмат.
+     *
+     * @param moveInfo информация о ходе
+     * @return true если ход корректный
+     */
     public boolean isMoveValid(final MoveInfo moveInfo) {
         return logic.getMoves(board.getFEN()).contains(moveInfo);
     }
 
-    // Возвращает список всех возможных ходов для конкретной стороны side.
+    /**
+     * Возвращает список всех возможных ходов для конкретной стороны side.
+     *
+     * @return возможные ходы
+     */
     public Set<MoveInfo> getAvailableMoves() {
         Set<MoveInfo> moves = logic.getMoves(board.getFEN());
         if (moves == null || moves.size() < 1) {
             if (logic.isMate(board.getFEN())) {
                 gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-            }
-            else {
+            } else {
                 gameStatus = GameStatus.STALEMATE;
             }
         }
@@ -107,8 +157,8 @@ public class GameInfo implements ChessListener {
     public List<Figure> getAllFigures() {
         List<Figure> allFigures = new ArrayList<>();
         BoardCell[][] boardArray = board.getBoard();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 if (MapsStorage.BLACK_FIGURES.contains(boardArray[i][j].getFigure()) ||
                         MapsStorage.WHITE_FIGURES.contains(boardArray[i][j].getFigure())) {
                     allFigures.add(boardArray[i][j].getFigure());
@@ -119,12 +169,26 @@ public class GameInfo implements ChessListener {
     }
 
     /**
-     * Игнорируется
-     *
      * @param side За какую сторону сел игрок
      */
     @Override
-    public void playerSeated(final Side side) {}
+    public void playerSeated(final Side side) {
+        if (side == Side.WHITE) {
+            if (whiteIsPresent) {
+                throw new RuntimeException("White is already present!");
+            } else {
+                whiteIsPresent = true;
+            }
+        } else if (side == Side.BLACK) {
+            if (blackIsPresent) {
+                throw new RuntimeException("Black is already present!");
+            } else {
+                blackIsPresent = true;
+            }
+        } else {
+            throw new RuntimeException("There is no side like that");
+        }
+    }
 
     /**
      * Совершенный ход
@@ -137,46 +201,6 @@ public class GameInfo implements ChessListener {
         updateBoard(moveInfo);
     }
 
-    /**
-     * @param side Сторона, предложившая ничью
-     */
-    @Override
-    public void offerDraw(final Side side) {
-        throw new RuntimeException("Offer draw hasn't been realized yet");
-    }
-
-    @Override
-    public void acceptDraw(final Side side) {
-        throw new RuntimeException("Offer draw hasn't been realized yet");
-    }
-
-    /**
-     * @param side сторона запросившая отмену хода
-     */
-    @Override
-    public void playerRequestsTakeBack(final Side side) {
-        throw new RuntimeException("Take back hasn't been realized yet");
-    }
-
-    /**
-     * @param side сторона согласившаяся на отмену хода
-     */
-    @Override
-    public void playerAgreesTakeBack(final Side side) {
-        throw new RuntimeException("Take back hasn't been realized yet");
-    }
-
-    /**
-     * @param side сдавшаяся сторона
-     */
-    @Override
-    public void playerResigned(final Side side) {
-        throw new RuntimeException("Resign hasn't been realized yet");
-    }
-
-    /**
-     *
-     */
     @Override
     public void draw() {
         gameStatus = GameStatus.DRAW;
@@ -196,6 +220,4 @@ public class GameInfo implements ChessListener {
                 break;
         }
     }
-    @Override
-    public void gameOver() {}
 }

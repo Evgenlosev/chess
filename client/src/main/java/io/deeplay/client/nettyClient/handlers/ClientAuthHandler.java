@@ -1,21 +1,20 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.AuthRequest;
 import io.deeplay.interaction.serverToClient.AuthResponse;
-import io.deeplay.interaction.serverToClient.ProtocolVersionResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * В этом блоке направляем запрос на авторизацию. Идентификатором пользователя является сторона.
  */
 public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientAuthHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientAuthHandler.class);
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
@@ -33,7 +32,7 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
                 ctx.channel().pipeline().remove(this);
                 ctx.channel().pipeline().addLast(new ClientStartGameHandler());
             } else {
-                LOGGER.info("Авторизация не пройдена", authResponse.getErrorMessage());
+                LOGGER.info("Авторизация не пройдена {}", authResponse.getErrorMessage());
             }
         } else {
             LOGGER.info("Ожидаем от сервера подтверждения авторизации");

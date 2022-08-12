@@ -1,6 +1,5 @@
 package io.deeplay.server;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.server.handlers.InboundObjectDecoder;
 import io.deeplay.server.handlers.OutBoundCommandEncoder;
 import io.deeplay.server.handlers.PingPongHandler;
@@ -13,17 +12,16 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.concurrent.TimeUnit;
 
 public class ChessNettyServer {
     private static final int PORT = 8189;
     private static final String PROTOCOL_VERSION = "1.0";
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ChessNettyServer.class);
-    private static final Map<Integer, String> ACTIVE_CLIENTS = new HashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChessNettyServer.class);
     public void run() throws Exception {
         //Пул потоков для обработки подключений клиентов
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
@@ -66,24 +64,6 @@ public class ChessNettyServer {
         return PROTOCOL_VERSION;
     }
 
-    /**
-     * Добавляем пользователя в список activeClients
-     * @param userName - имя пользователя
-     * @return
-     * clientId - если имя успешно добавлено.
-     * 0 - если пользователь с таким именем уже есть в списке.
-     */
-    public static Integer addClient(final String userName) {
-        if (ACTIVE_CLIENTS.size() == 0) {
-            ACTIVE_CLIENTS.put(1, userName);
-            return 1;
-        }
-        if (ACTIVE_CLIENTS.containsValue(userName)) {
-            return 0;
-        }
-        ACTIVE_CLIENTS.put(ACTIVE_CLIENTS.size() + 1, userName);
-        return ACTIVE_CLIENTS.size();
-    }
 
     public static void main(final String[] args) throws Exception {
         new ChessNettyServer().run();
