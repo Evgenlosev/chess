@@ -1,7 +1,7 @@
 package io.deeplay.core.model;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -352,11 +352,15 @@ public class ChessBoard implements Cloneable {
         return movesWithoutAttackOrPawnMove;
     }
 
+    public ChessBoard getPreviousChessBoard() { // TODO: delete, но пока без этого не будет работать
+        return previousChessBoard;
+    }
+
     /**
      * @return clone
      */
     @Override
-    protected ChessBoard clone() throws CloneNotSupportedException {
+    public ChessBoard clone() throws CloneNotSupportedException { // TODO: protected
         ChessBoard chessBoard = (ChessBoard) super.clone();
         BoardCell[][] cloneBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
