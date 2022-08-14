@@ -36,6 +36,18 @@ public class GameInfo extends ChessAdapter {
         blackIsPresent = false;
     }
 
+    public GameInfo(final GameInfo gameInfo) {
+        this.gameStatus = gameInfo.gameStatus;
+        this.logic = gameInfo.logic;
+        try {
+            this.board = gameInfo.board.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Cloning error");
+        }
+        this.whiteIsPresent = gameInfo.whiteIsPresent;
+        this.blackIsPresent = gameInfo.blackIsPresent;
+    }
+
     @Override
     public void gameStarted() {
         if (blackIsPresent && whiteIsPresent) {
