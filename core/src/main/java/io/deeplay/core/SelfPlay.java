@@ -9,6 +9,7 @@ import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import org.slf4j.LoggerFactory;
 
+
 public class SelfPlay {
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
