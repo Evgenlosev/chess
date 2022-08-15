@@ -11,9 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ChessBoard extends JPanel {
+    private final Consumer<MoveInfo> function;
     private static final int RED_OFFSET = -10;
     private static final int GREEN_OFFSET = -30;
     private static final int BLUE_OFFSET = -40;
@@ -38,8 +40,9 @@ public class ChessBoard extends JPanel {
             Map.entry("1", ImageIO.read(new File("client/src/main/resources/ChessPiecesPNG/none.png")))
     );
 
-    public ChessBoard() throws IOException {
+    public ChessBoard(Consumer<MoveInfo> function) throws IOException {
         super();
+        this.function = function;
         this.setLayout(new GridLayout(8, 8));
         cells = new JButton[64];
         for (int i = 0; i < 8; i++) {
@@ -68,12 +71,9 @@ public class ChessBoard extends JPanel {
         for (int i = 0; i < unzippedFen.length(); i++) {
             cells[i].setIcon(new ImageIcon(figuresFromLetters.get(unzippedFen.substring(i, i + 1))));
         }
-
-        reverse();
     }
 
     private void processClick(ActionEvent event) {
-        reverse();
         if (((JButton) event.getSource()).getBackground() == BLACK_CELL ||
                 ((JButton) event.getSource()).getBackground() == WHITE_CELL) {
             paintPossibleMoves(event);
@@ -114,12 +114,10 @@ public class ChessBoard extends JPanel {
         Optional<MoveInfo> move = moves.stream().filter(x ->
                 (x.getCellFrom().getIndexAsOneDimension() == from &&
                         x.getCellTo().getIndexAsOneDimension() == to)).findAny();
-        if (move.isPresent()) {
-            // TODO:: processMove
-            throw new RuntimeException("Trying to process move " + move.get());
-        }
+        move.ifPresent(moveInfo -> function.accept(moveInfo));
+        restoreBasicColor();
     }
-    private void reverse() {
+    public void reverse() {
         java.util.List<JButton> tempCells = new ArrayList<>(List.of(cells));
         Collections.reverse(tempCells);
         cells = tempCells.toArray(new JButton[64]);
