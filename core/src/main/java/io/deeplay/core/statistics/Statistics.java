@@ -135,7 +135,6 @@ public class Statistics extends ChessAdapter {
                 gamesStatistics.stream().map(GameStatistics::getSecondPlayerMovesTime)
                         .flatMapToDouble(x -> x.stream().mapToDouble(time -> time)).average().orElseThrow();
         try {
-            System.out.println(averageStatistics.getAbsolutePath());
             averageStatistics.createNewFile();
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream(averageStatistics), StandardCharsets.UTF_8))) {
