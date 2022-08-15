@@ -1,7 +1,11 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import io.deeplay.client.session.ClientGameSession;
+import io.deeplay.client.ui.TUI;
+import io.deeplay.client.ui.UI;
+import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
+import io.deeplay.core.player.RandomBot;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -16,15 +20,24 @@ import org.slf4j.Logger;
  */
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER =LoggerFactory.getLogger(ClientStartGameHandler.class);
-    private Player player;
+    private Side side;
+    private UI ui;
 
-    public ClientStartGameHandler(final Player player) {
-        this.player = player;
+    public ClientStartGameHandler() {
+        super();
+        this.ui = new TUI();
     }
+
+    public ClientStartGameHandler(final UI ui) {
+        super();
+        this.ui = ui;
+    }
+
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
-        //TODO у GUI или TUI запросить у пользователя тип соперника, с которым он хочет сыграть
-        ctx.writeAndFlush(new StartGameRequest());
+        StartGameRequest startGameRequest = ui.getGameSettings();
+        side = startGameRequest.getSide();
+        ctx.writeAndFlush(startGameRequest);
     }
 
     @Override
@@ -34,7 +47,8 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
             if (startGameResponse.isGameStarted()) {
                 LOGGER.info("Начало игры");
                 //Создаем и запускаем игровую сессию по параметрам, заданным пользователем
-                ClientGameSession session = new ClientGameSession(player, ctx);
+                Player player = new RandomBot(side);
+                ClientGameSession session = new ClientGameSession(player, ctx, ui);
                 session.start();
                 //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
                 ctx.channel().pipeline().remove(this);
