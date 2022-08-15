@@ -16,7 +16,7 @@ import org.slf4j.Logger;
  */
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER =LoggerFactory.getLogger(ClientStartGameHandler.class);
-    private final Player player;
+    private Player player;
 
     public ClientStartGameHandler(final Player player) {
         this.player = player;
