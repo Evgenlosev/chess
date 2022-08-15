@@ -36,12 +36,9 @@ public class GameInfo extends ChessAdapter {
         blackIsPresent = false;
     }
 
-    public GameInfo(final GameInfo gameInfo) {
-        this.gameStatus = gameInfo.gameStatus;
-        this.board = gameInfo.board.copy();
-        this.logic = gameInfo.logic;
-        this.whiteIsPresent = gameInfo.whiteIsPresent;
-        this.blackIsPresent = gameInfo.blackIsPresent;
+    public void restartGame() {
+        gameStatus = GameStatus.INACTIVE;
+        board = new ChessBoard(ChessBoard.DEFAULT_FEN_STRING);
     }
 
     @Override
@@ -51,10 +48,6 @@ public class GameInfo extends ChessAdapter {
         } else {
             throw new RuntimeException("Not enough players to play.");
         }
-    }
-
-    public BoardCell[][] getChessBoard() {
-        return board.getBoard();
     }
 
     public ChessBoard getBoard() {
@@ -231,15 +224,5 @@ public class GameInfo extends ChessAdapter {
                 gameStatus = GameStatus.WHITE_WON;
                 break;
         }
-    }
-
-    public GameInfo copy() {
-        return new GameInfo(this);
-    }
-
-    public GameInfo copy(final MoveInfo moveInfo) {
-        final GameInfo newGameInfo = new GameInfo(this);
-        newGameInfo.updateBoard(moveInfo);
-        return newGameInfo;
     }
 }
