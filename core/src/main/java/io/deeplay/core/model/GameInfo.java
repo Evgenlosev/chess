@@ -38,12 +38,8 @@ public class GameInfo extends ChessAdapter {
 
     public GameInfo(final GameInfo gameInfo) {
         this.gameStatus = gameInfo.gameStatus;
+        this.board = gameInfo.board.copy();
         this.logic = gameInfo.logic;
-        try {
-            this.board = gameInfo.board.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Cloning error");
-        }
         this.whiteIsPresent = gameInfo.whiteIsPresent;
         this.blackIsPresent = gameInfo.blackIsPresent;
     }
