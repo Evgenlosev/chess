@@ -1,6 +1,7 @@
 package io.deeplay.core;
 
 import ch.qos.logback.classic.Logger;
+import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
@@ -97,7 +98,7 @@ public class SelfPlay {
                 changeCurrentPlayerToMove();
             }
             // BoardDrawer.draw(gameInfo.getFenBoard());
-            gameInfoGroup.gameOver();
+            gameInfoGroup.gameOver(gameInfo.getGameStatus());
             LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
             if (countGamesAmount < gamesAmount)
                 gameInfo.restartGame();

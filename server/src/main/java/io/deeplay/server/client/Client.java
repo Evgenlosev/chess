@@ -6,6 +6,7 @@ import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.interaction.serverToClient.GameOverResponse;
+import io.deeplay.interaction.serverToClient.GetAnswer;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -14,7 +15,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class Client extends Player {
 
     //Контекст общения клиента и сервера
-    private ChannelHandlerContext ctx;
+    private final ChannelHandlerContext ctx;
     private final Object monitor;
     private MoveInfo currentMove;
 
@@ -22,10 +23,6 @@ public class Client extends Player {
         super(side);
         this.ctx = ctx;
         monitor = new Object();
-    }
-
-    public void setCtx(final ChannelHandlerContext ctx) {
-        this.ctx = ctx;
     }
 
     public void setCurrentMove(final MoveInfo currentMove) {
@@ -39,6 +36,7 @@ public class Client extends Player {
 
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
+        ctx.writeAndFlush(new GetAnswer());
         synchronized (monitor) {
             try {
                 monitor.wait();
@@ -102,8 +100,8 @@ public class Client extends Player {
     }
 
     @Override
-    public void gameOver() {
-
+    public void gameOver(GameStatus gameStatus) {
+        ctx.writeAndFlush(new GameOverResponse(true, gameStatus));
     }
 
 }

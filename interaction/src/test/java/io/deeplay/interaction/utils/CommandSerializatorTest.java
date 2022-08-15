@@ -1,7 +1,7 @@
 package io.deeplay.interaction.utils;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import io.deeplay.core.model.Side;
+import io.deeplay.core.model.*;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.AuthRequest;
 import io.deeplay.interaction.clientToServer.MoveRequest;
@@ -25,6 +25,7 @@ public class CommandSerializatorTest {
         Assert.assertEquals(((AuthRequest) command).getSide(), ((AuthRequest) result).getSide());
     }
 
+
     @Test
     public void testDeserializeCommandException() {
         String str = "Java";
@@ -37,11 +38,13 @@ public class CommandSerializatorTest {
 
     @Test
     public void testParseByteArrayToCommand() throws Exception {
-        MoveRequest moveRequest = new MoveRequest(5,17);
+        MoveRequest moveRequest = new MoveRequest(new MoveInfo(new Coord(5), new Coord(17),
+                MoveType.PAWN_LONG_MOVE, Figure.W_PAWN));
         String result = new String(CommandSerializator.serializeCommand(moveRequest));
+        System.out.println(result);
 
-        Assert.assertTrue(result.contains("MOVE_REQUEST"));
+        Assert.assertTrue(result.contains("MoveRequest"));
         Assert.assertTrue(result.contains("5"));
-        Assert.assertTrue(result.contains("17"));
+        Assert.assertTrue(result.contains("W_PAWN"));
     }
 }
