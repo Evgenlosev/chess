@@ -1,8 +1,11 @@
 package io.deeplay.client.session;
 
 import ch.qos.logback.classic.Logger;
-import io.deeplay.core.console.BoardDrawer;
+import io.deeplay.client.nettyClient.handlers.ClientInboundCommandHandler;
+import io.deeplay.client.nettyClient.handlers.ClientStartGameHandler;
+import io.deeplay.client.ui.UI;
 import io.deeplay.core.model.GameInfo;
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.player.Player;
 import io.deeplay.interaction.Command;
@@ -20,19 +23,22 @@ public class ClientGameSession {
 
     private final GameInfo gameInfo;
 
+    private final UI ui;
+
     private final ChannelHandlerContext ctx;
 
-    public ClientGameSession(final Player player, final ChannelHandlerContext ctx) {
+    public ClientGameSession(final Player player, final ChannelHandlerContext ctx, final UI ui) {
         this.player = player;
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
+        this.ui = ui;
     }
 
     public void start() {
-        BoardDrawer.draw(gameInfo.getFenBoard());
+        ui.start(gameInfo);
     }
 
-    public void acceptCommand(Command command) {
+    public void acceptCommand(final Command command) {
         switch (command.getCommandType()) {
             case GET_ANSWER:
                 makeMove();
@@ -44,13 +50,16 @@ public class ClientGameSession {
             case GAME_OVER_RESPONSE:
                 GameOverResponse gameOverResponse = (GameOverResponse) command;
                 LOGGER.info("Игра завершена: {}", gameOverResponse.getGameStatus().getMessage());
+                gameOver(gameOverResponse.getGameStatus());
                 break;
+            default:
+                throw new RuntimeException("Invalid command is executed: " + command);
         }
     }
 
-    public void updateBoard(MoveInfo moveInfo) {
+    public void updateBoard(final MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
-        BoardDrawer.draw(gameInfo.getFenBoard());
+        ui.updateBoard(gameInfo);
     }
 
     private void makeMove() {
@@ -58,5 +67,11 @@ public class ClientGameSession {
             MoveInfo currentMove = player.getAnswer(gameInfo);
             ctx.writeAndFlush(new MoveRequest(currentMove));
         }
+    }
+
+    private void gameOver(final GameStatus gameStatus) {
+        ui.gameOver(gameStatus);
+        ctx.channel().pipeline().remove(ClientInboundCommandHandler.class);
+        ctx.channel().pipeline().addLast(new ClientStartGameHandler(ui));
     }
 }
