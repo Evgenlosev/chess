@@ -1,21 +1,17 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import ch.qos.logback.classic.Logger;
 import io.deeplay.client.session.ClientGameSession;
-import io.deeplay.core.model.MoveInfo;
 import io.deeplay.interaction.Command;
-import io.deeplay.interaction.serverToClient.MoveResponse;
-import io.deeplay.interaction.CommandType;
-import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ClientInboundCommandHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientInboundCommandHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientInboundCommandHandler.class);
 
     private final ClientGameSession session;
     private final ExecutorService executorService;

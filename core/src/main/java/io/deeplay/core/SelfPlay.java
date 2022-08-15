@@ -9,8 +9,6 @@ import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
-
 public class SelfPlay {
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
@@ -70,7 +68,6 @@ public class SelfPlay {
             changeCurrentPlayerToMove();
         }
         BoardDrawer.draw(gameInfo.getFenBoard());
-        System.out.println("Игра закончена: " + gameInfo.getGameStatus().getMessage());
         gameInfoGroup.gameOver(gameInfo.getGameStatus());
         LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
     }
