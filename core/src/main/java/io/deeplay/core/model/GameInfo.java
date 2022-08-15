@@ -36,6 +36,11 @@ public class GameInfo extends ChessAdapter {
         blackIsPresent = false;
     }
 
+    public void restartGame() {
+        gameStatus = GameStatus.INACTIVE;
+        board = new ChessBoard(ChessBoard.DEFAULT_FEN_STRING);
+    }
+
     @Override
     public void gameStarted() {
         if (blackIsPresent && whiteIsPresent) {
