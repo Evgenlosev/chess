@@ -274,7 +274,7 @@ public class Statistics extends ChessAdapter {
     }
 
     @Override
-    public void gameOver() {
+    public void gameOver(final GameStatus gameStatus) {
         gamesStatistics.get(currentGameStatistics).addGameEndStatistics(selfPlay.getGameInfo());
         if (gamesAmount == countGames) {
             saveStatistics();
