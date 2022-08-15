@@ -1,10 +1,7 @@
 package io.deeplay.client.nettyClient.handlers;
 
-import io.deeplay.core.model.MoveInfo;
+import io.deeplay.client.session.ClientGameSession;
 import io.deeplay.interaction.Command;
-import io.deeplay.interaction.serverToClient.MoveResponse;
-import io.deeplay.interaction.CommandType;
-import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
