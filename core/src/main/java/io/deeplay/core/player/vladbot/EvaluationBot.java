@@ -38,29 +38,24 @@ public class EvaluationBot extends VBot {
         int currentScore;
         BoardSituationInfo currentMoveBoardSituation;
         // Пат - лучше проигрышного хода (если лучший ход = проигрышному -> берем пат)
-        try {
-            ChessBoard virtualChessBoard = gameInfo.getBoard().clone(); // TODO: изменить на аналог
-            for (MoveInfo moveInfo : allMoves) {
-                virtualChessBoard.updateBoard(moveInfo);
-                currentScore = sideCoeff * getEvaluation().evaluateBoard(virtualChessBoard);
-                if (gameInfo.isMate(virtualChessBoard)) {
-                    currentScore = Integer.MAX_VALUE;
-                }
-                if (gameInfo.isStalemate(virtualChessBoard)
-                        || gameInfo.isDrawByPieceShortage(virtualChessBoard)
-                        || gameInfo.isThreefoldRepetition(virtualChessBoard)
-                        || gameInfo.isMovesWithoutAttackOrPawnMove(virtualChessBoard)) {
-                    // Пат лучше, чем проигрыш, поэтому он ценнее на 1
-                    currentScore = Integer.MIN_VALUE + 1;
-                }
-                if (bestScore < currentScore) {
-                    bestScore = currentScore;
-                    bestMove = moveInfo;
-                }
-                virtualChessBoard = virtualChessBoard.getPreviousChessBoard(); // TODO: изменить на аналог
+        for (MoveInfo moveInfo : allMoves) {
+            final ChessBoard virtualChessBoard = new ChessBoard(gameInfo.getBoard());
+            virtualChessBoard.updateBoard(moveInfo);
+            currentScore = sideCoeff * getEvaluation().evaluateBoard(virtualChessBoard);
+            if (gameInfo.isMate(virtualChessBoard)) {
+                currentScore = Integer.MAX_VALUE;
             }
-        } catch (CloneNotSupportedException e) {
-            LOGGER.error("Ошибка при клонировании: " + e.getMessage());
+            if (gameInfo.isStalemate(virtualChessBoard)
+                    || gameInfo.isDrawByPieceShortage(virtualChessBoard)
+                    || gameInfo.isThreefoldRepetition(virtualChessBoard)
+                    || gameInfo.isMovesWithoutAttackOrPawnMove(virtualChessBoard)) {
+                // Пат лучше, чем проигрыш, поэтому он ценнее на 1
+                currentScore = Integer.MIN_VALUE + 1;
+            }
+            if (bestScore < currentScore) {
+                bestScore = currentScore;
+                bestMove = moveInfo;
+            }
         }
         Objects.requireNonNull(bestMove);
         return bestMove;
