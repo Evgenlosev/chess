@@ -62,6 +62,13 @@ public class ChessBoard implements Cloneable {
         moveCounter = Integer.parseInt(param[4]);
     }
 
+    /**
+     * Считает фигуры стороны.
+     * Можно использовать в качестве оценки основанной на количестве фигур.
+     *
+     * @param side сторона фигуры которой будут считаться.
+     * @return количество фигур стороны side.
+     */
     public int countPiecesForSide(final Side side) {
         final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
         int countPieces = 0;
@@ -73,6 +80,13 @@ public class ChessBoard implements Cloneable {
 
     }
 
+    /**
+     * Считает стоимости фигур.
+     * Можно использовать в качестве оценки основанной на стоимости фигур.
+     *
+     * @param side сторона стоимость фигур которой будут считаться.
+     * @return стоимость фигур стороны side.
+     */
     public int countPiecesValuesForSide(final Side side) {
         final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
         int score = 0;
