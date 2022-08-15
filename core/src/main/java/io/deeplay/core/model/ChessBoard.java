@@ -3,11 +3,12 @@ package io.deeplay.core.model;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-public class ChessBoard implements Cloneable {
+public class ChessBoard {
     public static final int BOARD_SIZE = 8;
     static final int NUMBER_OF_SLASHES_IN_FEN_STRING = 7;
     public static final String DEFAULT_FEN_STRING = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    private BoardCell[][] board;
+    private String fen;
+    private final BoardCell[][] board;
     Logger logger = LoggerFactory.getLogger(ChessBoard.class);
     private ChessBoard previousChessBoard;
     private MoveInfo moveInfo = null;
@@ -34,6 +35,7 @@ public class ChessBoard implements Cloneable {
         if (fen.length() - fen.replace("/", "").length() != NUMBER_OF_SLASHES_IN_FEN_STRING) {
             throw new RuntimeException("Wrong FEN string");
         }
+        this.fen = fen;
         previousChessBoard = null;
         board = new BoardCell[BOARD_SIZE][BOARD_SIZE];
         String[] splitFiguresFromProperties = fen.split(" ", 2);
@@ -44,6 +46,24 @@ public class ChessBoard implements Cloneable {
         }
         String properties = splitFiguresFromProperties[1];
         setProperties(properties);
+    }
+
+    public ChessBoard(final ChessBoard chessBoard) {
+        this.fen = chessBoard.fen;
+        BoardCell[][] newBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                newBoard[i][j] = new BoardCell(chessBoard.board[i][j].getFigure());
+            }
+        }
+        this.board = newBoard;
+        this.previousChessBoard = chessBoard.previousChessBoard;
+        this.moveInfo = chessBoard.moveInfo;
+        this.castleAvailable = chessBoard.castleAvailable;
+        this.movesWithoutAttackOrPawnMove = chessBoard.movesWithoutAttackOrPawnMove;
+        this.moveCounter = chessBoard.moveCounter;
+        this.pawnLongMoveInfo = chessBoard.pawnLongMoveInfo;
+        this.whoseMove = chessBoard.whoseMove;
     }
 
     /**
@@ -104,11 +124,7 @@ public class ChessBoard implements Cloneable {
     }
 
     public void updateBoard(final MoveInfo moveInfo) {
-        try {
-            previousChessBoard = this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
+        previousChessBoard = this.copy();
         this.moveInfo = moveInfo;
         pawnLongMoveInfo = "-";
 
@@ -145,6 +161,7 @@ public class ChessBoard implements Cloneable {
         updateCastle(moveInfo);
         whoseMove = Side.otherSide(whoseMove);
         board[from.getRow()][from.getColumn()] = new BoardCell(Figure.NONE);
+        updateFen();
     }
 
     private void processUsualMove(final MoveInfo moveInfo, final Coord to) {
@@ -274,6 +291,10 @@ public class ChessBoard implements Cloneable {
     }
 
     public String getFEN() {
+        return fen;
+    }
+
+    public void updateFen() {
         String str = this.toString();
         str = str.replace('\n', '/');
         str = str.substring(0, str.length() - 1);
@@ -281,7 +302,7 @@ public class ChessBoard implements Cloneable {
         str = str.replace(" ", "");
         str = zipFen(str);
         str += getProperties();
-        return str;
+        fen = str;
     }
 
     public BoardCell[][] getBoard() {
@@ -330,17 +351,7 @@ public class ChessBoard implements Cloneable {
     /**
      * @return clone
      */
-    @Override
-    protected ChessBoard clone() throws CloneNotSupportedException {
-        ChessBoard chessBoard = (ChessBoard) super.clone();
-        BoardCell[][] cloneBoard = new BoardCell[BOARD_SIZE][BOARD_SIZE];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                cloneBoard[i][j] = (BoardCell) board[i][j].clone();
-                cloneBoard[i][j].setFigure(board[i][j].getFigure());
-            }
-        }
-        chessBoard.board = cloneBoard;
-        return chessBoard;
+    protected ChessBoard copy() {
+        return new ChessBoard(this);
     }
 }
