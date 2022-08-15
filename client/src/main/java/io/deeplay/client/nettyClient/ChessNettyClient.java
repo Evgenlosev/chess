@@ -12,6 +12,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.json.JsonObjectDecoder;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
@@ -43,6 +44,7 @@ public class ChessNettyClient implements ChessClient {
                         public void initChannel(final SocketChannel ch) {
                             ch.pipeline().addLast(
                                     new ClientOutBoundCommandEncoder(),
+                                    new JsonObjectDecoder(),
                                     new ClientInboundObjectDecoder(),
                                     new ClientInPingHandler(),
                                     new ClientProtocolVersionHandler());

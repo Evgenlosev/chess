@@ -1,5 +1,6 @@
 package io.deeplay.core.listener;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
@@ -69,7 +70,7 @@ public abstract class ChessEventSource {
     /**
      * Событие конца игры.
      */
-    public void gameOver() {
-        listeners.forEach(ChessListener::gameOver);
+    public void gameOver(final GameStatus gameStatus) {
+        listeners.forEach(listener -> listener.gameOver(gameStatus));
     }
 }
