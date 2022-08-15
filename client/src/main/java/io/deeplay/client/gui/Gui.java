@@ -6,8 +6,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Gui extends JFrame {
+    private Consumer<MoveInfo> function;
     // these are the components we need.
     private final JSplitPane splitPane;  // split the window in top and bottom
     private final ChessBoard chessBoard;       // container panel for the top
@@ -18,9 +20,11 @@ public class Gui extends JFrame {
     private final JTextField textField;   // a textField for the text the user inputs
     private final JButton button;         // and a "send" button
 
-    public Gui() throws IOException {
+    public Gui(Consumer<MoveInfo> function) {
         super("Chess");
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        this.function = function;
 
         // first, lets create the containers:
         // the splitPane devides the window in two components (here: top and bottom)
@@ -28,7 +32,11 @@ public class Gui extends JFrame {
         // and how much of the bottom component they want to see.
         splitPane = new JSplitPane();
 
-        chessBoard = new ChessBoard();         // our top component
+        try {
+            chessBoard = new ChessBoard(function);         // our top component
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         moveHistory = new JPanel();      // our bottom component
 
         // in our bottom panel we want the text area and the input components
