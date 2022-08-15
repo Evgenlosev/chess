@@ -29,7 +29,8 @@ public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command>
                 AuthorizationHandler
                 */
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new AuthorizationHandler());
+//                ctx.channel().pipeline().addLast(new AuthorizationHandler());
+                ctx.channel().pipeline().addLast(new StartGameHandler());
             } else {
                 LOGGER.info("Версия протокола отклонена");
                 ctx.writeAndFlush(
