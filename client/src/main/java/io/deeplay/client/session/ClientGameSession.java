@@ -26,14 +26,12 @@ public class ClientGameSession {
 
     private final ChannelHandlerContext ctx;
 
-    Consumer<MoveInfo> function;
-
     public ClientGameSession(final Player player, final ChannelHandlerContext ctx) {
         this.player = player;
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
-        function = x -> ctx.writeAndFlush(new MoveRequest(x));
-        gui = new Gui(function);
+        final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
+        gui = new Gui(sendMove);
         gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
         gui.setVisible(true);
     }

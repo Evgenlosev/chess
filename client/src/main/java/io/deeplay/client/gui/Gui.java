@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class Gui extends JFrame {
-    private Consumer<MoveInfo> function;
     // these are the components we need.
     private final JSplitPane splitPane;  // split the window in top and bottom
     private final ChessBoard chessBoard;       // container panel for the top
@@ -20,11 +19,9 @@ public class Gui extends JFrame {
     private final JTextField textField;   // a textField for the text the user inputs
     private final JButton button;         // and a "send" button
 
-    public Gui(Consumer<MoveInfo> function) {
+    public Gui(Consumer<MoveInfo> sendMove) {
         super("Chess");
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
-
-        this.function = function;
 
         // first, lets create the containers:
         // the splitPane devides the window in two components (here: top and bottom)
@@ -33,7 +30,7 @@ public class Gui extends JFrame {
         splitPane = new JSplitPane();
 
         try {
-            chessBoard = new ChessBoard(function);         // our top component
+            chessBoard = new ChessBoard(sendMove);         // our top component
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
