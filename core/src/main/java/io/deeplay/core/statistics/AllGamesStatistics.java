@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
  * Какие комбинации фигур оставались в конце у каждой стороны.
  * Какие виды ходов используются чаще всего.
  */
-public class Statistics extends ChessAdapter {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(Statistics.class);
+public class AllGamesStatistics extends ChessAdapter {
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(AllGamesStatistics.class);
     private final File outputDirectory;
     private final SelfPlay selfPlay;
     private final String firstPlayerName;
@@ -40,7 +40,7 @@ public class Statistics extends ChessAdapter {
      */
     private long previousTimeMark;
 
-    public Statistics(final SelfPlay selfPlay) {
+    public AllGamesStatistics(final SelfPlay selfPlay) {
         this.selfPlay = selfPlay;
         this.firstPlayerName =
                 selfPlay.getFirstPlayer().getSide().toString() + "-" + selfPlay.getFirstPlayer().getName();
