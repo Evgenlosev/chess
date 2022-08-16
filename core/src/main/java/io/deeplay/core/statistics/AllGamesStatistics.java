@@ -151,7 +151,8 @@ public class AllGamesStatistics extends ChessAdapter {
                 writer.write(secondPlayerName + ": won " + secondPlayerWins + " times" + '\n');
                 writer.write("Longest time on move: " + String.format("%.3f", secondPlayerLongestTimeOnMove)
                         + "; Shortest time on move: " + String.format("%.3f", secondPlayerShortestTimeOnMove) + '\n');
-                writer.write("Average time on move: " + String.format("%.3f", secondPlayerAverageTimeOnMove) + '\n');
+                writer.write("Average time on move: " +
+                        String.format("%.3f", secondPlayerAverageTimeOnMove) + '\n');
                 writer.write('\n');
                 writer.write("Draw " + draws + " times.");
             }
