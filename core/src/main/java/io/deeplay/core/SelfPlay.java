@@ -86,7 +86,7 @@ public class SelfPlay {
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
             gameInfoGroup.gameStarted();
-            LOGGER.info("Партия началась");
+            LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков
             while (gameInfo.isGameOver()) {
                 // BoardDrawer.draw(gameInfo.getFenBoard());
@@ -99,7 +99,8 @@ public class SelfPlay {
             }
             // BoardDrawer.draw(gameInfo.getFenBoard());
             gameInfoGroup.gameOver(gameInfo.getGameStatus());
-            LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
+            LOGGER.info("Партия {} из {} - закончена. {}", countGamesAmount, gamesAmount,
+                    gameInfo.getGameStatus().getMessage());
             if (countGamesAmount < gamesAmount)
                 gameInfo.resetGame();
         }
