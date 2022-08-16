@@ -100,7 +100,7 @@ public class SelfPlay {
             gameInfoGroup.gameOver();
             LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
             if (countGamesAmount < gamesAmount)
-                gameInfo.restartGame();
+                gameInfo.resetGame();
         }
     }
 

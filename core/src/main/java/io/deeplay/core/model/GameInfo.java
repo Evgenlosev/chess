@@ -36,7 +36,7 @@ public class GameInfo extends ChessAdapter {
         blackIsPresent = false;
     }
 
-    public void restartGame() {
+    public void resetGame() {
         gameStatus = GameStatus.INACTIVE;
         board = new ChessBoard(ChessBoard.DEFAULT_FEN_STRING);
     }
