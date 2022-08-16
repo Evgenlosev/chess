@@ -250,8 +250,7 @@ public class AllGamesStatistics extends ChessAdapter {
                     "moveTypes", "usageFrequency",
                     outputDirectory.getPath(), "Second-player-move-type-usage-frequency");
         } catch (IOException e) {
-            LOGGER.error("Ошибка при выводе в файл: {}", e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Ошибка при выводе в файл", e);
         }
     }
 
