@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * Класс для сбора статистики одной партии.
  */
-public class GameStatistics {
+public class OneGameStatistics {
 
     // "развитие фигур", "как много фигур двинулись как минимум 1 раз?" - посчитать количество движений фигурами
     // Нужна мапа из которой будут удаляться походившие фигуры
@@ -26,7 +26,7 @@ public class GameStatistics {
     private int countHalfTurns;
     private int countTurns;
 
-    public GameStatistics() {
+    public OneGameStatistics() {
         this.countPieceMoves = new EnumMap<>(Figure.class);
         this.firstPlayerMovesTime = new ArrayList<>();
         this.secondPlayerMovesTime = new ArrayList<>();
