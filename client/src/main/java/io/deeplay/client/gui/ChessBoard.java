@@ -15,7 +15,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ChessBoard extends JPanel {
-    private final Consumer<MoveInfo> function;
+    private final Consumer<MoveInfo> sendMove;
+    private static final int BOARD_SIZE = 8;
+    private static final int BOARD_CELL_NUMBER = 8;
     private static final int RED_OFFSET = -10;
     private static final int GREEN_OFFSET = -30;
     private static final int BLUE_OFFSET = -40;
@@ -40,22 +42,22 @@ public class ChessBoard extends JPanel {
             Map.entry("1", ImageIO.read(new File("client/src/main/resources/ChessPiecesPNG/none.png")))
     );
 
-    public ChessBoard(Consumer<MoveInfo> function) throws IOException {
+    public ChessBoard(Consumer<MoveInfo> sendMove) throws IOException {
         super();
-        this.function = function;
-        this.setLayout(new GridLayout(8, 8));
-        cells = new JButton[64];
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                cells[i * 8 + j] = new JButton();
+        this.sendMove = sendMove;
+        this.setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
+        cells = new JButton[BOARD_CELL_NUMBER];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                cells[i * BOARD_SIZE + j] = new JButton();
                 cells[i].setBorderPainted(false);
                 if (i % 2 == 0 && j % 2 == 0 || i % 2 == 1 && j % 2 == 1) {
-                    cells[i * 8 + j].setBackground(WHITE_CELL);
+                    cells[i * BOARD_SIZE + j].setBackground(WHITE_CELL);
                 } else {
-                    cells[i * 8 + j].setBackground(BLACK_CELL);
+                    cells[i * BOARD_SIZE + j].setBackground(BLACK_CELL);
                 }
-                cells[i * 8 + j].setName(String.valueOf((7 - i) * 8 + j));
-                cells[i * 8 + j].addActionListener(this::processClick);
+                cells[i * BOARD_SIZE + j].setName(String.valueOf((BOARD_SIZE - 1 - i) * BOARD_SIZE + j));
+                cells[i * BOARD_SIZE + j].addActionListener(this::processClick);
             }
         }
         for (JButton btn : cells) {
@@ -101,8 +103,8 @@ public class ChessBoard extends JPanel {
 
     private void restoreBasicColor() {
         for (JButton cell : cells) {
-            if (Integer.parseInt(cell.getName()) / 8 % 2 == 1 && Integer.parseInt(cell.getName()) % 2 == 1 ||
-                    Integer.parseInt(cell.getName()) / 8 % 2 == 0 && Integer.parseInt(cell.getName()) % 2 == 0) {
+            if (Integer.parseInt(cell.getName()) / BOARD_SIZE % 2 == 1 && Integer.parseInt(cell.getName()) % 2 == 1 ||
+                    Integer.parseInt(cell.getName()) / BOARD_SIZE % 2 == 0 && Integer.parseInt(cell.getName()) % 2 == 0) {
                 cell.setBackground(BLACK_CELL);
             } else {
                 cell.setBackground(WHITE_CELL);
@@ -114,13 +116,13 @@ public class ChessBoard extends JPanel {
         Optional<MoveInfo> move = moves.stream().filter(x ->
                 (x.getCellFrom().getIndexAsOneDimension() == from &&
                         x.getCellTo().getIndexAsOneDimension() == to)).findAny();
-        move.ifPresent(moveInfo -> function.accept(moveInfo));
+        move.ifPresent(sendMove);
         restoreBasicColor();
     }
     public void reverse() {
         java.util.List<JButton> tempCells = new ArrayList<>(List.of(cells));
         Collections.reverse(tempCells);
-        cells = tempCells.toArray(new JButton[64]);
+        cells = tempCells.toArray(new JButton[BOARD_CELL_NUMBER]);
         this.removeAll();
         for (JButton cell : cells) {
             this.add(cell);
