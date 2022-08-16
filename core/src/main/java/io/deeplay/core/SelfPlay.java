@@ -1,6 +1,7 @@
 package io.deeplay.core;
 
 import ch.qos.logback.classic.Logger;
+import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
@@ -85,7 +86,7 @@ public class SelfPlay {
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
             gameInfoGroup.gameStarted();
-            LOGGER.info("Партия началась");
+            LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков
             while (gameInfo.isGameOver()) {
                 // BoardDrawer.draw(gameInfo.getFenBoard());
@@ -97,8 +98,9 @@ public class SelfPlay {
                 changeCurrentPlayerToMove();
             }
             // BoardDrawer.draw(gameInfo.getFenBoard());
-            gameInfoGroup.gameOver();
-            LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
+            gameInfoGroup.gameOver(gameInfo.getGameStatus());
+            LOGGER.info("Партия {} из {} - закончена. {}", countGamesAmount, gamesAmount,
+                    gameInfo.getGameStatus().getMessage());
             if (countGamesAmount < gamesAmount)
                 gameInfo.resetGame();
         }
