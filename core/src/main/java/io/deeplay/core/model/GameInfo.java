@@ -53,6 +53,10 @@ public class GameInfo extends ChessAdapter {
         }
     }
 
+    public BoardCell[][] getChessBoard() {
+        return board.getBoard();
+    }
+
     public ChessBoard getBoard() {
         return board;
     }
@@ -227,5 +231,15 @@ public class GameInfo extends ChessAdapter {
                 gameStatus = GameStatus.WHITE_WON;
                 break;
         }
+    }
+
+    public GameInfo copy() {
+        return new GameInfo(this);
+    }
+
+    public GameInfo copy(final MoveInfo moveInfo) {
+        final GameInfo newGameInfo = new GameInfo(this);
+        newGameInfo.updateBoard(moveInfo);
+        return newGameInfo;
     }
 }
