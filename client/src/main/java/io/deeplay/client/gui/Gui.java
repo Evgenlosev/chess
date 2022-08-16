@@ -2,8 +2,9 @@ package io.deeplay.client.gui;
 
 import io.deeplay.core.model.MoveInfo;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -18,10 +19,12 @@ public class Gui extends JFrame {
     private final JPanel inputPanel;      // under the text a container for all the input elements
     private final JTextField textField;   // a textField for the text the user inputs
     private final JButton button;         // and a "send" button
+    private final JMenuBar menubar;
 
-    public Gui(Consumer<MoveInfo> sendMove) {
+    public Gui(final Consumer<MoveInfo> sendMove, final Runnable sendNewGameRequest) {
         super("Chess");
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        menubar = new MenuBar(sendNewGameRequest);
 
         // first, lets create the containers:
         // the splitPane devides the window in two components (here: top and bottom)
@@ -71,6 +74,7 @@ public class Gui extends JFrame {
 
         inputPanel.add(textField);        // left will be the textField
         inputPanel.add(button);           // and right the "send" button
+        setJMenuBar(menubar);
 
         pack();// calling pack() at the end, will ensure that every layout and size we just defined gets applied before the stuff becomes visible
     }

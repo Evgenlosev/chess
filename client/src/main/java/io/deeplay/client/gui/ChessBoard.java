@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 public class ChessBoard extends JPanel {
     private final Consumer<MoveInfo> sendMove;
     private static final int BOARD_SIZE = 8;
-    private static final int BOARD_CELL_NUMBER = 8;
-    private static final int RED_OFFSET = -10;
-    private static final int GREEN_OFFSET = -30;
-    private static final int BLUE_OFFSET = -40;
+    private static final int BOARD_CELL_NUMBER = 64;
+    private static final double RED_OFFSET = 1.15;
+    private static final double GREEN_OFFSET = 1.2;
+    private static final double BLUE_OFFSET = 1.3;
     private static final Color BLACK_CELL = new Color(181, 136, 99);
     private static final Color WHITE_CELL = new Color(240, 217, 181);
     private JButton[] cells;
@@ -94,9 +94,9 @@ public class ChessBoard extends JPanel {
         for (JButton cell : cells) {
             if (movesToHighlight.stream().anyMatch(move ->
                     (move.getCellTo().getIndexAsOneDimension() == Integer.parseInt(cell.getName())))) {
-                cell.setBackground(new Color(cell.getBackground().getRed() + RED_OFFSET,
-                        cell.getBackground().getGreen() + GREEN_OFFSET,
-                        cell.getBackground().getBlue() + BLUE_OFFSET));
+                cell.setBackground(new Color((int) (cell.getBackground().getRed() / RED_OFFSET),
+                        (int) (cell.getBackground().getGreen() / GREEN_OFFSET),
+                        (int) (cell.getBackground().getBlue() / BLUE_OFFSET)));
             }
         }
     }
