@@ -8,6 +8,7 @@ import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.player.Player;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.MoveRequest;
+import io.deeplay.interaction.clientToServer.StartGameRequest;
 import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,7 +32,8 @@ public class ClientGameSession {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
-        gui = new Gui(sendMove);
+        final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest());
+        gui = new Gui(sendMove, sendNewGameRequest);
         gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
         gui.setVisible(true);
     }
