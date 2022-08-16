@@ -236,4 +236,10 @@ public class GameInfo extends ChessAdapter {
     public GameInfo copy() {
         return new GameInfo(this);
     }
+
+    public GameInfo copy(final MoveInfo moveInfo) {
+        final GameInfo newGameInfo = new GameInfo(this);
+        newGameInfo.updateBoard(moveInfo);
+        return newGameInfo;
+    }
 }
