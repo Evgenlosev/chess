@@ -9,11 +9,11 @@ import io.netty.channel.SimpleChannelInboundHandler;
 /**
  * В этом хэндлере обрабатываем только входящие команды Ping, остальные толкаем дальше по конвейеру
  */
-public class ClientInPingHandler extends SimpleChannelInboundHandler<Command> {
+public class ClientPingHandler extends SimpleChannelInboundHandler<Command> {
     /**
      * При получении команды Ping, отвечаем командой Pong.
-     * @param ctx
-     * @param command
+     * @param ctx Контекст общения между клиентом и сервером
+     * @param command Входящая команда от сервера
      */
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {

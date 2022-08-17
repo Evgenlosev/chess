@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 public class HumanPlayer extends Player {
+    private final static String PLAYER_NAME = "HumanPlayer";
     Scanner scanner = new Scanner(System.in);
     String userInput;
     Optional<MoveInfo> userMove;
@@ -40,5 +41,10 @@ public class HumanPlayer extends Player {
                 System.out.println("Ход " + userInput + " невозможен");
             }
         }
+    }
+
+    @Override
+    public String getName() {
+        return PLAYER_NAME;
     }
 }
