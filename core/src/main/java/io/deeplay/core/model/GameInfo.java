@@ -61,24 +61,24 @@ public class GameInfo extends ChessAdapter {
         return board;
     }
 
-    public boolean isMate(final ChessBoard chessBoard) {
-        return logic.isMate(chessBoard.getFEN());
+    public boolean isMate() {
+        return logic.isMate(board.getFEN());
     }
 
-    public boolean isStalemate(final ChessBoard chessBoard) {
-        return logic.isStalemate(chessBoard.getFEN());
+    public boolean isStalemate() {
+        return logic.isStalemate(board.getFEN());
     }
 
-    public boolean isDrawByPieceShortage(final ChessBoard chessBoard) {
-        return logic.isDrawByPieceShortage(chessBoard.getFEN());
+    public boolean isDrawByPieceShortage() {
+        return logic.isDrawByPieceShortage(board.getFEN());
     }
 
-    public boolean isThreefoldRepetition(final ChessBoard chessBoard) {
-        return chessBoard.isThreefoldRepetition();
+    public boolean isThreefoldRepetition() {
+        return board.isThreefoldRepetition();
     }
 
-    public boolean isMovesWithoutAttackOrPawnMove(final ChessBoard chessBoard) {
-        return chessBoard.getMovesWithoutAttackOrPawnMove() > 99;
+    public boolean isMovesWithoutAttackOrPawnMove() {
+        return board.getMovesWithoutAttackOrPawnMove() > 99;
     }
 
     public GameStatus getGameStatus() {

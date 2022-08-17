@@ -1,7 +1,7 @@
 package io.deeplay.core.model;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ChessBoard {
     public static final int BOARD_SIZE = 8;
