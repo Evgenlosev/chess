@@ -158,8 +158,7 @@ public class AllGamesStatistics extends ChessAdapter {
                 writer.write("Draw " + draws + " times.");
             }
         } catch (IOException e) {
-            LOGGER.error("Ошибка при выводе в файл: {}", e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Ошибка при выводе в файл:", e);
         }
     }
 
