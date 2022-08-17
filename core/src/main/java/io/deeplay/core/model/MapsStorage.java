@@ -75,20 +75,4 @@ public class MapsStorage {
             Figure.W_KING,
             Figure.W_QUEEN
     );
-
-    public static final Map<Figure, Integer> FIGURE_TO_COST = Map.ofEntries(
-            entry(Figure.B_PAWN, 1),
-            entry(Figure.B_KNIGHT, 2),
-            entry(Figure.B_BISHOP, 3),
-            entry(Figure.B_ROOK, 5),
-            entry(Figure.B_QUEEN, 9),
-            entry(Figure.B_KING, 10),
-            entry(Figure.W_PAWN, 1),
-            entry(Figure.W_KNIGHT, 2),
-            entry(Figure.W_BISHOP, 3),
-            entry(Figure.W_ROOK, 5),
-            entry(Figure.W_QUEEN, 9),
-            entry(Figure.W_KING, 10),
-            entry(Figure.NONE, 0)
-    );
 }
