@@ -1,8 +1,6 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import io.deeplay.client.session.ClientGameSession;
-import io.deeplay.client.ui.TUI;
-import io.deeplay.client.ui.UI;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.core.player.RandomBot;
@@ -21,17 +19,6 @@ import org.slf4j.Logger;
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientStartGameHandler.class);
     private Side side;
-    private final UI ui;
-
-    public ClientStartGameHandler() {
-        super();
-        this.ui = new TUI();
-    }
-
-    public ClientStartGameHandler(final UI ui) {
-        super();
-        this.ui = ui;
-    }
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
