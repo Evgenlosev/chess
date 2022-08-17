@@ -1,8 +1,8 @@
 package io.deeplay.core.player.vladbot;
 
 import ch.qos.logback.classic.Logger;
-import io.deeplay.core.evaluation.Evaluation;
-import io.deeplay.core.evaluation.PeSTO;
+import io.deeplay.core.evaluation.vladevaluations.Evaluation;
+import io.deeplay.core.evaluation.vladevaluations.PeSTO;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;

@@ -1,4 +1,4 @@
-package io.deeplay.core.evaluation;
+package io.deeplay.core.evaluation.vladevaluations;
 
 import io.deeplay.core.model.ChessBoard;
 
