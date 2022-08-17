@@ -1,7 +1,7 @@
 package io.deeplay.client.nettyClient;
 
 import io.deeplay.client.ChessClient;
-import io.deeplay.client.nettyClient.handlers.ClientInPingHandler;
+import io.deeplay.client.nettyClient.handlers.ClientPingHandler;
 import io.deeplay.client.nettyClient.handlers.ClientInboundObjectDecoder;
 import io.deeplay.client.nettyClient.handlers.ClientOutBoundCommandEncoder;
 import io.deeplay.client.nettyClient.handlers.ClientProtocolVersionHandler;
@@ -46,7 +46,7 @@ public class ChessNettyClient implements ChessClient {
                                     new ClientOutBoundCommandEncoder(),
                                     new JsonObjectDecoder(),
                                     new ClientInboundObjectDecoder(),
-                                    new ClientInPingHandler(),
+                                    new ClientPingHandler(),
                                     new ClientProtocolVersionHandler());
                         }
                     });
