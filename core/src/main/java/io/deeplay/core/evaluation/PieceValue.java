@@ -1,7 +1,8 @@
 package io.deeplay.core.evaluation;
 
-import io.deeplay.core.model.ChessBoard;
-import io.deeplay.core.model.Side;
+import io.deeplay.core.model.*;
+
+import java.util.Set;
 
 /**
  * Функция оценки основанная только на ценности фигур.
@@ -11,7 +12,25 @@ public class PieceValue implements Evaluation {
 
     @Override
     public int evaluateBoard(final ChessBoard chessBoard) {
-        return chessBoard.countPiecesValuesForSide(Side.WHITE) - chessBoard.countPiecesValuesForSide(Side.BLACK);
+        return countPiecesValuesForSide(chessBoard, Side.WHITE) - countPiecesValuesForSide(chessBoard, Side.BLACK);
+    }
+
+    /**
+     * Считает стоимости фигур стороны.
+     * Можно использовать в качестве оценки основанной на стоимости фигур.
+     *
+     * @param side сторона стоимость фигур которой будут считаться.
+     * @return стоимость фигур стороны side.
+     */
+    int countPiecesValuesForSide(final ChessBoard chessBoard, final Side side) {
+        final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
+        int score = 0;
+        for (BoardCell[] boardCellRow : chessBoard.getBoard())
+            for (BoardCell boardCellColumn : boardCellRow)
+                if (sideFigures.contains(boardCellColumn.getFigure()))
+                    score += Math.abs(boardCellColumn.getFigure().getWeight());
+        return score;
+
     }
 
 }

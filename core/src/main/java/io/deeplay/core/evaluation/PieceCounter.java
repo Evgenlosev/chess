@@ -1,7 +1,8 @@
 package io.deeplay.core.evaluation;
 
-import io.deeplay.core.model.ChessBoard;
-import io.deeplay.core.model.Side;
+import io.deeplay.core.model.*;
+
+import java.util.Set;
 
 /**
  * Функция оценки основанная только на количестве фигур.
@@ -11,7 +12,25 @@ public class PieceCounter implements Evaluation {
 
     @Override
     public int evaluateBoard(final ChessBoard chessBoard) {
-        return chessBoard.countPiecesForSide(Side.WHITE) - chessBoard.countPiecesForSide(Side.BLACK);
+        return countPiecesForSide(chessBoard, Side.WHITE) - countPiecesForSide(chessBoard, Side.BLACK);
+    }
+
+    /**
+     * Считает количество фигур стороны.
+     * Можно использовать в качестве оценки основанной на количестве фигур.
+     *
+     * @param side сторона фигуры которой будут считаться.
+     * @return количество фигур стороны side.
+     */
+    int countPiecesForSide(final ChessBoard chessBoard, final Side side) {
+        final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
+        int countPieces = 0;
+        for (BoardCell[] boardCellRow : chessBoard.getBoard())
+            for (BoardCell boardCellColumn : boardCellRow)
+                if (sideFigures.contains(boardCellColumn.getFigure()))
+                    countPieces++;
+        return countPieces;
+
     }
 
 }

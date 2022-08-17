@@ -3,8 +3,6 @@ package io.deeplay.core.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
-
 public class ChessBoard {
     public static final int BOARD_SIZE = 8;
     static final int NUMBER_OF_SLASHES_IN_FEN_STRING = 7;
@@ -80,42 +78,6 @@ public class ChessBoard {
         pawnLongMoveInfo = param[2];
         movesWithoutAttackOrPawnMove = Integer.parseInt(param[3]);
         moveCounter = Integer.parseInt(param[4]);
-    }
-
-    /**
-     * Считает количество фигур стороны.
-     * Можно использовать в качестве оценки основанной на количестве фигур.
-     *
-     * @param side сторона фигуры которой будут считаться.
-     * @return количество фигур стороны side.
-     */
-    public int countPiecesForSide(final Side side) {
-        final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
-        int countPieces = 0;
-        for (BoardCell[] boardCellRow : board)
-            for (BoardCell boardCellColumn : boardCellRow)
-                if (sideFigures.contains(boardCellColumn.getFigure()))
-                    countPieces++;
-        return countPieces;
-
-    }
-
-    /**
-     * Считает стоимости фигур стороны.
-     * Можно использовать в качестве оценки основанной на стоимости фигур.
-     *
-     * @param side сторона стоимость фигур которой будут считаться.
-     * @return стоимость фигур стороны side.
-     */
-    public int countPiecesValuesForSide(final Side side) {
-        final Set<Figure> sideFigures = side == Side.WHITE ? MapsStorage.WHITE_FIGURES : MapsStorage.BLACK_FIGURES;
-        int score = 0;
-        for (BoardCell[] boardCellRow : board)
-            for (BoardCell boardCellColumn : boardCellRow)
-                if (sideFigures.contains(boardCellColumn.getFigure()))
-                    score += MapsStorage.FIGURE_TO_COST.get(boardCellColumn.getFigure());
-        return score;
-
     }
 
     // Получает из переменных параметры строки fen.
