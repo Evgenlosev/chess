@@ -90,7 +90,7 @@ public class ChessBoard {
                 moveCounter;
     }
 
-    public String unzipFen(final String fen) {
+    public static String unzipFen(final String fen) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < fen.length(); i++) {
             if (String.valueOf(fen.charAt(i)).matches("[1-8]")) {
@@ -238,6 +238,7 @@ public class ChessBoard {
             throw new RuntimeException("Wrong short castling");
         }
     }
+
     private void processCastleLong(final MoveInfo moveInfo, final Coord from, final Coord to) {
         if ((moveInfo.getFigure() == Figure.B_KING ||
                 moveInfo.getFigure() == Figure.W_KING) &&
@@ -250,6 +251,7 @@ public class ChessBoard {
             throw new RuntimeException("Wrong long castling");
         }
     }
+
     private void updateCastle(final MoveInfo moveInfo) {
         if (moveInfo.getFigure() == Figure.B_KING) {
             castleAvailable = castleAvailable.replace("k", "");
