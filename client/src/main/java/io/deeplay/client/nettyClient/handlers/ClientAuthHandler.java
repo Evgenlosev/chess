@@ -1,7 +1,6 @@
 package io.deeplay.client.nettyClient.handlers;
 
 import io.deeplay.core.model.Side;
-import io.deeplay.core.player.HumanPlayer;
 import io.deeplay.core.player.Player;
 import io.deeplay.core.player.RandomBot;
 import io.deeplay.interaction.Command;
@@ -37,7 +36,7 @@ public class ClientAuthHandler extends SimpleChannelInboundHandler<Command> {
                 Player player = new RandomBot(Side.WHITE);
                 //Если авторизация прошла успешно, удаляем из конвеера текущий хэндлер и добавляем ClientStartGameHandler
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientStartGameHandler(player));
+                ctx.channel().pipeline().addLast(new ClientStartGameHandler());
             } else {
                 LOGGER.info("Авторизация не пройдена {}", authResponse.getErrorMessage());
             }
