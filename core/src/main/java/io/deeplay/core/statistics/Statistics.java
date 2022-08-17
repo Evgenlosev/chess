@@ -81,12 +81,13 @@ public class Statistics extends ChessAdapter {
         BitmapEncoder.saveBitmap(chart, outputPath + "/" + chartTitle, BitmapEncoder.BitmapFormat.JPG);
     }
 
-    public static <T, N extends Number> void drawLineChart(final Map<String, List<T>> xLineNameElements,
-                                                           final Map<String, List<N>> yLineNameElements,
-                                                           final String xAxisTitle,
-                                                           final String yAxisTitle,
-                                                           final String outputPath,
-                                                           final String chartTitle) throws IOException {
+    public static <T, N extends Number> void drawLineChart(
+            final Map<String, List<T>> xLineNameElements,
+            final Map<String, List<N>> yLineNameElements,
+            final String xAxisTitle,
+            final String yAxisTitle,
+            final String outputPath,
+            final String chartTitle) throws IOException {
         XYChart chart = new XYChart(900, 500);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xAxisTitle);
