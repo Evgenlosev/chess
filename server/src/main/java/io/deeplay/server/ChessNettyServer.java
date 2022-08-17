@@ -16,7 +16,6 @@ import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.LoggerFactory;
 
-
 import java.util.concurrent.TimeUnit;
 
 public class ChessNettyServer {
@@ -65,7 +64,6 @@ public class ChessNettyServer {
     public static String getProtocolVersion() {
         return PROTOCOL_VERSION;
     }
-
 
     public static void main(final String[] args) throws Exception {
         new ChessNettyServer().run();
