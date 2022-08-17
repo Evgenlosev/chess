@@ -26,12 +26,12 @@ public class StartGameHandler extends SimpleChannelInboundHandler<Command> {
             Client client = new Client(startGameRequest.getSide(), ctx);
             //TODO создаем противника по заданным клиентом параметрам
             Player enemy = new RandomBot(Side.otherSide(client.getSide()));
-            GameSession thisGame = new GameSession(client, enemy);
-            LOGGER.info("Начало партии");
-            new Thread(thisGame).start();
+            GameSession gameSession = new GameSession(client, enemy);
+            LOGGER.info("Начало партии {}.", gameSession.getSessionToken());
+            gameSession.start();
             //Если сессия создана, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
             ctx.channel().pipeline().remove(this);
-            ctx.channel().pipeline().addLast(new InboundCommandHandler(client));
+            ctx.channel().pipeline().addLast(new InboundCommandHandler(client, gameSession));
         }
     }
 }
