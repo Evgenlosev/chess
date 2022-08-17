@@ -16,8 +16,7 @@ public class Coord {
     private int column;
 
     public Coord(final int indexAsOneDimension) {
-        this.row = indexAsOneDimension / BOARD_WIDTH;
-        this.column = indexAsOneDimension % BOARD_WIDTH;
+        this(indexAsOneDimension % BOARD_WIDTH, indexAsOneDimension / BOARD_WIDTH);
     }
 
     public Coord(final int column, final int row) {
@@ -32,17 +31,10 @@ public class Coord {
         return row;
     }
 
-    public void setRow(final int row) {
-        this.row = row;
-    }
-
     public int getColumn() {
         return column;
     }
 
-    public void setColumn(final int column) {
-        this.column = column;
-    }
 
     @JsonIgnore
     public int getIndexAsOneDimension() {
