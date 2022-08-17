@@ -5,6 +5,7 @@ import io.deeplay.client.gui.Gui;
 import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.MoveRequest;
@@ -32,7 +33,7 @@ public class ClientGameSession {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
-        final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest());
+        final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest(Side.WHITE, "RandomBot"));
         gui = new Gui(sendMove, sendNewGameRequest);
         gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
         gui.setVisible(true);

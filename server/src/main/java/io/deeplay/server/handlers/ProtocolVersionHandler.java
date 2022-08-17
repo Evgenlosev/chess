@@ -14,8 +14,6 @@ public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command>
 
     /**
      * В этом хэндлере ожидаем от клиента ProtocolVersionRequest
-     * @param ctx
-     * @param command
      */
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
@@ -24,12 +22,13 @@ public class ProtocolVersionHandler extends SimpleChannelInboundHandler<Command>
             if (ChessNettyServer.checkProtocolVersion(pvr.getProtocolVersion())) {
                 ctx.writeAndFlush(new ProtocolVersionResponse(true));
                 LOGGER.info("Версия протокола подтверждена");
-                LOGGER.info("Ожидаем запрос авторизации");
+                LOGGER.info("Ожидаем запрос о начале игры");
                 /* Если версия протокола подтверждена, удаляем из конвеера текущий хэндлер и добавляем
                 AuthorizationHandler
                 */
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new AuthorizationHandler());
+//                ctx.channel().pipeline().addLast(new AuthorizationHandler());
+                ctx.channel().pipeline().addLast(new StartGameHandler());
             } else {
                 LOGGER.info("Версия протокола отклонена");
                 ctx.writeAndFlush(

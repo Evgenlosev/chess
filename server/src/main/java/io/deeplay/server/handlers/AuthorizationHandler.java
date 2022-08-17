@@ -26,7 +26,7 @@ public class AuthorizationHandler extends SimpleChannelInboundHandler<Command> {
                 ctx.writeAndFlush(new AuthResponse(true));
                 //Если авторизация подтверждена, удаляем из конвейера текущий хэндлер и добавляем StartGameHandler
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new StartGameHandler(client));
+                ctx.channel().pipeline().addLast(new StartGameHandler());
             } else {
                 LOGGER.info("Пользователь не авторизован.");
                 ctx.writeAndFlush(new AuthResponse(false, "Не удалось авторизовать пользователя."));
