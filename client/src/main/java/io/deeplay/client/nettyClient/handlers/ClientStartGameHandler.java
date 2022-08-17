@@ -19,9 +19,9 @@ import org.slf4j.Logger;
  * В этом блоке направляем запрос на начало игры с заданными параметрами.
  */
 public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command> {
-    private static final Logger LOGGER =LoggerFactory.getLogger(ClientStartGameHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientStartGameHandler.class);
     private Side side;
-    private UI ui;
+    private final UI ui;
 
     public ClientStartGameHandler() {
         super();
@@ -35,9 +35,11 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
-        StartGameRequest startGameRequest = ui.getGameSettings();
-        side = startGameRequest.getSide();
-        ctx.writeAndFlush(startGameRequest);
+        new Thread(() -> {
+            StartGameRequest startGameRequest = ui.getGameSettings();
+            side = startGameRequest.getSide();
+            ctx.writeAndFlush(startGameRequest);
+        }).start();
     }
 
     @Override
