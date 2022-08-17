@@ -17,6 +17,7 @@ public class MenuBar extends JMenuBar {
         file.addSeparator();
         file.add(exit);
         newGame.addActionListener(e -> sendNewGameRequest.run());
+        exit.addActionListener(e -> System.exit(0));
         return file;
     }
 }
