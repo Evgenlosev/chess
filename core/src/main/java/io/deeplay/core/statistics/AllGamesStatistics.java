@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
  * Какие комбинации фигур оставались в конце у каждой стороны.
  * Какие виды ходов используются чаще всего.
  */
-public class Statistics extends ChessAdapter {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(Statistics.class);
+public class AllGamesStatistics extends ChessAdapter {
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(AllGamesStatistics.class);
     private final File outputDirectory;
     private final SelfPlay selfPlay;
     private final String firstPlayerName;
     private final String secondPlayerName;
     private final int gamesAmount;
-    private final List<GameStatistics> gamesStatistics;
+    private final List<OneGameStatistics> gamesStatistics;
     private int countGames;
     private int currentGameStatistics;
 
@@ -40,7 +40,7 @@ public class Statistics extends ChessAdapter {
      */
     private long previousTimeMark;
 
-    public Statistics(final SelfPlay selfPlay) {
+    public AllGamesStatistics(final SelfPlay selfPlay) {
         this.selfPlay = selfPlay;
         this.firstPlayerName =
                 selfPlay.getFirstPlayer().getSide().toString() + "-" + selfPlay.getFirstPlayer().getName();
@@ -118,22 +118,22 @@ public class Statistics extends ChessAdapter {
                         || stats.getGameStatus() == GameStatus.THREEFOLD_REPETITION
                         || stats.getGameStatus() == GameStatus.INSUFFICIENT_MATING_MATERIAL).count();
         final float firstPlayerLongestTimeOnMove =
-                gamesStatistics.stream().map(GameStatistics::getFirstPlayerMovesTime)
+                gamesStatistics.stream().map(OneGameStatistics::getFirstPlayerMovesTime)
                         .flatMap(List::stream).max(Float::compare).orElseThrow();
         final float secondPlayerLongestTimeOnMove =
-                gamesStatistics.stream().map(GameStatistics::getSecondPlayerMovesTime)
+                gamesStatistics.stream().map(OneGameStatistics::getSecondPlayerMovesTime)
                         .flatMap(List::stream).max(Float::compare).orElseThrow();
         final float firstPlayerShortestTimeOnMove =
-                gamesStatistics.stream().map(GameStatistics::getFirstPlayerMovesTime)
+                gamesStatistics.stream().map(OneGameStatistics::getFirstPlayerMovesTime)
                         .flatMap(List::stream).min(Float::compare).orElseThrow();
         final float secondPlayerShortestTimeOnMove =
-                gamesStatistics.stream().map(GameStatistics::getSecondPlayerMovesTime)
+                gamesStatistics.stream().map(OneGameStatistics::getSecondPlayerMovesTime)
                         .flatMap(List::stream).min(Float::compare).orElseThrow();
         final double firstPlayerAverageTimeOnMove =
-                gamesStatistics.stream().map(GameStatistics::getFirstPlayerMovesTime)
+                gamesStatistics.stream().map(OneGameStatistics::getFirstPlayerMovesTime)
                         .flatMapToDouble(x -> x.stream().mapToDouble(time -> time)).average().orElseThrow();
         final double secondPlayerAverageTimeOnMove =
-                gamesStatistics.stream().map(GameStatistics::getSecondPlayerMovesTime)
+                gamesStatistics.stream().map(OneGameStatistics::getSecondPlayerMovesTime)
                         .flatMapToDouble(x -> x.stream().mapToDouble(time -> time)).average().orElseThrow();
         try {
             averageStatistics.createNewFile();
@@ -141,7 +141,7 @@ public class Statistics extends ChessAdapter {
                     new FileOutputStream(averageStatistics), StandardCharsets.UTF_8))) {
                 writer.write("Games played: " + gamesAmount + '\n');
                 writer.write("Game ends on average after " +
-                        gamesStatistics.stream().mapToInt(GameStatistics::getCountTurns).average().orElseThrow()
+                        gamesStatistics.stream().mapToInt(OneGameStatistics::getCountTurns).average().orElseThrow()
                         + " turns" + '\n');
                 writer.write('\n');
                 writer.write(firstPlayerName + ": won " + firstPlayerWins + " times" + '\n');
@@ -152,7 +152,8 @@ public class Statistics extends ChessAdapter {
                 writer.write(secondPlayerName + ": won " + secondPlayerWins + " times" + '\n');
                 writer.write("Longest time on move: " + String.format("%.3f", secondPlayerLongestTimeOnMove)
                         + "; Shortest time on move: " + String.format("%.3f", secondPlayerShortestTimeOnMove) + '\n');
-                writer.write("Average time on move: " + String.format("%.3f", secondPlayerAverageTimeOnMove) + '\n');
+                writer.write("Average time on move: " +
+                        String.format("%.3f", secondPlayerAverageTimeOnMove) + '\n');
                 writer.write('\n');
                 writer.write("Draw " + draws + " times.");
             }
@@ -165,8 +166,8 @@ public class Statistics extends ChessAdapter {
     private void writeInFileLeftPiecesSets() {
         File statistics = new File(outputDirectory.getPath() + "/leftPiecesSetsStatistics.txt");
         Map<List<Figure>, Integer> setPiecesFrequency = new HashMap<>();
-        for (GameStatistics gameStatistics : gamesStatistics) {
-            final List<Figure> leftPiecesAfterGame = gameStatistics.getPiecesLeftAfterGameEnd();
+        for (OneGameStatistics oneGameStatistics : gamesStatistics) {
+            final List<Figure> leftPiecesAfterGame = oneGameStatistics.getPiecesLeftAfterGameEnd();
             setPiecesFrequency.putIfAbsent(leftPiecesAfterGame, 0);
             setPiecesFrequency.put(leftPiecesAfterGame, setPiecesFrequency.get(leftPiecesAfterGame) + 1);
         }
@@ -203,20 +204,22 @@ public class Statistics extends ChessAdapter {
         int countSecondPLayersTotalMovesInAllGames = 0;
         Map<MoveType, Integer> firstPlayerCountMoveType = new EnumMap<>(MoveType.class);
         Map<MoveType, Integer> secondPlayerCountMoveType = new EnumMap<>(MoveType.class);
-        for (GameStatistics gameStatistics : gamesStatistics) {
-            for (MoveType moveType : gameStatistics.getCountFirstPlayerUsedMoves().keySet()) {
+        for (OneGameStatistics oneGameStatistics : gamesStatistics) {
+            for (MoveType moveType : oneGameStatistics.getCountFirstPlayerUsedMoves().keySet()) {
                 firstPlayerCountMoveType.putIfAbsent(moveType, 0);
                 firstPlayerCountMoveType.put(moveType,
                         firstPlayerCountMoveType.get(moveType) +
-                                gameStatistics.getCountFirstPlayerUsedMoves().get(moveType));
-                countFirstPLayersTotalMovesInAllGames += gameStatistics.getCountFirstPlayerUsedMoves().get(moveType);
+                                oneGameStatistics.getCountFirstPlayerUsedMoves().get(moveType));
+                countFirstPLayersTotalMovesInAllGames +=
+                        oneGameStatistics.getCountFirstPlayerUsedMoves().get(moveType);
             }
-            for (MoveType moveType : gameStatistics.getCountSecondPlayerUsedMoves().keySet()) {
+            for (MoveType moveType : oneGameStatistics.getCountSecondPlayerUsedMoves().keySet()) {
                 secondPlayerCountMoveType.putIfAbsent(moveType, 0);
                 secondPlayerCountMoveType.put(moveType,
                         secondPlayerCountMoveType.get(moveType) +
-                                gameStatistics.getCountSecondPlayerUsedMoves().get(moveType));
-                countSecondPLayersTotalMovesInAllGames += gameStatistics.getCountSecondPlayerUsedMoves().get(moveType);
+                                oneGameStatistics.getCountSecondPlayerUsedMoves().get(moveType));
+                countSecondPLayersTotalMovesInAllGames +=
+                        oneGameStatistics.getCountSecondPlayerUsedMoves().get(moveType);
             }
         }
         Map<String, Double> firstPlayerAverageMoveType = new HashMap<>();
@@ -249,8 +252,7 @@ public class Statistics extends ChessAdapter {
                     "moveTypes", "usageFrequency",
                     outputDirectory.getPath(), "Second-player-move-type-usage-frequency");
         } catch (IOException e) {
-            LOGGER.error("Ошибка при выводе в файл: {}", e.getMessage());
-            e.printStackTrace();
+            LOGGER.error("Ошибка при выводе в файл", e);
         }
     }
 
@@ -268,7 +270,7 @@ public class Statistics extends ChessAdapter {
 
     @Override
     public void gameStarted() {
-        gamesStatistics.add(new GameStatistics());
+        gamesStatistics.add(new OneGameStatistics());
         currentGameStatistics++;
         countGames++;
     }

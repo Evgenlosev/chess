@@ -7,7 +7,7 @@ import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
-import io.deeplay.core.statistics.Statistics;
+import io.deeplay.core.statistics.AllGamesStatistics;
 import org.slf4j.LoggerFactory;
 
 
@@ -46,7 +46,7 @@ public class SelfPlay {
         gameInfoGroup.addListener(secondPlayer);
         this.gamesAmount = gamesAmount;
         if (gatherStatistics) {
-            gameInfoGroup.addListener(new Statistics(this));
+            gameInfoGroup.addListener(new AllGamesStatistics(this));
         }
     }
 
@@ -86,7 +86,7 @@ public class SelfPlay {
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
             gameInfoGroup.gameStarted();
-            LOGGER.info("Партия началась");
+            LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков
             while (gameInfo.isGameOver()) {
                 // BoardDrawer.draw(gameInfo.getFenBoard());
@@ -99,9 +99,10 @@ public class SelfPlay {
             }
             // BoardDrawer.draw(gameInfo.getFenBoard());
             gameInfoGroup.gameOver(gameInfo.getGameStatus());
-            LOGGER.info("Игра закончена. {}", gameInfo.getGameStatus().getMessage());
+            LOGGER.info("Партия {} из {} - закончена. {}", countGamesAmount, gamesAmount,
+                    gameInfo.getGameStatus().getMessage());
             if (countGamesAmount < gamesAmount)
-                gameInfo.restartGame();
+                gameInfo.resetGame();
         }
     }
 
