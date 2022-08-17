@@ -1,5 +1,6 @@
 package io.deeplay.client.nettyClient.handlers;
 
+import io.deeplay.client.ui.UI;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.serverToClient.ProtocolVersionResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -21,7 +22,7 @@ public class ClientProtocolVersionHandler extends SimpleChannelInboundHandler<Co
                 LOGGER.info("Версия протокола подтверждена сервером");
                 //Если версия протокола подтверждена, удаляем из конвеера текущий хэндлер и добавляем блок авторизации
                 ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientAuthHandler());
+                ctx.channel().pipeline().addLast(new ClientStartGameHandler());
             } else {
                 LOGGER.info("Версия протокола отклонена сервером");
             }

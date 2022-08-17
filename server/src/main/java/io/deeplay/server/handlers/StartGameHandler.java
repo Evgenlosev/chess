@@ -18,16 +18,13 @@ import org.slf4j.LoggerFactory;
  */
 public class StartGameHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER = LoggerFactory.getLogger(StartGameHandler.class);
-    private final Client client;
-
-    public StartGameHandler(final Client client) {
-        this.client = client;
-    }
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final Command command) {
         if (command.getCommandType() == CommandType.START_GAME_REQUEST) {
             StartGameRequest startGameRequest = (StartGameRequest) command;
+            Client client = new Client(startGameRequest.getSide(), ctx);
+            //TODO создаем противника по заданным клиентом параметрам
             Player enemy = new RandomBot(Side.otherSide(client.getSide()));
             GameSession thisGame = new GameSession(client, enemy);
             LOGGER.info("Начало партии");

@@ -1,16 +1,20 @@
 package io.deeplay.client.session;
 
 import ch.qos.logback.classic.Logger;
+import io.deeplay.client.gui.Gui;
 import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.MoveRequest;
+import io.deeplay.interaction.clientToServer.StartGameRequest;
 import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.LoggerFactory;
+import java.util.function.Consumer;
 
 
 public class ClientGameSession {
@@ -20,12 +24,19 @@ public class ClientGameSession {
 
     private final GameInfo gameInfo;
 
+    private final Gui gui;
+
     private final ChannelHandlerContext ctx;
 
     public ClientGameSession(final Player player, final ChannelHandlerContext ctx) {
         this.player = player;
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
+        final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
+        final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest(Side.WHITE, "RandomBot"));
+        gui = new Gui(sendMove, sendNewGameRequest);
+        gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+        gui.setVisible(true);
     }
 
     public void start() {
@@ -48,15 +59,12 @@ public class ClientGameSession {
         }
     }
 
-    public void updateBoard(MoveInfo moveInfo) {
+    private void updateBoard(MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
-        BoardDrawer.draw(gameInfo.getFenBoard());
+        gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
     }
 
+
     private void makeMove() {
-        if (gameInfo.whoseMove() == player.getSide()) {
-            MoveInfo currentMove = player.getAnswer(gameInfo);
-            ctx.writeAndFlush(new MoveRequest(currentMove));
-        }
     }
 }
