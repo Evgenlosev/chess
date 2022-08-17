@@ -78,6 +78,10 @@ public class GameInfo extends ChessAdapter {
         return gameStatus;
     }
 
+    public void setGameStatus(final GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
     public String getFenBoard() {
         return board.getFEN();
     }
