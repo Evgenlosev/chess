@@ -50,6 +50,11 @@ public class Client extends Player {
     }
 
     @Override
+    public String getName() {
+        return "Client";
+    }
+
+    @Override
     public void gameStarted() {
         ctx.writeAndFlush(new StartGameResponse(true));
     }
@@ -107,5 +112,7 @@ public class Client extends Player {
         ctx.channel().pipeline().remove(InboundCommandHandler.class);
         ctx.channel().pipeline().addLast(new StartGameHandler());
     }
+
+
 
 }

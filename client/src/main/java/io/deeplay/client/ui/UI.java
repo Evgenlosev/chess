@@ -7,8 +7,6 @@ import io.deeplay.interaction.clientToServer.StartGameRequest;
 
 public interface UI {
     void updateBoard(GameInfo gameInfo);
-    MoveInfo getMove(GameInfo gameInfo);
     void gameOver(GameStatus gameStatus);
-    StartGameRequest getGameSettings();
     void start(GameInfo gameInfo);
 }
