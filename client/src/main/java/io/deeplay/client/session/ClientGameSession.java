@@ -2,7 +2,6 @@ package io.deeplay.client.session;
 
 import ch.qos.logback.classic.Logger;
 import io.deeplay.client.gui.Gui;
-import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
@@ -22,7 +21,7 @@ public class ClientGameSession {
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientGameSession.class);
     private final Player player;
 
-    private final GameInfo gameInfo;
+    private GameInfo gameInfo;
 
     private final Gui gui;
 
@@ -39,11 +38,7 @@ public class ClientGameSession {
         gui.setVisible(true);
     }
 
-    public void start() {
-        BoardDrawer.draw(gameInfo.getFenBoard());
-    }
-
-    public void acceptCommand(Command command) {
+    public void acceptCommand(final Command command) {
         switch (command.getCommandType()) {
             case GET_ANSWER:
                 makeMove();
@@ -56,14 +51,19 @@ public class ClientGameSession {
                 GameOverResponse gameOverResponse = (GameOverResponse) command;
                 LOGGER.info("Игра завершена: {}", gameOverResponse.getGameStatus().getMessage());
                 break;
+            case START_GAME_RESPONSE:
+                gameInfo = new GameInfo();
+                gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+                break;
+            default:
+                LOGGER.info("Некорректная команда: {}", command);
         }
     }
 
-    private void updateBoard(MoveInfo moveInfo) {
+    private void updateBoard(final MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
         gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
     }
-
 
     private void makeMove() {
     }

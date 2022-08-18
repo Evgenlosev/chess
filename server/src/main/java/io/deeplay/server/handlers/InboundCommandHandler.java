@@ -1,12 +1,16 @@
 package io.deeplay.server.handlers;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
+import io.deeplay.core.player.RandomBot;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.GameOverRequest;
 import io.deeplay.interaction.clientToServer.MoveRequest;
+import io.deeplay.interaction.clientToServer.StartGameRequest;
 import io.deeplay.server.client.Client;
+import io.deeplay.server.session.GameSession;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
@@ -18,11 +22,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER = LoggerFactory.getLogger(InboundCommandHandler.class);
     private final Client client;
-    // TODO: gameInfo с chessBoard нужен здесь
+    private GameSession gameSession;
 
-
-    public InboundCommandHandler(final Client client) {
+    public InboundCommandHandler(final Client client, final GameSession gameSession) {
         this.client = client;
+        this.gameSession = gameSession;
     }
 
     @Override
@@ -36,8 +40,27 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
                 }
                 break;
             case GAME_OVER_REQUEST:
-                resignHandler(ctx, command);
+                if (client.getSide() == Side.WHITE) {
+                    gameSession.stopSession(GameStatus.BLACK_WON);
+                } else {
+                    gameSession.stopSession(GameStatus.WHITE_WON);
+                }
+                ctx.channel().pipeline().remove(this);
+                ctx.channel().pipeline().addLast(new StartGameHandler());
                 break;
+            case START_GAME_REQUEST:
+                if (client.getSide() == Side.WHITE) {
+                    gameSession.stopSession(GameStatus.BLACK_WON);
+                } else {
+                    gameSession.stopSession(GameStatus.WHITE_WON);
+                }
+                StartGameRequest startGameRequest = (StartGameRequest) command;
+                client.setSide(startGameRequest.getSide());
+                gameSession = new GameSession(client, new RandomBot(Side.otherSide(client.getSide())));
+                LOGGER.info("Начало партии {}.", gameSession.getSessionToken());
+                gameSession.start();
+            default:
+                LOGGER.info("Некорректная команда: {}", command);
         }
     }
 

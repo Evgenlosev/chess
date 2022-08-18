@@ -41,7 +41,6 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
                 //Создаем и запускаем игровую сессию по параметрам, заданным пользователем
                 Player player = new RandomBot(side);
                 ClientGameSession session = new ClientGameSession(player, ctx);
-                session.start();
                 //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
                 ctx.channel().pipeline().remove(this);
                 ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
