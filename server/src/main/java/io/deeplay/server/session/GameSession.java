@@ -11,14 +11,10 @@ import java.util.concurrent.Executors;
 public class GameSession {
     private final String sessionToken;
     private final Player firstPlayer;
-    private final Player secondPlayer;
-    private final SelfPlay selfPlay;
+    private Player secondPlayer;
+    private SelfPlay selfPlay;
 
     private final ExecutorService executorService;
-
-    public String getSessionToken() {
-        return sessionToken;
-    }
 
     public GameSession(final Player firstPlayer, final Player secondPlayer) {
         this.sessionToken = UUID.randomUUID().toString();
@@ -26,6 +22,32 @@ public class GameSession {
         this.secondPlayer = secondPlayer;
         this.selfPlay = new SelfPlay(firstPlayer, secondPlayer);
         this.executorService = Executors.newSingleThreadExecutor();
+    }
+
+    /**
+     * Конструктор используется для создания сессии, ожидающей подключения оппонента.
+     */
+    public GameSession(final Player firstPlayer) {
+        this.sessionToken = UUID.randomUUID().toString();
+        this.firstPlayer = firstPlayer;
+        this.executorService = Executors.newSingleThreadExecutor();
+        AwaitSessionStorage.add(this);
+    }
+
+    public String getSessionToken() {
+        return sessionToken;
+    }
+
+    /**
+     * Когда к сессии подключается второй игрок, удаляем ее из списка ожидающих оппонента.
+     */
+    public void setSecondPlayer(final Player secondPlayer) {
+        this.secondPlayer = secondPlayer;
+        selfPlay = new SelfPlay(firstPlayer, secondPlayer);
+    }
+
+    public Player getFirstPlayer() {
+        return firstPlayer;
     }
 
     public void start() {
