@@ -16,6 +16,7 @@ import java.util.Set;
  * Для оценки, по умолчанию, используется Песто.
  */
 public class EvaluationBot extends VBot {
+    private final static String PLAYER_NAME = "EvaluationBot";
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(EvaluationBot.class);
     // TODO: Zobrist Keys должен реализовывать Evaluation и возвращать результат если он уже есть
 
@@ -60,4 +61,8 @@ public class EvaluationBot extends VBot {
         return bestMove;
     }
 
+    @Override
+    public String getName() {
+        return PLAYER_NAME + getEvaluation().getClass();
+    }
 }
