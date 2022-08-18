@@ -294,9 +294,15 @@ public class FENParser {
         return splitFEN(fen).get(0);
     }
 
-    public static String getPiecePlacementAndWhoseTurn(final String fen) {
+    /**
+     * Возвращает 3 части нотации в максимально сжатом формате. Используется как ключ.
+     *
+     * @param fen
+     * @return
+     */
+    public static String getPiecePlacementAndWhoseTurnAndEnPassantDense(final String fen) {
         final List<String> fenParts = splitFEN(fen);
-        return fenParts.get(0) + " " + fenParts.get(1);
+        return fenParts.get(0).replace("/", "") + fenParts.get(1) + fenParts.get(3);
     }
 
     public static Side getTurnSide(final String fen) {
