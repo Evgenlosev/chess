@@ -9,13 +9,14 @@ import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.GetAnswer;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
-import io.deeplay.server.handlers.InboundCommandHandler;
-import io.deeplay.server.handlers.StartGameHandler;
 import io.netty.channel.ChannelHandlerContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Client extends Player {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
     //Контекст общения клиента и сервера
     private final ChannelHandlerContext ctx;
     private final Object monitor;
@@ -43,7 +44,7 @@ public class Client extends Player {
             try {
                 monitor.wait();
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                Thread.currentThread().interrupt();
             }
         }
         return currentMove;
@@ -109,10 +110,5 @@ public class Client extends Player {
     @Override
     public void gameOver(final GameStatus gameStatus) {
         ctx.writeAndFlush(new GameOverResponse(true, gameStatus));
-        ctx.channel().pipeline().remove(InboundCommandHandler.class);
-        ctx.channel().pipeline().addLast(new StartGameHandler());
     }
-
-
-
 }
