@@ -1,12 +1,12 @@
 package io.deeplay.client.gui;
 
+import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class Gui extends JFrame {
@@ -18,10 +18,13 @@ public class Gui extends JFrame {
     private final JTextArea textArea;     // the text
     private final JPanel inputPanel;      // under the text a container for all the input elements
     private final JTextField textField;   // a textField for the text the user inputs
-    private final JButton button;         // and a "send" button
+    private final JButton nextMove;
+    private final JButton prevMove;
     private final JMenuBar menubar;
+    private final MoveHistory moveHistoryText;
+    private GameInfo gameInfo;
 
-    public Gui(final Consumer<MoveInfo> sendMove, final Runnable sendNewGameRequest) {
+    public Gui(final GameInfo gameInfo, final Consumer<MoveInfo> sendMove, final Runnable sendNewGameRequest) {
         super("Chess");
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
         menubar = new MenuBar(sendNewGameRequest);
@@ -34,19 +37,23 @@ public class Gui extends JFrame {
 
         try {
             chessBoard = new ChessBoard(sendMove);         // our top component
+            chessBoard.updateBoard(io.deeplay.core.model.ChessBoard.DEFAULT_FEN_STRING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         moveHistory = new JPanel();      // our bottom component
+        moveHistoryText = new MoveHistory();
 
         // in our bottom panel we want the text area and the input components
-        scrollPane = new JScrollPane();  // this scrollPane is used to make the text area scrollable
+        scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);  // this scrollPane is used to make the text area scrollable
         textArea = new JTextArea();      // this text area will be put inside the scrollPane
 
         // the input components will be put in a separate panel
         inputPanel = new JPanel();
-        textField = new JTextField();    // first the input field where the user can type his text
-        button = new JButton("send");    // and a button at the right, to send the text
+        textField = new JTextField(2);    // first the input field where the user can type his text
+        nextMove = new JButton(">");
+        prevMove = new JButton("<");
 
         // now lets define the default size of our window and its layout:
         setPreferredSize(new Dimension(1000, 800));     // let open the window with a default size of 400x400 pixels
@@ -63,24 +70,42 @@ public class Gui extends JFrame {
 
         // our topPanel doesn't need anymore for this example. Whatever you want it to contain, you can add it here
         moveHistory.setLayout(new BoxLayout(moveHistory, BoxLayout.Y_AXIS)); // BoxLayout.Y_AXIS will arrange the content vertically
-
-        moveHistory.add(scrollPane);                // first we add the scrollPane to the bottomPanel, so it is at the top
-        scrollPane.setViewportView(textArea);       // the scrollPane should make the textArea scrollable, so we define the viewport
-        moveHistory.add(inputPanel);                // then we add the inputPanel to the bottomPanel, so it under the scrollPane / textArea
-
+        scrollPane.setViewportView(moveHistoryText);
+        moveHistory.add(moveHistoryText);                // then we add the inputPanel to the bottomPanel, so it under the scrollPane / textArea
+        moveHistory.add(scrollPane);                // then we add the inputPanel to the bottomPanel, so it under the scrollPane / textArea
+        moveHistory.add(textArea);
+        textArea.append("Player BLACK joined!\n");
+        textArea.append("You won!\n");
+        textArea.append("Красиво сделал, брат\n");
+        moveHistory.add(inputPanel);
         // let set the maximum size of the inputPanel, so it doesn't get too big when the user resizes the window
         inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));     // we set the max height to 75 and the max width to (almost) unlimited
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));   // X_Axis will arrange the content horizontally
-
-        inputPanel.add(textField);        // left will be the textField
-        inputPanel.add(button);           // and right the "send" button
+        textField.setText("Here could be a text");
+        inputPanel.add(prevMove);           // and right the "send" button
+        inputPanel.add(nextMove);           // and right the "send" button
+        inputPanel.add(createFlipButton());           // and right the "send" button
         setJMenuBar(menubar);
 
         pack();// calling pack() at the end, will ensure that every layout and size we just defined gets applied before the stuff becomes visible
     }
 
-    public void updateBoard(final String fen, final Set<MoveInfo> moveInfoSet) {
-        chessBoard.updateBoard(fen, moveInfoSet);
-        super.setVisible(true);
+    public void updateBoard(final GameInfo gameInfo, final MoveInfo moveInfo) {
+        chessBoard.updateBoard(gameInfo.getFenBoard());
+        moveHistoryText.update(gameInfo, moveInfo);
+        pack();
+    }
+
+    private JButton createFlipButton() {
+        JButton flip = new JButton("flip");
+        flip.addActionListener(e -> {
+            chessBoard.reverse();
+            super.setVisible(true);
+        });
+        return flip;
+    }
+
+    public void restart(final GameInfo gameInfo) {
+        moveHistoryText.restart();
+        chessBoard.updateBoard(gameInfo.getFenBoard());
     }
 }

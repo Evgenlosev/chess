@@ -33,8 +33,7 @@ public class ClientGameSession {
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
         final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest(Side.WHITE, "RandomBot"));
-        gui = new Gui(sendMove, sendNewGameRequest);
-        gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+        gui = new Gui(gameInfo, sendMove, sendNewGameRequest);
         gui.setVisible(true);
     }
 
@@ -53,16 +52,15 @@ public class ClientGameSession {
                 break;
             case START_GAME_RESPONSE:
                 gameInfo = new GameInfo();
-                gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+                gui.restart(gameInfo);
                 break;
             default:
-                LOGGER.info("Некорректная команда: {}", command);
-        }
+                LOGGER.info("Некорректная команда: {}", command);}
     }
 
     private void updateBoard(final MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
-        gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+        gui.updateBoard(gameInfo, moveInfo);
     }
 
     private void makeMove() {
