@@ -39,7 +39,7 @@ public class GameSession {
     }
 
     /**
-     * Когда к сессии подключается второй игрок, удаляем ее из списка ожидающих оппонента.
+     * К сессии, ожидающей оппонента, подключается второй игрок.
      */
     public void setSecondPlayer(final Player secondPlayer) {
         this.secondPlayer = secondPlayer;
