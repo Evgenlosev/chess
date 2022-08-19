@@ -75,17 +75,17 @@ public abstract class VBot extends Player {
                 (getSide() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON);
     }
 
-    public int evaluate(final GameInfo gameInfo) {
+    public int evaluate(final GameInfo gameInfo, final int depthLeft) {
         final int sideCoeff = getSide() == Side.WHITE ? 1 : -1;
         if (MapsStorage.END_GAME_BY_RULES.contains(gameInfo.getGameStatus())) {
-            return evaluateByEndGameStatus(gameInfo.getGameStatus());
+            return evaluateByEndGameStatus(gameInfo.getGameStatus(), depthLeft);
         }
         return sideCoeff * getEvaluation().evaluateBoard(gameInfo.getBoard());
     }
 
-    protected int evaluateByEndGameStatus(final GameStatus gameStatus) {
+    protected int evaluateByEndGameStatus(final GameStatus gameStatus, final int depthLeft) {
         if (isMateByBot(gameStatus)) {
-            return Integer.MAX_VALUE;
+            return Integer.MAX_VALUE - (getMaxDepth() - depthLeft); // отнимаем оставшуюся глубину, чтобы кратчайшие маты ценились больше
         }
         if (isMateByOpponent(gameStatus)) {
             return Integer.MIN_VALUE;
@@ -108,8 +108,8 @@ public abstract class VBot extends Player {
      * @param beta
      * @return оценка хода
      */
-    protected int quiesce(final GameInfo gameInfo, int alpha, final int beta) {
-        int score = evaluate(gameInfo);
+    protected int quiesce(final GameInfo gameInfo, int alpha, final int beta, final int depthLeft) {
+        int score = evaluate(gameInfo, depthLeft);
         if (score >= beta)
             return beta;
         if (score > alpha)
@@ -120,7 +120,7 @@ public abstract class VBot extends Player {
                         .filter(x -> MapsStorage.ATTACKS.contains(x.getMoveType())).collect(Collectors.toList());
         for (MoveInfo attackMove : attackMoves) {
             final GameInfo virtualGameInfo = gameInfo.copy(attackMove);
-            score = -quiesce(virtualGameInfo, -beta, -alpha);
+            score = -quiesce(virtualGameInfo, -beta, -alpha, depthLeft);
             if (score >= beta)
                 return beta;
             if (score > alpha)
