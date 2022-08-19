@@ -16,19 +16,27 @@ public abstract class VBot extends Player {
     private static final Logger LOGGER = LoggerFactory.getLogger(VBot.class);
 
     private final Evaluation evaluation;
+    private final int maxDepth;
 
     public VBot(final Side side) {
-        this(side, new PeSTO());
+        this(side, new PeSTO(), 1);
     }
 
-    public VBot(Side side, Evaluation evaluation) {
+    public VBot(final Side side, final Evaluation evaluation, final int maxDepth) {
         super(side);
         this.evaluation = evaluation;
-        LOGGER.info("Для {} установлена оценочная функция - {}", this, evaluation);
+        if (maxDepth < 1)
+            throw new IllegalArgumentException("Tree search based bot cannot look on depth < 1,  maxDepth:" + maxDepth);
+        this.maxDepth = maxDepth;
+        LOGGER.info("Для {} установлена оценочная функция - {}, с глубиной - {}", this, evaluation, maxDepth);
     }
 
     public Evaluation getEvaluation() {
         return evaluation;
+    }
+
+    public int getMaxDepth() {
+        return maxDepth;
     }
 
     @Override

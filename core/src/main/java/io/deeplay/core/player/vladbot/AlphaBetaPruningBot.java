@@ -12,13 +12,9 @@ import java.util.List;
 public class AlphaBetaPruningBot extends VBot {
 
     private final static String PLAYER_NAME = "AlphaBetaPruningBot";
-    private final int maxDepth;
 
     public AlphaBetaPruningBot(final Side side, final Evaluation evaluation, final int maxDepth) {
-        super(side, evaluation);
-        if (maxDepth < 1)
-            throw new IllegalArgumentException("Tree search based bot cannot look on depth < 1,  maxDepth:" + maxDepth);
-        this.maxDepth = maxDepth;
+        super(side, evaluation, maxDepth);
     }
 
     public AlphaBetaPruningBot(final Side side, final Evaluation evaluation) {
@@ -33,10 +29,6 @@ public class AlphaBetaPruningBot extends VBot {
         this(side, new PeSTO(), maxDepth);
     }
 
-    public int getMaxDepth() {
-        return maxDepth;
-    }
-
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
         return evaluateBestMove(gameInfo);
@@ -44,7 +36,7 @@ public class AlphaBetaPruningBot extends VBot {
 
     @Override
     public String getName() {
-        return PLAYER_NAME + "Depth:" + maxDepth + getEvaluation().toString();
+        return PLAYER_NAME + "Depth:" + getMaxDepth() + getEvaluation().toString();
     }
 
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) {
@@ -54,7 +46,7 @@ public class AlphaBetaPruningBot extends VBot {
         for (final MoveInfo move : gameInfo.getAvailableMoves()) {
             final GameInfo virtualGameInfo = gameInfo.copy(move);
             evaluatedMoves
-                    .add(new EvaluatedMove(move, alphaBetaMin(virtualGameInfo, alpha, beta, maxDepth - 1)));
+                    .add(new EvaluatedMove(move, alphaBetaMin(virtualGameInfo, alpha, beta, getMaxDepth() - 1)));
         }
         return getGreedyDecision(evaluatedMoves);
     }

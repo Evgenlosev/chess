@@ -11,13 +11,9 @@ import java.util.List;
 
 public class MinMaxBot extends VBot {
     private final static String PLAYER_NAME = "MinMaxBot";
-    private final int maxDepth;
 
     public MinMaxBot(final Side side, final Evaluation evaluation, final int maxDepth) {
-        super(side, evaluation);
-        if (maxDepth < 1)
-            throw new IllegalArgumentException("Tree search based bot cannot look on depth < 1,  maxDepth:" + maxDepth);
-        this.maxDepth = maxDepth;
+        super(side, evaluation, maxDepth);
     }
 
     public MinMaxBot(final Side side, final Evaluation evaluation) {
@@ -32,10 +28,6 @@ public class MinMaxBot extends VBot {
         this(side, new PeSTO(), maxDepth);
     }
 
-    public int getMaxDepth() {
-        return maxDepth;
-    }
-
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
         return evaluateBestMove(gameInfo);
@@ -43,7 +35,7 @@ public class MinMaxBot extends VBot {
 
     @Override
     public String getName() {
-        return PLAYER_NAME + "Depth:" + maxDepth + getEvaluation().toString();
+        return PLAYER_NAME + "Depth:" + getMaxDepth() + getEvaluation().toString();
     }
 
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) {
@@ -51,7 +43,7 @@ public class MinMaxBot extends VBot {
         for (final MoveInfo move : gameInfo.getAvailableMoves()) {
             final GameInfo virtualGameInfo = gameInfo.copy(move);
             evaluatedMoves
-                    .add(new EvaluatedMove(move, minBot(virtualGameInfo, maxDepth - 1)));
+                    .add(new EvaluatedMove(move, minBot(virtualGameInfo, getMaxDepth() - 1)));
         }
         return getGreedyDecision(evaluatedMoves); // max
     }
