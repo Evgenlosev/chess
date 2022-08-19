@@ -23,9 +23,7 @@ public class Minimax extends Player {
         double bestMove = Integer.MIN_VALUE;
         MoveInfo bestMoveInfo = null;
         for (MoveInfo move : gameInfo.getAvailableMoves()) {
-            gameInfo.updateBoardWithoutUpdatingStatus(move);
-            double value = minimax(gameInfo, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, !isMaximising);
-            gameInfo.undo();
+            double value = minimax(gameInfo.copy(move), depth, Integer.MIN_VALUE, Integer.MAX_VALUE, !isMaximising);
             if (value >= bestMove) {
                 bestMove = value;
                 bestMoveInfo = move;
@@ -42,9 +40,7 @@ public class Minimax extends Player {
         if (isMaximising) {
             bestMoveValue = Integer.MIN_VALUE;
             for (MoveInfo move : gameInfo.getAvailableMoves()) {
-                gameInfo.updateBoardWithoutUpdatingStatus(move);
-                bestMoveValue = Math.max(bestMoveValue, minimax(gameInfo, depth - 1, alpha, beta, false));
-                gameInfo.undo();
+                bestMoveValue = Math.max(bestMoveValue, minimax(gameInfo.copy(move), depth - 1, alpha, beta, false));
                 alpha = Math.max(alpha, bestMoveValue);
                 if (beta <= alpha) {
                     return bestMoveValue;
@@ -53,9 +49,7 @@ public class Minimax extends Player {
         } else {
             bestMoveValue = Integer.MAX_VALUE;
             for (MoveInfo move : gameInfo.getAvailableMoves()) {
-                gameInfo.updateBoardWithoutUpdatingStatus(move);
-                bestMoveValue = Math.min(bestMoveValue, minimax(gameInfo, depth - 1, alpha, beta, true));
-                gameInfo.undo();
+                bestMoveValue = Math.min(bestMoveValue, minimax(gameInfo.copy(move), depth - 1, alpha, beta, true));
                 beta = Math.min(beta, bestMoveValue);
                 if (beta <= alpha) {
                     return bestMoveValue;
@@ -68,5 +62,10 @@ public class Minimax extends Player {
     @Override
     public MoveInfo getAnswer(GameInfo gameInfo) {
         return minimaxRoot(gameInfo, depth, true);
+    }
+
+    @Override
+    public String getName() {
+        return "ChadMinimaxBot";
     }
 }

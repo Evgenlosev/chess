@@ -22,18 +22,20 @@ public class ChadBot extends Player {
         double bestMoveValue = Integer.MIN_VALUE;
         MoveInfo bestMove = null;
         for (MoveInfo move : gameInfo.getAvailableMoves()) {
-            gameInfo.updateBoardWithoutUpdatingStatus(move);
-            double value = evalFunction.eval(gameInfo);
+            double value = evalFunction.eval(gameInfo.copy(move));
             if (logic.isMate(gameInfo.getFenBoard())) {
-                gameInfo.undo();
                 return move;
             }
-            gameInfo.undo();
             if (value >= bestMoveValue) {
                 bestMoveValue = value;
                 bestMove = move;
             }
         }
         return bestMove;
+    }
+
+    @Override
+    public String getName() {
+        return "ChadBot";
     }
 }

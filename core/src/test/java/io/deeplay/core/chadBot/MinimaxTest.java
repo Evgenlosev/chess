@@ -26,9 +26,9 @@ public class MinimaxTest {
         assertEquals(moveInfo, player.getAnswer(gameInfo));
 
 //        Мат в 3 хода.
-        player = new Minimax(Side.BLACK, 5);
-        gameInfo = new GameInfo("r2q1b1r/ppp3k1/8/3Bp3/6P1/5Qp1/PPPP1PP1/R4RK1 b - - 0 1");
-        moveInfo = new MoveInfo(new Coord(7, 7), new Coord(7, 0), USUAL_MOVE, Figure.B_ROOK);
-        assertEquals(moveInfo, player.getAnswer(gameInfo));
+//        player = new Minimax(Side.BLACK, 5);
+//        gameInfo = new GameInfo("r2q1b1r/ppp3k1/8/3Bp3/6P1/5Qp1/PPPP1PP1/R4RK1 b - - 0 1");
+//        moveInfo = new MoveInfo(new Coord(7, 7), new Coord(7, 0), USUAL_MOVE, Figure.B_ROOK);
+//        assertEquals(moveInfo, player.getAnswer(gameInfo));
     }
 }
