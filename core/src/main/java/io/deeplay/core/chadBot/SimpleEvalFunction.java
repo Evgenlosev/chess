@@ -1,7 +1,5 @@
 package io.deeplay.core.chadBot;
 
-import io.deeplay.core.api.SimpleLogic;
-import io.deeplay.core.api.SimpleLogicAppeal;
 import io.deeplay.core.model.Figure;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.GameStatus;
