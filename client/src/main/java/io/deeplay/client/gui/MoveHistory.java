@@ -49,7 +49,7 @@ public class MoveHistory extends JPanel {
 
     public void update(final GameInfo gameInfo, final MoveInfo moveInfo) {
         JButton move;
-        boolean isCheck = logic.getBoardSituationInfo(gameInfo.getFenBoard()).isCheck();
+        final boolean isCheck = logic.getBoardSituationInfo(gameInfo.getFenBoard()).isCheck();
         move = getMoveButton(moveInfo, gameInfo.whoseMove());
         if (isCheck) {
             move.setText(move.getText() + "+");
@@ -76,7 +76,7 @@ public class MoveHistory extends JPanel {
     }
 
     private JButton getMoveButton(final MoveInfo moveInfo, final Side whoseMove) {
-        boolean couldOtherFigureMakeSameMove = logic.getMoves(previousChessBoardFen).stream().filter(m ->
+        final boolean couldOtherFigureMakeSameMove = logic.getMoves(previousChessBoardFen).stream().filter(m ->
                 m.getCellTo().equals(moveInfo.getCellTo()) && m.getFigure() == moveInfo.getFigure()).count() > 1;
         String buttonText = FIGURE_STRING_MAP.get(moveInfo.getFigure());
         if (!couldOtherFigureMakeSameMove) {
