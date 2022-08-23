@@ -1,4 +1,4 @@
-package io.deeplay.core.chadBot;
+package io.deeplay.core.player.chadBot;
 
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;

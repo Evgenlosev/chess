@@ -2,6 +2,7 @@ package io.deeplay.core.chadBot;
 
 import io.deeplay.core.model.*;
 import io.deeplay.core.player.Player;
+import io.deeplay.core.player.chadBot.Minimax;
 import org.junit.Test;
 
 import static io.deeplay.core.model.MoveType.USUAL_ATTACK;

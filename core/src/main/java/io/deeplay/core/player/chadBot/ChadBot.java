@@ -1,4 +1,4 @@
-package io.deeplay.core.chadBot;
+package io.deeplay.core.player.chadBot;
 
 import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
