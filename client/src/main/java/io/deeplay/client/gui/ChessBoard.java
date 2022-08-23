@@ -20,9 +20,9 @@ public class ChessBoard extends JPanel {
     private final Consumer<MoveInfo> sendMove;
     private static final int BOARD_SIZE = 8;
     private static final int BOARD_CELL_NUMBER = 64;
-    private static final double RED_OFFSET = 1.15;
-    private static final double GREEN_OFFSET = 1.2;
-    private static final double BLUE_OFFSET = 1.3;
+    private static final double RED_OFFSET = 1.35;
+    private static final double GREEN_OFFSET = 1.4;
+    private static final double BLUE_OFFSET = 1.5;
     private static final Color BLACK_CELL = new Color(181, 136, 99);
     private static final Color WHITE_CELL = new Color(240, 217, 181);
     private JButton[] cells;

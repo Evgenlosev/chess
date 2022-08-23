@@ -32,7 +32,7 @@ public class ClientGameSession {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
-        final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest(Side.WHITE, "RandomBot"));
+        final Consumer<Side> sendNewGameRequest = side -> ctx.writeAndFlush(new StartGameRequest(side, "RandomBot"));
         gui = new Gui(gameInfo, sendMove, sendNewGameRequest);
         gui.setVisible(true);
     }
@@ -48,6 +48,7 @@ public class ClientGameSession {
                 break;
             case GAME_OVER_RESPONSE:
                 GameOverResponse gameOverResponse = (GameOverResponse) command;
+                gui.gameOver(gameOverResponse.getGameStatus().getMessage());
                 LOGGER.info("Игра завершена: {}", gameOverResponse.getGameStatus().getMessage());
                 break;
             case START_GAME_RESPONSE:
