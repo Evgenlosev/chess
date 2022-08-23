@@ -1,5 +1,6 @@
 package io.deeplay.core.model;
 
+import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
 import io.deeplay.core.api.SimpleLogicCache;
 import io.deeplay.core.listener.ChessAdapter;
@@ -29,8 +30,22 @@ public class GameInfo extends ChessAdapter {
      * @param fen стартовая позиция
      */
     public GameInfo(final String fen) {
+        this(fen, true);
+    }
+
+    /**
+     * Конструктор для заданного расположения фигур с возможностью отключить кэширование вычислений логики.
+     *
+     * @param fen        стартовая позиция
+     * @param cacheLogic флаг установки кэширования вычислений логики, кэширование будет влиять на скорость работы ботов.
+     */
+    public GameInfo(final String fen, final boolean cacheLogic) {
         gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogicCache();
+        if (cacheLogic) {
+            logic = new SimpleLogicCache();
+        } else {
+            logic = new SimpleLogic();
+        }
         board = new ChessBoard(fen);
         whiteIsPresent = false;
         blackIsPresent = false;

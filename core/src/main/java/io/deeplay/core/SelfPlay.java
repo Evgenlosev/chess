@@ -1,18 +1,17 @@
 package io.deeplay.core;
 
-import ch.qos.logback.classic.Logger;
-import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.core.statistics.AllGamesStatistics;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class SelfPlay {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SelfPlay.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
     private final Player secondPlayer;
     private final GameInfo gameInfo;
@@ -40,7 +39,6 @@ public class SelfPlay {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-        this.currentPlayerToMove = this.firstPlayer;
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
         gameInfoGroup.addListener(firstPlayer);
         gameInfoGroup.addListener(secondPlayer);
@@ -85,6 +83,7 @@ public class SelfPlay {
         LOGGER.info("{} присоединился к партии за черных", secondPlayer);
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
+            currentPlayerToMove = gameInfo.whoseMove() == firstPlayer.getSide() ? firstPlayer : secondPlayer;
             gameInfoGroup.gameStarted();
             LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков

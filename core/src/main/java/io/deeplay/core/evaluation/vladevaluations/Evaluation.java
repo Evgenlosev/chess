@@ -18,4 +18,6 @@ public interface Evaluation {
      */
     int evaluateBoard(final ChessBoard chessBoard);
 
+    String getName();
+
 }

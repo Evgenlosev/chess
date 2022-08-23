@@ -2,7 +2,6 @@ package io.deeplay.core.evaluation.vladevaluations;
 
 import io.deeplay.core.model.ChessBoard;
 import io.deeplay.core.model.Figure;
-import io.deeplay.core.model.Side;
 
 /**
  * Функция оценки, которая изменяет оценку основываясь на этапе игры (midgame/endgame).
@@ -10,6 +9,7 @@ import io.deeplay.core.model.Side;
  * <a href="https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function"> PeSTO </a>
  */
 public class PeSTO implements Evaluation {
+    private final static String EVALUATION_NAME = "PeSTO";
     // mg - midgame
     // eg - endgame
     int[] mgValue = {82, 337, 365, 477, 1025, 0};
@@ -201,13 +201,13 @@ public class PeSTO implements Evaluation {
         final int[] eg = new int[2];
         int gamePhase = 0;
 
-        /* evaluate each piece */
-        for (int i = 0; i < ChessBoard.BOARD_SIZE; i++) {
-            for (int j = 0; j < ChessBoard.BOARD_SIZE; j++) {
+        for (int i = ChessBoard.BOARD_SIZE - 1; i >= 0; i--) {
+            for (int j = ChessBoard.BOARD_SIZE - 1; j >= 0; j--) {
                 if (chessBoard.getBoard()[i][j].getFigure() != Figure.NONE) {
-                    final int sq = i * ChessBoard.BOARD_SIZE + j;
-                    final int pc = PeSTO.figureToInt(chessBoard.getBoard()[i][j].getFigure());
-                    final int cl = chessBoard.getWhoseMove() == Side.WHITE ? 0 : 1;
+                    final Figure figure = chessBoard.getBoard()[i][j].getFigure();
+                    final int sq = (ChessBoard.BOARD_SIZE - 1 - i) * ChessBoard.BOARD_SIZE + j;
+                    final int pc = PeSTO.figureToInt(figure);
+                    final int cl = (figure.getWeight() > 0) ? 0 : 1; // 0 - белый, 1 - черный
                     mg[cl] += mgTable[pc][sq];
                     eg[cl] += egTable[pc][sq];
                     gamePhase += gamePhaseInc[pc];
@@ -226,4 +226,8 @@ public class PeSTO implements Evaluation {
         return (mgScore * mgPhase + egScore * egPhase) / 24;
     }
 
+    @Override
+    public String getName() {
+        return EVALUATION_NAME;
+    }
 }
