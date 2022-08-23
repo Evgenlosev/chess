@@ -7,10 +7,11 @@ import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+// with MVVLVA move ordering
 public class AlphaBetaPruningBot extends VBot {
-
     private final static String PLAYER_NAME = "AlphaBetaPruningBot";
 
     public AlphaBetaPruningBot(final Side side, final Evaluation evaluation, final int maxDepth) {
@@ -36,7 +37,7 @@ public class AlphaBetaPruningBot extends VBot {
 
     @Override
     public String getName() {
-        return PLAYER_NAME + "Depth:" + getMaxDepth() + getEvaluation().toString();
+        return PLAYER_NAME + "Depth=" + getMaxDepth() + getEvaluation().toString();
     }
 
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) {
@@ -48,43 +49,40 @@ public class AlphaBetaPruningBot extends VBot {
             evaluatedMoves
                     .add(new EvaluatedMove(move, alphaBetaMin(virtualGameInfo, alpha, beta, getMaxDepth() - 1)));
         }
+        System.out.println(evaluatedMoves.stream().max(Comparator.comparingInt(e -> e.score)).orElseThrow().score);
         return getGreedyDecision(evaluatedMoves);
     }
 
-    int alphaBetaMax(final GameInfo gameInfo,
-                     int alpha,
-                     final int beta,
-                     final int depthLeft) {
-        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
-//        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta);
+    protected final int alphaBetaMax(final GameInfo gameInfo,
+                                     int alpha,
+                                     final int beta,
+                                     final int depthLeft) {
+        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+//        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
 //        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
-            final GameInfo virtualGameInfo = gameInfo.copy(move);
-            final int currentScore = alphaBetaMin(virtualGameInfo, alpha, beta, depthLeft - 1);
+            final int currentScore = alphaBetaMin(gameInfo.copy(move), alpha, beta, depthLeft - 1);
             if (currentScore >= beta)
                 return beta;   // fail hard beta-cutoff
-            if (currentScore > alpha) {
+            if (currentScore > alpha)
                 alpha = currentScore; // alpha acts like max in MiniMax
-            }
         }
         return alpha;
     }
 
-    int alphaBetaMin(final GameInfo gameInfo,
-                     final int alpha,
-                     int beta,
-                     final int depthLeft) {
-        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
-//        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta);
+    protected final int alphaBetaMin(final GameInfo gameInfo,
+                                     final int alpha,
+                                     int beta,
+                                     final int depthLeft) {
+        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+//        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
 //        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
-            final GameInfo virtualGameInfo = gameInfo.copy(move);
-            final int currentScore = alphaBetaMax(virtualGameInfo, alpha, beta, depthLeft - 1);
+            final int currentScore = alphaBetaMax(gameInfo.copy(move), alpha, beta, depthLeft - 1);
             if (currentScore <= alpha)
                 return alpha; // fail hard alpha-cutoff
-            if (currentScore < beta) {
+            if (currentScore < beta)
                 beta = currentScore; // beta acts like min in MiniMax
-            }
         }
         return beta;
     }
