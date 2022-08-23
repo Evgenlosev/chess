@@ -9,6 +9,7 @@ import io.deeplay.core.model.Figure;
  * <a href="https://www.chessprogramming.org/PeSTO%27s_Evaluation_Function"> PeSTO </a>
  */
 public class PeSTO implements Evaluation {
+    private final static String EVALUATION_NAME = "PeSTO";
     // mg - midgame
     // eg - endgame
     int[] mgValue = {82, 337, 365, 477, 1025, 0};
@@ -225,4 +226,8 @@ public class PeSTO implements Evaluation {
         return (mgScore * mgPhase + egScore * egPhase) / 24;
     }
 
+    @Override
+    public String getName() {
+        return EVALUATION_NAME;
+    }
 }

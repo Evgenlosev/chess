@@ -9,10 +9,16 @@ import java.util.Set;
  * Данная оценка плоха тем, что не развивает фигуры, поэтому теряет большинство потенциала.
  */
 public class PieceCounter implements Evaluation {
+    private final static String EVALUATION_NAME = "PieceCounter";
 
     @Override
     public int evaluateBoard(final ChessBoard chessBoard) {
         return countPiecesForSide(chessBoard, Side.WHITE) - countPiecesForSide(chessBoard, Side.BLACK);
+    }
+
+    @Override
+    public String getName() {
+        return EVALUATION_NAME;
     }
 
     /**

@@ -62,6 +62,6 @@ public class EvaluationBot extends VBot {
 
     @Override
     public String getName() {
-        return PLAYER_NAME + getEvaluation().getClass();
+        return PLAYER_NAME + "Evaluation=" + getEvaluation().getName();
     }
 }

@@ -35,7 +35,7 @@ public class MinMaxBot extends VBot {
 
     @Override
     public String getName() {
-        return PLAYER_NAME + "Depth:" + getMaxDepth() + getEvaluation().toString();
+        return PLAYER_NAME + "Depth=" + getMaxDepth() + "Evaluation=" + getEvaluation().getName();
     }
 
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) {
