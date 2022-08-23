@@ -160,13 +160,13 @@ public class GameInfo extends ChessAdapter {
      */
     public Set<MoveInfo> getAvailableMoves() {
         Set<MoveInfo> moves = logic.getMoves(board.getFEN());
-        if (moves == null || moves.size() < 1) {
-            if (logic.isMate(board.getFEN())) {
-                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-            } else {
-                gameStatus = GameStatus.STALEMATE;
-            }
-        }
+//        if (moves == null || moves.size() < 1) {
+//            if (logic.isMate(board.getFEN())) {
+//                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
+//            } else {
+//                gameStatus = GameStatus.STALEMATE;
+//            }
+//        }
         return moves;
     }
 

@@ -12,7 +12,7 @@ public class ChadBot extends Player {
     SimpleLogicAppeal logic;
 
     public ChadBot(Side side) {
-        this.side = side;
+        super(side);
         evalFunction = new SimpleEvalFunction();
         logic = new SimpleLogic();
     }

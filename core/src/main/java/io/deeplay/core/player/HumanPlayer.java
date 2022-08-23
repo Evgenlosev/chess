@@ -18,7 +18,7 @@ public class HumanPlayer extends Player {
     // Функция для того, чтобы передавать ход от пользователя в selfplay.
 
     public HumanPlayer(final Side side) {
-        this.side = side;
+        super(side);
     }
     public MoveInfo getAnswer(final GameInfo gameInfo) {
         while (true){

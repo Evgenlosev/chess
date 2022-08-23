@@ -20,7 +20,7 @@ public class RandomBot extends Player {
     }
 
     public RandomBot(final Side side, final long seed) {
-        this.side = side;
+        super(side);
         this.random = new Random(seed);
         this.seed = seed;
         LOGGER.info("Для {} установлен seed - {}", this, seed);
