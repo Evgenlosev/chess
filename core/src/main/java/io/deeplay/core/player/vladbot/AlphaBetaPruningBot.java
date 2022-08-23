@@ -7,7 +7,6 @@ import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 // with MVVLVA move ordering
@@ -49,7 +48,6 @@ public class AlphaBetaPruningBot extends VBot {
             evaluatedMoves
                     .add(new EvaluatedMove(move, alphaBetaMin(virtualGameInfo, alpha, beta, getMaxDepth() - 1)));
         }
-        System.out.println(evaluatedMoves.stream().max(Comparator.comparingInt(e -> e.score)).orElseThrow().score);
         return getGreedyDecision(evaluatedMoves);
     }
 
