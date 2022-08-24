@@ -13,6 +13,8 @@ import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 
@@ -30,7 +32,7 @@ public class ClientGameSession {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
-        final Consumer<Side> sendNewGameRequest = side -> ctx.writeAndFlush(new StartGameRequest(side, PlayerType.RANDOM_BOT));
+        final BiConsumer<Side, PlayerType> sendNewGameRequest = (side, playerType) -> ctx.writeAndFlush(new StartGameRequest(side, playerType));
         gui = new Gui(gameInfo, sendMove, sendNewGameRequest);
         gui.setVisible(true);
     }
