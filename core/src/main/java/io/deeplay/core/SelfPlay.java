@@ -1,18 +1,17 @@
 package io.deeplay.core;
 
-import ch.qos.logback.classic.Logger;
-import io.deeplay.core.console.BoardDrawer;
 import io.deeplay.core.listener.GameInfoGroup;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
 import io.deeplay.core.player.Player;
 import io.deeplay.core.statistics.AllGamesStatistics;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class SelfPlay {
-    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(SelfPlay.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
     private final Player secondPlayer;
     private final GameInfo gameInfo;
