@@ -1,86 +1,106 @@
 package io.deeplay.client.gui;
 
+import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
+import io.deeplay.core.model.Side;
+import io.deeplay.core.player.PlayerType;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.*;
 import java.io.IOException;
-import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Gui extends JFrame {
-    // these are the components we need.
-    private final JSplitPane splitPane;  // split the window in top and bottom
-    private final ChessBoard chessBoard;       // container panel for the top
-    private final JPanel moveHistory;    // container panel for the bottom
-    private final JScrollPane scrollPane; // makes the text scrollable
-    private final JTextArea textArea;     // the text
-    private final JPanel inputPanel;      // under the text a container for all the input elements
-    private final JTextField textField;   // a textField for the text the user inputs
-    private final JButton button;         // and a "send" button
+    private final JSplitPane splitPane;
+    private final ChessBoard chessBoard;
+    private final JPanel moveHistory;
+    private final JScrollPane scrollPane;
+    private final JTextArea textArea;
+    private final JPanel inputPanel;
+    private final JTextField textField;
+    private final JButton nextMove;
+    private final JButton prevMove;
     private final JMenuBar menubar;
+    private final MoveHistory moveHistoryText;
+    private GameInfo gameInfo;
 
-    public Gui(final Consumer<MoveInfo> sendMove, final Runnable sendNewGameRequest) {
+    public Gui(final GameInfo gameInfo, final Consumer<MoveInfo> sendMove, final BiConsumer<Side, PlayerType> sendNewGameRequest) {
         super("Chess");
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
         menubar = new MenuBar(sendNewGameRequest);
-
-        // first, lets create the containers:
-        // the splitPane devides the window in two components (here: top and bottom)
-        // users can then move the devider and decide how much of the top component
-        // and how much of the bottom component they want to see.
         splitPane = new JSplitPane();
 
         try {
-            chessBoard = new ChessBoard(sendMove);         // our top component
+            chessBoard = new ChessBoard(sendMove);
+            chessBoard.updateBoard(io.deeplay.core.model.ChessBoard.DEFAULT_FEN_STRING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        moveHistory = new JPanel();      // our bottom component
+        moveHistory = new JPanel();      // Правая панель
+        moveHistoryText = new MoveHistory();
 
-        // in our bottom panel we want the text area and the input components
-        scrollPane = new JScrollPane();  // this scrollPane is used to make the text area scrollable
-        textArea = new JTextArea();      // this text area will be put inside the scrollPane
+        scrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        textArea = new JTextArea();
 
-        // the input components will be put in a separate panel
+
         inputPanel = new JPanel();
-        textField = new JTextField();    // first the input field where the user can type his text
-        button = new JButton("send");    // and a button at the right, to send the text
+        textField = new JTextField(2);
+        nextMove = new JButton(">");
+        prevMove = new JButton("<");
 
-        // now lets define the default size of our window and its layout:
-        setPreferredSize(new Dimension(1000, 800));     // let open the window with a default size of 400x400 pixels
-        // the contentPane is the container that holds all our components
-        getContentPane().setLayout(new GridLayout());  // the default GridLayout is like a grid with 1 column and 1 row,
-        // we only add one element to the window itself
-        getContentPane().add(splitPane);               // due to the GridLayout, our splitPane will now fill the whole window
+        // Определение параметров окна
+        setPreferredSize(new Dimension(1000, 800));
+        // contentPane содержит все элементы главного окна
+        getContentPane().setLayout(new GridLayout());  // Стандартная решетка для размещения объектов
+        getContentPane().add(splitPane);               // Разделитель окна
 
         // let configure our splitPane:
-        splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);  // we want it to split the window verticaly
-        splitPane.setDividerLocation(700);                    // the initial position of the divider is 200 (our window is 400 pixels high)
-        splitPane.setLeftComponent(chessBoard);                  // at the top we want our "topPanel"
-        splitPane.setRightComponent(moveHistory);            // and at the bottom we want our "bottomPanel"
+        splitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane.setDividerLocation(700);
+        splitPane.setLeftComponent(chessBoard);
+        splitPane.setRightComponent(moveHistory);
 
-        // our topPanel doesn't need anymore for this example. Whatever you want it to contain, you can add it here
-        moveHistory.setLayout(new BoxLayout(moveHistory, BoxLayout.Y_AXIS)); // BoxLayout.Y_AXIS will arrange the content vertically
-
-        moveHistory.add(scrollPane);                // first we add the scrollPane to the bottomPanel, so it is at the top
-        scrollPane.setViewportView(textArea);       // the scrollPane should make the textArea scrollable, so we define the viewport
-        moveHistory.add(inputPanel);                // then we add the inputPanel to the bottomPanel, so it under the scrollPane / textArea
-
-        // let set the maximum size of the inputPanel, so it doesn't get too big when the user resizes the window
-        inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));     // we set the max height to 75 and the max width to (almost) unlimited
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));   // X_Axis will arrange the content horizontally
-
-        inputPanel.add(textField);        // left will be the textField
-        inputPanel.add(button);           // and right the "send" button
+        moveHistory.setLayout(new BoxLayout(moveHistory, BoxLayout.Y_AXIS));
+        scrollPane.setViewportView(moveHistoryText);
+        moveHistory.add(moveHistoryText);
+        moveHistory.add(scrollPane);
+        moveHistory.add(textArea);
+        textArea.append("Файл -> Новая игра\n");
+        moveHistory.add(inputPanel);
+        inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
+        inputPanel.add(prevMove);
+        inputPanel.add(nextMove);
+        inputPanel.add(createFlipButton());
         setJMenuBar(menubar);
 
         pack();// calling pack() at the end, will ensure that every layout and size we just defined gets applied before the stuff becomes visible
     }
 
-    public void updateBoard(final String fen, final Set<MoveInfo> moveInfoSet) {
-        chessBoard.updateBoard(fen, moveInfoSet);
-        super.setVisible(true);
+    public void updateBoard(final GameInfo gameInfo, final MoveInfo moveInfo) {
+        chessBoard.updateBoard(gameInfo.getFenBoard());
+        moveHistoryText.update(gameInfo, moveInfo);
+        pack();
+    }
+
+    private JButton createFlipButton() {
+        JButton flip = new JButton("flip");
+        flip.addActionListener(e -> {
+            chessBoard.reverse();
+            super.setVisible(true);
+        });
+        return flip;
+    }
+
+    public void restart(final GameInfo gameInfo) {
+        moveHistoryText.restart();
+        chessBoard.updateBoard(gameInfo.getFenBoard());
+        textArea.setText(null);
+    }
+
+    public void gameOver(final String message) {
+        textArea.append("Игра окончена: " + message + "\n");
     }
 }

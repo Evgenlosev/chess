@@ -70,7 +70,7 @@ public class AllGamesStatistics extends ChessAdapter {
             final String yAxisTitle,
             final String outputPath,
             final String chartTitle) throws IOException {
-        CategoryChart chart = new CategoryChart(1300, 800);
+        CategoryChart chart = new CategoryChart(1900, 800);
         chart.setTitle(chartTitle);
         chart.setXAxisTitle(xAxisTitle);
         chart.setYAxisTitle(yAxisTitle);
@@ -112,11 +112,15 @@ public class AllGamesStatistics extends ChessAdapter {
                 gamesStatistics.stream().filter(stats -> stats.getGameStatus() == GameStatus.WHITE_WON).count();
         final long secondPlayerWins =
                 gamesStatistics.stream().filter(stats -> stats.getGameStatus() == GameStatus.BLACK_WON).count();
-        final long draws =
-                gamesStatistics.stream().filter(stats -> stats.getGameStatus() == GameStatus.STALEMATE
-                        || stats.getGameStatus() == GameStatus.FIFTY_MOVES_RULE
-                        || stats.getGameStatus() == GameStatus.THREEFOLD_REPETITION
-                        || stats.getGameStatus() == GameStatus.INSUFFICIENT_MATING_MATERIAL).count();
+        final long stalemate = gamesStatistics.stream()
+                .filter(stats -> stats.getGameStatus() == GameStatus.STALEMATE).count();
+        final long fiftyMovesRule = gamesStatistics.stream()
+                .filter(stats -> stats.getGameStatus() == GameStatus.FIFTY_MOVES_RULE).count();
+        final long threefoldRepetition = gamesStatistics.stream()
+                .filter(stats -> stats.getGameStatus() == GameStatus.THREEFOLD_REPETITION).count();
+        final long materialShortage = gamesStatistics.stream()
+                .filter(stats -> stats.getGameStatus() == GameStatus.INSUFFICIENT_MATING_MATERIAL).count();
+        final long draws = stalemate + fiftyMovesRule + threefoldRepetition + materialShortage;
         final float firstPlayerLongestTimeOnMove =
                 gamesStatistics.stream().map(OneGameStatistics::getFirstPlayerMovesTime)
                         .flatMap(List::stream).max(Float::compare).orElseThrow();
@@ -155,7 +159,11 @@ public class AllGamesStatistics extends ChessAdapter {
                 writer.write("Average time on move: " +
                         String.format("%.3f", secondPlayerAverageTimeOnMove) + '\n');
                 writer.write('\n');
-                writer.write("Draw " + draws + " times.");
+                writer.write("Draw " + draws + " times." + '\n');
+                writer.write('\t' + "Stalemate " + stalemate + " times." + '\n');
+                writer.write('\t' + "Fifty moves rule " + fiftyMovesRule + " times." + '\n');
+                writer.write('\t' + "Threefold repetition " + threefoldRepetition + " times." + '\n');
+                writer.write('\t' + "Insufficient mating material " + materialShortage + " times." + '\n');
             }
         } catch (IOException e) {
             LOGGER.error("Ошибка при выводе в файл:", e);

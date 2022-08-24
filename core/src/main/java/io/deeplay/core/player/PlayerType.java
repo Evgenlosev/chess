@@ -2,6 +2,7 @@ package io.deeplay.core.player;
 
 public enum PlayerType {
     HUMAN("Человек"),
+    EVGEN_BOT("Бот Евгения"),
     RANDOM_BOT("Рандомный бот");
 
     private final String description;

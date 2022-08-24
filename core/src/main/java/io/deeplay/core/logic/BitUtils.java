@@ -375,7 +375,9 @@ public class BitUtils {
 
         // check if distance is 7 or 9, then it is diagonal
         if (distance % 7 == 0 || distance % 9 == 0) {
-            final long addMe = distance % 7 == 0 ? 7 : 9;
+            // final long addMe = distance % 7 == 0 ? 7 : 9;  63 делится и на 9 и на 7, однако тут выберется 7, т.е. движение по диагонали влево, когда надо вправо
+            // final long addMe = distance != 63 && distance % 7 == 0 ? 7 : 9; // одно из решений проблемы
+            final long addMe = distance % 9 == 0 ? 9 : 7;
             long x = 0L;
             for (int i = sq1; i <= sq2; i += addMe) {
                 x |= 1L << i;

@@ -22,13 +22,10 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) {
         // TODO Реализовать получение настроек игры от пользователя
-//        new Thread(() -> {
-//            StartGameRequest startGameRequest = ui.getGameSettings();
-//            side = startGameRequest.getSide();
-//            ctx.writeAndFlush(startGameRequest);
-//        }).start();
-        this.side = Side.WHITE;
-        ctx.writeAndFlush(new StartGameRequest(side, PlayerType.RANDOM_BOT));
+        ClientGameSession session = new ClientGameSession(ctx);
+        //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+        ctx.channel().pipeline().remove(this);
+        ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
     }
 
     @Override
@@ -37,10 +34,6 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
             StartGameResponse startGameResponse = (StartGameResponse) command;
             if (startGameResponse.isGameStarted()) {
                 LOGGER.info("Начало игры");
-                ClientGameSession session = new ClientGameSession(ctx);
-                //Если игра создана успешно, удаляем из конвейера текущий хэндлер и добавляем CommandHandler
-                ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
             } else {
                 LOGGER.info("Игра не создана {}", startGameResponse.getErrorMessage());
             }

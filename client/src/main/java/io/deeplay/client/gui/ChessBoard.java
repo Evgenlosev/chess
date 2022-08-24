@@ -1,5 +1,7 @@
 package io.deeplay.client.gui;
 
+import io.deeplay.core.api.SimpleLogic;
+import io.deeplay.core.api.SimpleLogicAppeal;
 import io.deeplay.core.model.MoveInfo;
 
 import javax.imageio.ImageIO;
@@ -18,14 +20,16 @@ public class ChessBoard extends JPanel {
     private final Consumer<MoveInfo> sendMove;
     private static final int BOARD_SIZE = 8;
     private static final int BOARD_CELL_NUMBER = 64;
-    private static final double RED_OFFSET = 1.15;
-    private static final double GREEN_OFFSET = 1.2;
-    private static final double BLUE_OFFSET = 1.3;
+    private static final double RED_OFFSET = 1.35;
+    private static final double GREEN_OFFSET = 1.4;
+    private static final double BLUE_OFFSET = 1.5;
     private static final Color BLACK_CELL = new Color(181, 136, 99);
     private static final Color WHITE_CELL = new Color(240, 217, 181);
     private JButton[] cells;
     private int lastPressedButton;
     private Set<MoveInfo> moves;
+    private final SimpleLogicAppeal logic;
+    boolean reverse = false;
     private final Map<String, BufferedImage> figuresFromLetters = Map.ofEntries(
             Map.entry("q", ImageIO.read(new File("client/src/main/resources/ChessPiecesPNG/bQ.png"))),
             Map.entry("k", ImageIO.read(new File("client/src/main/resources/ChessPiecesPNG/bK.png"))),
@@ -44,6 +48,7 @@ public class ChessBoard extends JPanel {
 
     public ChessBoard(Consumer<MoveInfo> sendMove) throws IOException {
         super();
+        logic = new SimpleLogic();
         this.sendMove = sendMove;
         this.setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE));
         cells = new JButton[BOARD_CELL_NUMBER];
@@ -65,13 +70,13 @@ public class ChessBoard extends JPanel {
         }
     }
 
-    public void updateBoard(final String fen, final Set<MoveInfo> moves) {
-        this.moves = moves;
+    public void updateBoard(final String fen) {
+        this.moves = logic.getMoves(fen);
         String unzippedFen = io.deeplay.core.model.ChessBoard.unzipFen(fen).split(" ", 2)[0]
                 .replace("/", "");
 
         for (int i = 0; i < unzippedFen.length(); i++) {
-            cells[i].setIcon(new ImageIcon(figuresFromLetters.get(unzippedFen.substring(i, i + 1))));
+            cells[!reverse ? i : BOARD_CELL_NUMBER - 1 - i].setIcon(new ImageIcon(figuresFromLetters.get(unzippedFen.substring(i, i + 1))));
         }
     }
 
@@ -127,5 +132,6 @@ public class ChessBoard extends JPanel {
         for (JButton cell : cells) {
             this.add(cell);
         }
+        reverse = !reverse;
     }
 }
