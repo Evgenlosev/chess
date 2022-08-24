@@ -30,7 +30,7 @@ public class ClientGameSession {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
-        final Consumer<Side> sendNewGameRequest = side -> ctx.writeAndFlush(new StartGameRequest(side, "RandomBot"));
+        final Consumer<Side> sendNewGameRequest = side -> ctx.writeAndFlush(new StartGameRequest(side, PlayerType.RANDOM_BOT));
         gui = new Gui(gameInfo, sendMove, sendNewGameRequest);
         gui.setVisible(true);
     }
