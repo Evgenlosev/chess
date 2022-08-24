@@ -9,19 +9,15 @@ public class BoardSituationInfo {
     private final boolean isMate;
     private final boolean isStalemate;
     private final boolean isDrawByPieceShortage;
-//     private final Set<MoveInfo> moveInfoSet;
 
     public BoardSituationInfo(final boolean isCheck,
                               final boolean isMate,
                               final boolean isStalemate,
-                              final boolean isDrawByPieceShortage
-//                              final Set<MoveInfo> moveInfoSet
-    ) {
+                              final boolean isDrawByPieceShortage) {
         this.isCheck = isCheck;
         this.isMate = isMate;
         this.isStalemate = isStalemate;
         this.isDrawByPieceShortage = isDrawByPieceShortage;
-//         this.moveInfoSet = moveInfoSet;
     }
 
     public boolean isCheck() {
@@ -40,7 +36,4 @@ public class BoardSituationInfo {
         return isDrawByPieceShortage;
     }
 
-    /*public Set<MoveInfo> getMoveInfoSet() {
-        return moveInfoSet;
-    }*/
 }

@@ -54,11 +54,6 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
-        /*final String piecePlacement = FENParser.getNotationsFirstFourParts(fenNotation);
-        if (!boardSituationInfoMap.containsKey(piecePlacement)) {
-            boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
-        }
-        return boardSituationInfoMap.get(piecePlacement).getMoveInfoSet();*/
         return simpleLogicAppeal.getMoves(fenNotation);
     }
 

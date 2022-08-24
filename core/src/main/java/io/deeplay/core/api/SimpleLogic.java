@@ -106,8 +106,7 @@ public class SimpleLogic implements SimpleLogicAppeal {
                 isCheck,
                 isMate(currentSideChessBitboard),
                 isStalemate(currentSideChessBitboard),
-                isDrawByPieceShortage(currentSideChessBitboard)//,
-//                getCurrentProcessingSideAllMoves(currentSideChessBitboard)
+                isDrawByPieceShortage(currentSideChessBitboard)
         );
     }
 
