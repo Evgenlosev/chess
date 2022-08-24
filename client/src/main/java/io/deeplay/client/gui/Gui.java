@@ -3,11 +3,13 @@ package io.deeplay.client.gui;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
+import io.deeplay.core.player.PlayerType;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import javax.swing.*;
 import java.io.IOException;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Gui extends JFrame {
@@ -24,7 +26,7 @@ public class Gui extends JFrame {
     private final MoveHistory moveHistoryText;
     private GameInfo gameInfo;
 
-    public Gui(final GameInfo gameInfo, final Consumer<MoveInfo> sendMove, final Consumer<Side> sendNewGameRequest) {
+    public Gui(final GameInfo gameInfo, final Consumer<MoveInfo> sendMove, final BiConsumer<Side, PlayerType> sendNewGameRequest) {
         super("Chess");
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
         menubar = new MenuBar(sendNewGameRequest);
