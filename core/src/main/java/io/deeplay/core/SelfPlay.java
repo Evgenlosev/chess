@@ -38,7 +38,6 @@ public class SelfPlay {
             this.firstPlayer = secondPlayer;
             this.secondPlayer = firstPlayer;
         }
-        this.currentPlayerToMove = this.firstPlayer;
         this.gameInfoGroup = new GameInfoGroup(gameInfo);
         gameInfoGroup.addListener(firstPlayer);
         gameInfoGroup.addListener(secondPlayer);
@@ -83,6 +82,7 @@ public class SelfPlay {
         LOGGER.info("{} присоединился к партии за черных", secondPlayer.getName());
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
+            currentPlayerToMove = gameInfo.whoseMove() == firstPlayer.getSide() ? firstPlayer : secondPlayer;
             gameInfoGroup.gameStarted();
             LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков
