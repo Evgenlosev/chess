@@ -159,15 +159,7 @@ public class GameInfo extends ChessAdapter {
      * @return возможные ходы
      */
     public Set<MoveInfo> getAvailableMoves() {
-        Set<MoveInfo> moves = logic.getMoves(board.getFEN());
-//        if (moves == null || moves.size() < 1) {
-//            if (logic.isMate(board.getFEN())) {
-//                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-//            } else {
-//                gameStatus = GameStatus.STALEMATE;
-//            }
-//        }
-        return moves;
+        return logic.getMoves(board.getFEN());
     }
 
     /**
@@ -247,7 +239,7 @@ public class GameInfo extends ChessAdapter {
     }
 
     public GameInfo copy(final MoveInfo moveInfo) {
-        final GameInfo newGameInfo = new GameInfo(this);
+        final GameInfo newGameInfo = copy();
         newGameInfo.updateBoard(moveInfo);
         return newGameInfo;
     }
