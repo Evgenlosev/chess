@@ -40,6 +40,10 @@ public class Coord {
     public int getIndexAsOneDimension() {
         return row * BOARD_WIDTH + column;
     }
+    @JsonIgnore
+    public String getCoordAsString() {
+        return String.valueOf(BitUtils.SQUARES_STRING[getIndexAsOneDimension()]);
+    }
 
     @Override
     public String toString() {

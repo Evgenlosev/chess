@@ -87,7 +87,6 @@ public class SelfPlay {
             LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков
             while (gameInfo.isGameOver()) {
-                // BoardDrawer.draw(gameInfo.getFenBoard());
                 LOGGER.info("Ходят {}", currentPlayerToMove.getSide().getDescription());
                 final MoveInfo moveInfo = currentPlayerToMove.getAnswer(gameInfo);
                 if (Thread.currentThread().isInterrupted()) {

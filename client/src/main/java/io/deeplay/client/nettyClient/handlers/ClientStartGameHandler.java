@@ -5,7 +5,6 @@ import io.deeplay.core.model.Side;
 import io.deeplay.core.player.PlayerType;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
-import io.deeplay.interaction.clientToServer.StartGameRequest;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -27,8 +26,16 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
 //            side = startGameRequest.getSide();
 //            ctx.writeAndFlush(startGameRequest);
 //        }).start();
-        this.side = Side.WHITE;
-        ctx.writeAndFlush(new StartGameRequest(side, PlayerType.RANDOM_BOT));
+//        this.side = Side.WHITE;
+//        ctx.writeAndFlush(new StartGameRequest(side, "RandomBot"));
+
+        //Создаем и запускаем игровую сессию по параметрам, заданным пользователем
+        side = Side.WHITE;
+        Player player = new RandomBot(side);
+        ClientGameSession session = new ClientGameSession(player, ctx);
+        //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+        ctx.channel().pipeline().remove(this);
+        ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
     }
 
     @Override
@@ -37,10 +44,6 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
             StartGameResponse startGameResponse = (StartGameResponse) command;
             if (startGameResponse.isGameStarted()) {
                 LOGGER.info("Начало игры");
-                ClientGameSession session = new ClientGameSession(ctx);
-                //Если игра создана успешно, удаляем из конвейера текущий хэндлер и добавляем CommandHandler
-                ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
             } else {
                 LOGGER.info("Игра не создана {}", startGameResponse.getErrorMessage());
             }
