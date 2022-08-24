@@ -65,7 +65,9 @@ public class HumanSessionStorage {
      */
     public static void deleteActiveSession(final ChannelHandlerContext ctx) {
         if (!hasActiveSessions()) {
-            for (GameSession gs : ACTIVE_SESSIONS) {
+            Iterator<GameSession> iterator = ACTIVE_SESSIONS.iterator();
+            while (iterator.hasNext()) {
+                GameSession gs = iterator.next();
                 if (((Client) gs.getFirstPlayer()).getCtx().channel() == ctx.channel() ||
                         ((Client) gs.getSecondPlayer()).getCtx().channel() == ctx.channel()) {
                     ACTIVE_SESSIONS.remove(gs);
