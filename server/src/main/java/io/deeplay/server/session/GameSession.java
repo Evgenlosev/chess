@@ -38,7 +38,6 @@ public class GameSession {
         this.sessionToken = UUID.randomUUID().toString();
         this.firstPlayer = firstPlayer;
         this.executorService = Executors.newSingleThreadExecutor();
-        HumanSessionStorage.addAwaitSession(this);
     }
 
     public String getSessionToken() {

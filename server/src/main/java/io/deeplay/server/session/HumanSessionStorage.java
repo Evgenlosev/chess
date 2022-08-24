@@ -46,12 +46,6 @@ public class HumanSessionStorage {
                     AWAIT_SESSIONS.remove(gs);
                 }
             }
-//            for (GameSession gs : AWAIT_SESSIONS) {
-//                if (((Client) gs.getFirstPlayer()).getCtx().channel() == ctx.channel()) {
-//                    gs.stopSession(gameStatus);
-//                    AWAIT_SESSIONS.remove(gs);
-//                }
-//            }
         }
         if (!hasActiveSessions()) {
             Iterator<GameSession> iterator = ACTIVE_SESSIONS.iterator();
@@ -63,14 +57,6 @@ public class HumanSessionStorage {
                     ACTIVE_SESSIONS.remove(gs);
                 }
             }
-
-//            for (GameSession gs : ACTIVE_SESSIONS) {
-//                if (((Client) gs.getFirstPlayer()).getCtx().channel() == ctx.channel() ||
-//                        ((Client) gs.getSecondPlayer()).getCtx().channel() == ctx.channel()) {
-//                    gs.stopSession(gameStatus);
-//                    ACTIVE_SESSIONS.remove(gs);
-//                }
-//            }
         }
     }
 
