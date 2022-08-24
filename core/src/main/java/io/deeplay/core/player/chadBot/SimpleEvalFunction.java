@@ -6,8 +6,8 @@ import io.deeplay.core.model.GameStatus;
 
 public class SimpleEvalFunction extends EvalFunction{
     @Override
-    public Double eval(GameInfo gameinfo) {
-        GameStatus gameStatus = gameinfo.getGameStatus();
+    public Double eval(GameInfo gameInfo) {
+        GameStatus gameStatus = gameInfo.getGameStatus();
         double evaluationValue = 0;
         if (gameStatus == GameStatus.BLACK_WON) {
             return -100000.0;
@@ -19,7 +19,7 @@ public class SimpleEvalFunction extends EvalFunction{
         gameStatus == GameStatus.THREEFOLD_REPETITION) {
             return 0.0;
         }
-        for (Figure figure : gameinfo.getAllFigures()) {
+        for (Figure figure : gameInfo.getAllFigures()) {
             evaluationValue += figure.getWeight();
         }
         return evaluationValue;
