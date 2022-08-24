@@ -5,7 +5,7 @@ import io.deeplay.client.gui.Gui;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
-import io.deeplay.core.player.Player;
+import io.deeplay.core.player.PlayerType;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.MoveRequest;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -19,7 +19,6 @@ import java.util.function.Consumer;
 public class ClientGameSession {
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientGameSession.class);
-    private final Player player;
 
     private GameInfo gameInfo;
 
@@ -27,14 +26,12 @@ public class ClientGameSession {
 
     private final ChannelHandlerContext ctx;
 
-    public ClientGameSession(final Player player, final ChannelHandlerContext ctx) {
-        this.player = player;
+    public ClientGameSession(final ChannelHandlerContext ctx) {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
-        final Runnable sendNewGameRequest = () -> ctx.writeAndFlush(new StartGameRequest(Side.WHITE, "RandomBot"));
-        gui = new Gui(sendMove, sendNewGameRequest);
-        gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+        final Consumer<Side> sendNewGameRequest = side -> ctx.writeAndFlush(new StartGameRequest(side, "RandomBot"));
+        gui = new Gui(gameInfo, sendMove, sendNewGameRequest);
         gui.setVisible(true);
     }
 
@@ -49,20 +46,20 @@ public class ClientGameSession {
                 break;
             case GAME_OVER_RESPONSE:
                 GameOverResponse gameOverResponse = (GameOverResponse) command;
+                gui.gameOver(gameOverResponse.getGameStatus().getMessage());
                 LOGGER.info("Игра завершена: {}", gameOverResponse.getGameStatus().getMessage());
                 break;
             case START_GAME_RESPONSE:
                 gameInfo = new GameInfo();
-                gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+                gui.restart(gameInfo);
                 break;
             default:
-                LOGGER.info("Некорректная команда: {}", command);
-        }
+                LOGGER.info("Некорректная команда: {}", command);}
     }
 
     private void updateBoard(final MoveInfo moveInfo) {
         gameInfo.updateBoard(moveInfo);
-        gui.updateBoard(gameInfo.getFenBoard(), gameInfo.getAvailableMoves());
+        gui.updateBoard(gameInfo, moveInfo);
     }
 
     private void makeMove() {

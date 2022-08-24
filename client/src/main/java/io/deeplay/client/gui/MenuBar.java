@@ -1,10 +1,13 @@
 package io.deeplay.client.gui;
 
+import io.deeplay.core.model.Side;
+
 import javax.swing.*;
+import java.util.function.Consumer;
 
 public class MenuBar extends JMenuBar {
-    private final Runnable sendNewGameRequest;
-    public MenuBar(final Runnable sendNewGameRequest) {
+    private final Consumer<Side> sendNewGameRequest;
+    public MenuBar(final Consumer<Side> sendNewGameRequest) {
         add(createFileMenu());
         this.sendNewGameRequest = sendNewGameRequest;
     }
@@ -16,7 +19,24 @@ public class MenuBar extends JMenuBar {
         file.add(newGame);
         file.addSeparator();
         file.add(exit);
-        newGame.addActionListener(e -> sendNewGameRequest.run());
+        newGame.addActionListener(e -> {
+            JRadioButton white = new JRadioButton("Белые");
+            JRadioButton black = new JRadioButton("Черные");
+            ButtonGroup bg = new ButtonGroup();
+            bg.add(white);
+            bg.add(black);
+            final JComponent[] inputs = new JComponent[] {
+                    white,
+                    black
+            };
+            JOptionPane.showConfirmDialog(null, inputs, "Выберите сторону:", JOptionPane.DEFAULT_OPTION);
+            if (white.isSelected()) {
+                sendNewGameRequest.accept(Side.WHITE);
+            } else if (black.isSelected()) {
+                sendNewGameRequest.accept(Side.BLACK);
+            }
+        });
+        exit.addActionListener(e -> System.exit(0));
         return file;
     }
 }
