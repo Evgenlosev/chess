@@ -300,9 +300,9 @@ public class FENParser {
      * @param fen
      * @return
      */
-    public static String getPiecePlacementAndWhoseTurnAndEnPassantDense(final String fen) {
+    public static String getNotationsFirstFourParts(final String fen) {
         final List<String> fenParts = splitFEN(fen);
-        return fenParts.get(0).replace("/", "") + fenParts.get(1) + fenParts.get(3);
+        return fenParts.get(0).replace("/", "") + fenParts.get(1) + fenParts.get(2) + fenParts.get(3);
     }
 
     public static Side getTurnSide(final String fen) {
