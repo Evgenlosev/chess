@@ -82,7 +82,7 @@ public class EvgenBot extends Player {
 
     @Override
     public String getName() {
-        return "EvgenBot";
+        return "EvgenBot Minmax with SimpleEvaluationFunction";
     }
 
     private static final class EvaluatedMove {
