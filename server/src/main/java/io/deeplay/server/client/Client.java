@@ -9,6 +9,7 @@ import io.deeplay.interaction.serverToClient.GameOverResponse;
 import io.deeplay.interaction.serverToClient.GetAnswer;
 import io.deeplay.interaction.serverToClient.MoveResponse;
 import io.deeplay.interaction.serverToClient.StartGameResponse;
+import io.deeplay.server.session.HumanSessionStorage;
 import io.netty.channel.ChannelHandlerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,10 @@ public class Client extends Player {
     public void setCurrentMove(final MoveInfo currentMove) {
         this.currentMove = currentMove;
         monitor.notifyAll();
+    }
+
+    public ChannelHandlerContext getCtx() {
+        return ctx;
     }
 
     public Object getMonitor() {
@@ -110,5 +115,6 @@ public class Client extends Player {
     @Override
     public void gameOver(final GameStatus gameStatus) {
         ctx.writeAndFlush(new GameOverResponse(true, gameStatus));
+        HumanSessionStorage.deleteActiveSession(ctx);
     }
 }

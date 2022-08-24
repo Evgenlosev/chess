@@ -1,7 +1,9 @@
 package io.deeplay.server.handlers;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.utils.CommandSerializator;
+import io.deeplay.server.session.HumanSessionStorage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -43,6 +45,7 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         LOGGER.error("Соединение с клиентом прервано", cause);
+        HumanSessionStorage.stopClientSessions(ctx, GameStatus.INTERRUPTED);
         ctx.close();
     }
 }
