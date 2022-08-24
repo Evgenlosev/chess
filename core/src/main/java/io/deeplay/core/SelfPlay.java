@@ -78,9 +78,9 @@ public class SelfPlay {
 
     public void play() throws InterruptedException {
         gameInfoGroup.playerSeated(firstPlayer.getSide());
-        LOGGER.info("{} присоединился к партии за белых", firstPlayer);
+        LOGGER.info("{} присоединился к партии за белых", firstPlayer.getName());
         gameInfoGroup.playerSeated(secondPlayer.getSide());
-        LOGGER.info("{} присоединился к партии за черных", secondPlayer);
+        LOGGER.info("{} присоединился к партии за черных", secondPlayer.getName());
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
             gameInfoGroup.gameStarted();
@@ -93,7 +93,7 @@ public class SelfPlay {
                     break;
                 }
                 gameInfoGroup.playerActed(currentPlayerToMove.getSide(), moveInfo);
-                LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide().getDescription(), moveInfo.toString());
+                LOGGER.info("{} совершил ход: {}", currentPlayerToMove.getName(), moveInfo.toString());
                 changeCurrentPlayerToMove();
             }
             gameInfoGroup.gameOver(gameInfo.getGameStatus());

@@ -5,7 +5,7 @@ import io.deeplay.client.gui.Gui;
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
 import io.deeplay.core.model.Side;
-import io.deeplay.core.player.Player;
+import io.deeplay.core.player.PlayerType;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.clientToServer.MoveRequest;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -19,7 +19,6 @@ import java.util.function.Consumer;
 public class ClientGameSession {
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(ClientGameSession.class);
-    private final Player player;
 
     private GameInfo gameInfo;
 
@@ -27,8 +26,7 @@ public class ClientGameSession {
 
     private final ChannelHandlerContext ctx;
 
-    public ClientGameSession(final Player player, final ChannelHandlerContext ctx) {
-        this.player = player;
+    public ClientGameSession(final ChannelHandlerContext ctx) {
         this.ctx = ctx;
         this.gameInfo = new GameInfo();
         final Consumer<MoveInfo> sendMove = x -> ctx.writeAndFlush(new MoveRequest(x));
