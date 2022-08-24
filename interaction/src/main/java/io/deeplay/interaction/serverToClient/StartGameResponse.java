@@ -10,7 +10,6 @@ import io.deeplay.interaction.CommandType;
 @JsonTypeName("StartGameResponse")
 public class StartGameResponse extends Command {
     private final boolean isGameStarted;
-    //TODO Здесь передаем объект класса доски с текущем положением фигур
     private String errorMessage;
 
     public StartGameResponse(final boolean isGameStarted) {

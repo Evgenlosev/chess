@@ -9,7 +9,6 @@ import io.deeplay.core.statistics.AllGamesStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class SelfPlay {
     private static final Logger LOGGER = LoggerFactory.getLogger(SelfPlay.class);
     private final Player firstPlayer;
@@ -78,9 +77,9 @@ public class SelfPlay {
 
     public void play() throws InterruptedException {
         gameInfoGroup.playerSeated(firstPlayer.getSide());
-        LOGGER.info("{} присоединился к партии за белых", firstPlayer);
+        LOGGER.info("{} присоединился к партии за белых", firstPlayer.getName());
         gameInfoGroup.playerSeated(secondPlayer.getSide());
-        LOGGER.info("{} присоединился к партии за черных", secondPlayer);
+        LOGGER.info("{} присоединился к партии за черных", secondPlayer.getName());
         int countGamesAmount = 0;
         while (countGamesAmount++ < gamesAmount) {
             currentPlayerToMove = gameInfo.whoseMove() == firstPlayer.getSide() ? firstPlayer : secondPlayer;
@@ -88,15 +87,15 @@ public class SelfPlay {
             LOGGER.info("Партия началась, {} из {}", countGamesAmount, gamesAmount);
             //Пока игра не закончена, рассылаем всем слушателям ходы игроков
             while (gameInfo.isGameOver()) {
-                // BoardDrawer.draw(gameInfo.getFenBoard());
                 LOGGER.info("Ходят {}", currentPlayerToMove.getSide().getDescription());
                 final MoveInfo moveInfo = currentPlayerToMove.getAnswer(gameInfo);
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
                 gameInfoGroup.playerActed(currentPlayerToMove.getSide(), moveInfo);
-                LOGGER.info("{} совершили ход: {}", currentPlayerToMove.getSide().getDescription(), moveInfo.toString());
-                LOGGER.info("\n" + gameInfo.getBoard().toString());
+                LOGGER.info("{} совершил ход: {}", currentPlayerToMove.getName(), moveInfo.toString());
                 changeCurrentPlayerToMove();
             }
-            // BoardDrawer.draw(gameInfo.getFenBoard());
             gameInfoGroup.gameOver(gameInfo.getGameStatus());
             LOGGER.info("Партия {} из {} - закончена. {}", countGamesAmount, gamesAmount,
                     gameInfo.getGameStatus().getMessage());

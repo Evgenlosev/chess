@@ -16,6 +16,7 @@ public class GameInfo extends ChessAdapter {
     SimpleLogicAppeal logic;
     boolean whiteIsPresent;
     boolean blackIsPresent;
+    final boolean clearCacheAfterGame;
 
     /**
      * Стандартный конструктор
@@ -30,30 +31,30 @@ public class GameInfo extends ChessAdapter {
      * @param fen стартовая позиция
      */
     public GameInfo(final String fen) {
-        this(fen, true);
+        this(fen, false, false);
     }
 
     /**
      * Конструктор для заданного расположения фигур с возможностью отключить кэширование вычислений логики.
      *
-     * @param fen        стартовая позиция
-     * @param cacheLogic флаг установки кэширования вычислений логики, кэширование будет влиять на скорость работы ботов.
+     * @param fen                 стартовая позиция
+     * @param cacheLogic          флаг установки кэширования вычислений логики, кэширование будет влиять на скорость работы ботов.
+     * @param clearCacheAfterGame флаг обновления кэширования после каждой игры.
      */
-    public GameInfo(final String fen, final boolean cacheLogic) {
+    public GameInfo(final String fen, final boolean cacheLogic, final boolean clearCacheAfterGame) {
         gameStatus = GameStatus.INACTIVE;
         if (cacheLogic) {
             logic = new SimpleLogicCache();
+            this.clearCacheAfterGame = clearCacheAfterGame;
         } else {
             logic = new SimpleLogic();
+            if (clearCacheAfterGame)
+                throw new IllegalArgumentException("Cant clear cache of non-cacheable logic");
+            this.clearCacheAfterGame = false;
         }
         board = new ChessBoard(fen);
         whiteIsPresent = false;
         blackIsPresent = false;
-    }
-
-    public void resetGame() {
-        gameStatus = GameStatus.INACTIVE;
-        board = new ChessBoard(ChessBoard.DEFAULT_FEN_STRING);
     }
 
     public GameInfo(final GameInfo gameInfo) {
@@ -62,6 +63,14 @@ public class GameInfo extends ChessAdapter {
         this.logic = gameInfo.logic;
         this.whiteIsPresent = gameInfo.whiteIsPresent;
         this.blackIsPresent = gameInfo.blackIsPresent;
+        this.clearCacheAfterGame = gameInfo.clearCacheAfterGame;
+    }
+
+    public void resetGame() {
+        gameStatus = GameStatus.INACTIVE;
+        board = new ChessBoard(ChessBoard.DEFAULT_FEN_STRING);
+        if (clearCacheAfterGame)
+            logic = new SimpleLogicCache();
     }
 
     @Override
@@ -103,6 +112,10 @@ public class GameInfo extends ChessAdapter {
 
     public GameStatus getGameStatus() {
         return gameStatus;
+    }
+
+    public void setGameStatus(final GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
     }
 
     public String getFenBoard() {

@@ -24,7 +24,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public boolean isMate(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurnAndEnPassantDense(fenNotation);
+        final String piecePlacement = FENParser.getNotationsFirstFourParts(fenNotation);
         // Не получится использовать computeIfAbsent, т.к. в методе, value ИСПОЛЬЗУЕТ тот же key для вычисления,
         // а key(piecePlacement) это урезанная fenNotation
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
@@ -36,7 +36,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public boolean isStalemate(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurnAndEnPassantDense(fenNotation);
+        final String piecePlacement = FENParser.getNotationsFirstFourParts(fenNotation);
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
             boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
         }
@@ -45,7 +45,7 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public boolean isDrawByPieceShortage(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurnAndEnPassantDense(fenNotation);
+        final String piecePlacement = FENParser.getNotationsFirstFourParts(fenNotation);
         if (!boardSituationInfoMap.containsKey(piecePlacement)) {
             boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
         }
@@ -54,16 +54,12 @@ public class SimpleLogicCache implements SimpleLogicAppeal {
 
     @Override
     public Set<MoveInfo> getMoves(final String fenNotation) {
-        final String piecePlacement = FENParser.getPiecePlacementAndWhoseTurnAndEnPassantDense(fenNotation);
-        if (!boardSituationInfoMap.containsKey(piecePlacement)) {
-            boardSituationInfoMap.put(piecePlacement, simpleLogicAppeal.getBoardSituationInfo(fenNotation));
-        }
-        return boardSituationInfoMap.get(piecePlacement).getMoveInfoSet();
+        return simpleLogicAppeal.getMoves(fenNotation);
     }
 
     @Override
     public BoardSituationInfo getBoardSituationInfo(final String fenNotation) {
-        return boardSituationInfoMap.computeIfAbsent(FENParser.getPiecePlacementAndWhoseTurnAndEnPassantDense(fenNotation),
+        return boardSituationInfoMap.computeIfAbsent(FENParser.getNotationsFirstFourParts(fenNotation),
                 simpleLogicAppeal::getBoardSituationInfo);
     }
 }
