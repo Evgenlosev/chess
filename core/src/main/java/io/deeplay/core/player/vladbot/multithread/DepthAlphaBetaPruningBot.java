@@ -76,11 +76,7 @@ public class DepthAlphaBetaPruningBot extends AlphaBetaPruningBot {
         }
         try {
             Thread.sleep(worktimeInMilliseconds - worktimeInMilliseconds / 5);
-        } catch (InterruptedException e) {
-            LOGGER.error("Поток был прерван: ", e);
-        }
-        es.shutdownNow();
-        try {
+            es.shutdownNow();
             es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
             LOGGER.error("Поток был прерван: ", e);

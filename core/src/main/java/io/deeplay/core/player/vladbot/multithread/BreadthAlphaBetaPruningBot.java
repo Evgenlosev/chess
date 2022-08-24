@@ -101,12 +101,7 @@ public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
             iterativeDeepening++;
         }
         try {
-            Thread.sleep(workTime);
-        } catch (InterruptedException e) {
-            LOGGER.error("Поток был прерван: ", e);
-        }
-        try {
-            es.awaitTermination(chillTime / 10, TimeUnit.MILLISECONDS);
+            es.awaitTermination(workTime + chillTime / 10, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             LOGGER.error("Поток был прерван: ", e);
         }
