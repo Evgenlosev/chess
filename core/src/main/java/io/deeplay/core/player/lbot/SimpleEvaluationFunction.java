@@ -1,4 +1,4 @@
-package io.deeplay.core.lbot;
+package io.deeplay.core.player.lbot;
 
 import io.deeplay.core.model.Figure;
 import io.deeplay.core.model.GameInfo;

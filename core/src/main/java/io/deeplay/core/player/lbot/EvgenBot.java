@@ -1,4 +1,4 @@
-package io.deeplay.core.lbot;
+package io.deeplay.core.player.lbot;
 
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class LBot extends Player {
+public class EvgenBot extends Player {
 
     private static final int MAX_DEPTH = 10;
     private static final int DEFAULT_DEPTH = 3;
     private final EvaluationFunction function;
     private final int depth;
 
-    public LBot(final Side side, final EvaluationFunction function, final int depth) {
+    public EvgenBot(final Side side, final EvaluationFunction function, final int depth) {
         super(side);
         this.function = function;
         if (depth < 1) {
@@ -28,15 +28,15 @@ public class LBot extends Player {
         this.depth = depth;
     }
 
-    public LBot(final Side side) {
+    public EvgenBot(final Side side) {
         this(side, new SimpleEvaluationFunction(), DEFAULT_DEPTH);
     }
 
-    public LBot(final Side side, final EvaluationFunction function) {
+    public EvgenBot(final Side side, final EvaluationFunction function) {
         this(side, function, DEFAULT_DEPTH);
     }
 
-    public LBot(final Side side, final int depth) {
+    public EvgenBot(final Side side, final int depth) {
         this(side, new SimpleEvaluationFunction(), depth);
     }
 
