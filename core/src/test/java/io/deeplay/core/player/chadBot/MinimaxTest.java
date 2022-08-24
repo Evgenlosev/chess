@@ -16,10 +16,7 @@ public class MinimaxTest {
         Player player = new Minimax(Side.WHITE, 3);
         MoveInfo moveInfo = new MoveInfo(new Coord(7, 4), new Coord(4, 4), USUAL_ATTACK, Figure.W_QUEEN);
         assertEquals(moveInfo, player.getAnswer(gameInfo));
-//
-//        gameInfo = new GameInfo("1nbr3k/ppppp1pp/5p2/6N1/2Q5/1B6/PPPPPPPP/RNB1K2R w - - 0 1");
-//        moveInfo = new MoveInfo(new Coord(2, 3), new Coord(6, 7), USUAL_ATTACK, Figure.W_QUEEN);
-//        assertEquals(moveInfo, player.getAnswer(gameInfo));
+
 //      Мат в 2 хода
         gameInfo = new GameInfo("1nbr3k/ppppp1pp/5p2/6N1/2Q5/1B6/PPPPPPPP/RNB1K2R w - - 0 1");
         moveInfo = new MoveInfo(new Coord(2, 3), new Coord(6, 7), USUAL_MOVE, Figure.W_QUEEN);

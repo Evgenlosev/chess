@@ -1,7 +1,7 @@
 package io.deeplay.core.model;
 
+import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
-import io.deeplay.core.api.SimpleLogicCache;
 import io.deeplay.core.listener.ChessAdapter;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class GameInfo extends ChessAdapter {
      */
     public GameInfo(final String fen) {
         gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogicCache();
+        logic = new SimpleLogic();
         board = new ChessBoard(fen);
         whiteIsPresent = false;
         blackIsPresent = false;

@@ -18,7 +18,7 @@ public class Minimax extends Player {
         double bestMove = Integer.MIN_VALUE;
         MoveInfo bestMoveInfo = null;
         for (MoveInfo move : gameInfo.getAvailableMoves()) {
-            double value = minimax(gameInfo.copy(move), depth, Integer.MIN_VALUE, Integer.MAX_VALUE, !isMaximising);
+            double value = minimax(gameInfo.copy(move), depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE, !isMaximising);
             if (value >= bestMove) {
                 bestMove = value;
                 bestMoveInfo = move;
@@ -28,7 +28,7 @@ public class Minimax extends Player {
     }
     private Double minimax(final GameInfo gameInfo, final int depth, double alpha, double beta, final boolean isMaximising) {
         if (depth == 0) {
-            return -evalFunction.eval(gameInfo);
+            return evalFunction.eval(gameInfo);
         }
 
         double bestMoveValue;

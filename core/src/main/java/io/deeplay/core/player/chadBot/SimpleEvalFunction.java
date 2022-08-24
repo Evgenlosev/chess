@@ -7,15 +7,16 @@ import io.deeplay.core.model.GameStatus;
 public class SimpleEvalFunction extends EvalFunction{
     @Override
     public Double eval(GameInfo gameinfo) {
+        GameStatus gameStatus = gameinfo.getGameStatus();
         double evaluationValue = 0;
-        if (gameinfo.getGameStatus() == GameStatus.BLACK_WON) {
+        if (gameStatus == GameStatus.BLACK_WON) {
             return -100000.0;
-        } else if (gameinfo.getGameStatus() == GameStatus.WHITE_WON) {
+        } else if (gameStatus == GameStatus.WHITE_WON) {
             return 100000.0;
-        } else if (gameinfo.getGameStatus() == GameStatus.DRAW ||
-        gameinfo.getGameStatus() == GameStatus.FIFTY_MOVES_RULE ||
-        gameinfo.getGameStatus() == GameStatus.STALEMATE ||
-        gameinfo.getGameStatus() == GameStatus.THREEFOLD_REPETITION) {
+        } else if (gameStatus == GameStatus.DRAW ||
+        gameStatus == GameStatus.FIFTY_MOVES_RULE ||
+        gameStatus == GameStatus.STALEMATE ||
+        gameStatus == GameStatus.THREEFOLD_REPETITION) {
             return 0.0;
         }
         for (Figure figure : gameinfo.getAllFigures()) {
