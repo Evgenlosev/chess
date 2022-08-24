@@ -5,21 +5,16 @@ import io.deeplay.core.player.evgenbot.EvgenBot;
 
 public class PlayerFactory {
     public static Player createPlayer(final PlayerType playerType, final Side side) {
-        Player player;
         switch (playerType) {
             case HUMAN:
-                player = new HumanPlayer(side);
-                break;
+                return new HumanPlayer(side);
             case RANDOM_BOT:
-                player = new RandomBot(side);
-                break;
+                return new RandomBot(side);
             case EVGEN_BOT:
-                player = new EvgenBot(side);
-                break;
+                return new EvgenBot(side);
             default:
                 throw new UnsupportedOperationException("Unsupported player type - " + playerType);
         }
-        return player;
     }
 }
 

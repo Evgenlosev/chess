@@ -14,7 +14,7 @@ public class SimpleEvaluationFunction implements EvaluationFunction {
     public int evaluate(final GameInfo gameinfo) {
         int evaluation = 0;
         if (gameinfo.isMate(gameinfo.getBoard())) {
-            return 100;
+            return Integer.MAX_VALUE;
         }
         for (Figure figure : gameinfo.getAllFigures()) {
             evaluation += figure.getWeight();
