@@ -2,8 +2,7 @@ package io.deeplay.client.nettyClient.handlers;
 
 import io.deeplay.client.session.ClientGameSession;
 import io.deeplay.core.model.Side;
-import io.deeplay.core.player.Player;
-import io.deeplay.core.player.RandomBot;
+import io.deeplay.core.player.PlayerType;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -29,7 +28,7 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
 //            ctx.writeAndFlush(startGameRequest);
 //        }).start();
         this.side = Side.WHITE;
-        ctx.writeAndFlush(new StartGameRequest(side, "RandomBot"));
+        ctx.writeAndFlush(new StartGameRequest(side, PlayerType.RANDOM_BOT));
     }
 
     @Override
@@ -38,11 +37,8 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
             StartGameResponse startGameResponse = (StartGameResponse) command;
             if (startGameResponse.isGameStarted()) {
                 LOGGER.info("Начало игры");
-                //Создаем и запускаем игровую сессию по параметрам, заданным пользователем
-                Player player = new RandomBot(side);
-                ClientGameSession session = new ClientGameSession(player, ctx);
-                session.start();
-                //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+                ClientGameSession session = new ClientGameSession(ctx);
+                //Если игра создана успешно, удаляем из конвейера текущий хэндлер и добавляем CommandHandler
                 ctx.channel().pipeline().remove(this);
                 ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
             } else {
