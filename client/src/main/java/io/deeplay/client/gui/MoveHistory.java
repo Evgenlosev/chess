@@ -50,8 +50,11 @@ public class MoveHistory extends JPanel {
     public void update(final GameInfo gameInfo, final MoveInfo moveInfo) {
         JButton move;
         final boolean isCheck = logic.getBoardSituationInfo(gameInfo.getFenBoard()).isCheck();
+        final boolean isMate = logic.getBoardSituationInfo(gameInfo.getFenBoard()).isMate();
         move = getMoveButton(moveInfo, gameInfo.whoseMove());
-        if (isCheck) {
+        if (isMate) {
+            move.setText(move.getText() + "#");
+        } else if (isCheck) {
             move.setText(move.getText() + "+");
         }
         move.setFocusPainted(false);
