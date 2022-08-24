@@ -23,7 +23,6 @@ public class ClientStartGameHandler extends SimpleChannelInboundHandler<Command>
     public void handlerAdded(final ChannelHandlerContext ctx) {
         // TODO Реализовать получение настроек игры от пользователя
         ClientGameSession session = new ClientGameSession(ctx);
-        ctx.writeAndFlush(new StartGameRequest(Side.WHITE, PlayerType.EVGEN_BOT));
         //Если игра создана успешно, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
         ctx.channel().pipeline().remove(this);
         ctx.channel().pipeline().addLast(new ClientInboundCommandHandler(session));
