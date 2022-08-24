@@ -1,4 +1,4 @@
-package io.deeplay.core.player.lbot;
+package io.deeplay.core.player.evgenbot;
 
 import io.deeplay.core.model.GameInfo;
 import io.deeplay.core.model.MoveInfo;
@@ -82,7 +82,7 @@ public class EvgenBot extends Player {
 
     @Override
     public String getName() {
-        return "LBot";
+        return "EvgenBot";
     }
 
     private static final class EvaluatedMove {

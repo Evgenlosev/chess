@@ -1,4 +1,4 @@
-package io.deeplay.core.player.lbot;
+package io.deeplay.core.player.evgenbot;
 
 import io.deeplay.core.model.GameInfo;
 

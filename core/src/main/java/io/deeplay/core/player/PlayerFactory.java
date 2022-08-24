@@ -1,7 +1,7 @@
 package io.deeplay.core.player;
 
 import io.deeplay.core.model.Side;
-import io.deeplay.core.player.lbot.EvgenBot;
+import io.deeplay.core.player.evgenbot.EvgenBot;
 
 public class PlayerFactory {
     public static Player createPlayer(final PlayerType playerType, final Side side) {
