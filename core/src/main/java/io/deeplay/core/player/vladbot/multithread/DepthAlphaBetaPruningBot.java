@@ -63,6 +63,10 @@ public class DepthAlphaBetaPruningBot extends AlphaBetaPruningBot {
                 "TimeLimit=" + worktimeInMilliseconds;
     }
 
+    public long getWorktimeInMilliseconds() {
+        return worktimeInMilliseconds;
+    }
+
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) {
         final ConcurrentLinkedQueue<EvaluatedMove> bestMovesUnderTimeLimit = new ConcurrentLinkedQueue<>();
         final int alpha = Integer.MIN_VALUE;
