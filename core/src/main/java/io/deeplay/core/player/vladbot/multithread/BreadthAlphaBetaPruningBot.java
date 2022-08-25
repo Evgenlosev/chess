@@ -35,7 +35,7 @@ private enum NodeType {
 public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BreadthAlphaBetaPruningBot.class);
-    private final static String PLAYER_NAME = "BreadthAlphaBetaPruningBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
     private final static long TIME_FOR_EVALUATION_MILLISECONDS = 200L;
     private final long worktimeInMilliseconds;
 

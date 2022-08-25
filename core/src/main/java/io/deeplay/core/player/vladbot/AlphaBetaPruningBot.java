@@ -11,7 +11,7 @@ import java.util.List;
 
 // with MVVLVA move ordering
 public class AlphaBetaPruningBot extends VBot {
-    private final static String PLAYER_NAME = "AlphaBetaPruningBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
 
     public AlphaBetaPruningBot(final Side side, final Evaluation evaluation, final int maxDepth) {
         super(side, evaluation, maxDepth);

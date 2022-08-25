@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public class MinMaxBot extends VBot {
-    private final static String PLAYER_NAME = "MinMaxBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
 
     public MinMaxBot(final Side side, final Evaluation evaluation, final int maxDepth) {
         super(side, evaluation, maxDepth);

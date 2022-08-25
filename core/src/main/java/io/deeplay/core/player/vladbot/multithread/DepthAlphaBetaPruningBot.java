@@ -24,7 +24,7 @@ import static java.lang.Math.min;
  */
 public class DepthAlphaBetaPruningBot extends AlphaBetaPruningBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(DepthAlphaBetaPruningBot.class);
-    private final static String PLAYER_NAME = "DepthAlphaBetaPruningBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
     private final long worktimeInMilliseconds;
 
     public DepthAlphaBetaPruningBot(final Side side,
