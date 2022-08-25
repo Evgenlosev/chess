@@ -75,6 +75,10 @@ public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
                 "TimeLimit=" + worktimeInMilliseconds;
     }
 
+    public long getWorktimeInMilliseconds() {
+        return worktimeInMilliseconds;
+    }
+
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) {
         final ConcurrentHashMap<MoveInfo, EvaluatedMove> bestMovesUnderTimeLimit = new ConcurrentHashMap<>();
         final int alpha = Integer.MIN_VALUE;
