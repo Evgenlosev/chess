@@ -12,7 +12,6 @@
         <module>core</module>
         <module>server</module>
         <module>interaction</module>
-        <module>statistics</module>
     </modules>
     <packaging>pom</packaging>
 
