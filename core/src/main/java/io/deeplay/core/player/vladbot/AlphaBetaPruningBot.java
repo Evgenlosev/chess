@@ -43,7 +43,7 @@ public class AlphaBetaPruningBot extends VBot {
         final int alpha = Integer.MIN_VALUE;
         final int beta = Integer.MAX_VALUE;
         final List<EvaluatedMove> evaluatedMoves = new ArrayList<>();
-        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
+        for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
             final GameInfo virtualGameInfo = gameInfo.copy(move);
             evaluatedMoves
                     .add(new EvaluatedMove(move, alphaBetaMin(virtualGameInfo, alpha, beta, getMaxDepth() - 1)));
