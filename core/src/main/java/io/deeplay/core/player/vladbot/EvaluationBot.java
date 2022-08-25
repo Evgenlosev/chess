@@ -64,9 +64,4 @@ public class EvaluationBot extends VBot {
         Objects.requireNonNull(bestMove);
         return bestMove;
     }
-
-    @Override
-    public String getName() {
-        return PLAYER_NAME + "Evaluation=" + getEvaluation().getName();
-    }
 }
