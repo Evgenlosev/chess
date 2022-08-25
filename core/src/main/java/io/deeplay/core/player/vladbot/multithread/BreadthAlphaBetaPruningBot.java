@@ -19,18 +19,8 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.Math.min;
 
-
-// Zobrist Hashkeys: http://mediocrechess.blogspot.com/2007/01/guide-transposition-tables.html
-/*
-private enum NodeType {
-        EXACT,
-        LOWER_BOUND, // Cut-node. All moves were searched, but none improved beta. alphaBetaMaxThreaded
-        UPPER_BOUND // All-node. All moves were searched, but none improved alpha. alphaBetaMinThreaded
-    }
- */
-
 /**
- * Поиск в ширину на основе callable
+ * Поиск в ширину на основе runnable.
  */
 public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
 
