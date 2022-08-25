@@ -44,7 +44,7 @@ public class InboundObjectDecoder extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
-        LOGGER.error("Соединение с клиентом прервано", cause);
+        LOGGER.info("Клиент отключился");
         HumanSessionStorage.stopClientSessions(ctx, GameStatus.INTERRUPTED);
         ctx.close();
     }
