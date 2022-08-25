@@ -83,10 +83,12 @@ public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
         final ExecutorService es = Executors.newFixedThreadPool(min(8, moves.size()));
         int iterativeDeepening = 1;
         final Map<MoveInfo, GameInfo> giVirtualCopies = new HashMap<>();
-        long chillTime = worktimeInMilliseconds / 15;
-        long workTime = worktimeInMilliseconds - chillTime;
-        long startTime = System.currentTimeMillis();
-        long endTime = startTime + workTime;
+        final long timeWorkError = 15;
+        final long finalWaiting = 10;
+        final long chillTime = worktimeInMilliseconds / timeWorkError;
+        final long workTime = worktimeInMilliseconds - chillTime;
+        final long startTime = System.currentTimeMillis();
+        final long endTime = startTime + workTime;
         while (iterativeDeepening < getMaxDepth()) {
             final long currentTime = System.currentTimeMillis();
             if (currentTime >= endTime) {
@@ -101,7 +103,7 @@ public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
             iterativeDeepening++;
         }
         try {
-            es.awaitTermination(workTime + chillTime / 10, TimeUnit.MILLISECONDS);
+            es.awaitTermination(workTime + chillTime / finalWaiting, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             LOGGER.error("Поток был прерван: ", e);
         }
