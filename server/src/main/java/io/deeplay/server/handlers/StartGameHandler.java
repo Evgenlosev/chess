@@ -1,8 +1,5 @@
 package io.deeplay.server.handlers;
 
-import io.deeplay.core.model.Side;
-import io.deeplay.core.player.Player;
-import io.deeplay.core.player.RandomBot;
 import io.deeplay.interaction.Command;
 import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.StartGameRequest;
@@ -24,12 +21,8 @@ public class StartGameHandler extends SimpleChannelInboundHandler<Command> {
         if (command.getCommandType() == CommandType.START_GAME_REQUEST) {
             StartGameRequest startGameRequest = (StartGameRequest) command;
             Client client = new Client(startGameRequest.getSide(), ctx);
-            //TODO создаем противника по заданным клиентом параметрам
-            Player enemy = new RandomBot(Side.otherSide(client.getSide()));
-            GameSession gameSession = new GameSession(client, enemy);
-            LOGGER.info("Начало партии {}.", gameSession.getSessionToken());
-            gameSession.start();
-            //Если сессия создана, удаляем из конвеера текущий хэндлер и добавляем CommandHandler
+            GameSession gameSession = GameSession.createGameSession(client, startGameRequest.getEnemyType());
+            //Если сессия создана, удаляем из конвейера текущий хэндлер и добавляем CommandHandler
             ctx.channel().pipeline().remove(this);
             ctx.channel().pipeline().addLast(new InboundCommandHandler(client, gameSession));
         }
