@@ -13,7 +13,7 @@ public class SimpleEvaluationFunction implements EvaluationFunction {
     @Override
     public int evaluate(final GameInfo gameinfo) {
         int evaluation = 0;
-        if (gameinfo.isGameOver()) {
+        if (gameinfo.isMate()) {
             return Integer.MAX_VALUE;
         }
         for (Figure figure : gameinfo.getAllFigures()) {
