@@ -75,4 +75,20 @@ public class MapsStorage {
             Figure.W_KING,
             Figure.W_QUEEN
     );
+
+    public static final Set<GameStatus> END_GAME_BY_RULES = Set.of(
+            GameStatus.WHITE_WON,
+            GameStatus.BLACK_WON,
+            GameStatus.STALEMATE,
+            GameStatus.FIFTY_MOVES_RULE,
+            GameStatus.THREEFOLD_REPETITION,
+            GameStatus.INSUFFICIENT_MATING_MATERIAL
+    );
+
+    public static final Set<MoveType> ATTACKS = Set.of(
+            MoveType.PAWN_ATTACK,
+            MoveType.PAWN_ON_GO_ATTACK,
+            MoveType.PAWN_TO_FIGURE_ATTACK,
+            MoveType.USUAL_ATTACK
+    );
 }
