@@ -11,7 +11,7 @@ import java.util.List;
 
 
 public class MinMaxBot extends VBot {
-    private final static String PLAYER_NAME = "MinMaxBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
 
     public MinMaxBot(final Side side, final Evaluation evaluation, final int maxDepth) {
         super(side, evaluation, maxDepth);
@@ -51,7 +51,7 @@ public class MinMaxBot extends VBot {
 
     int maxBot(final GameInfo gameInfo,
                final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
         int maxScore = Integer.MIN_VALUE;
         for (final MoveInfo move : gameInfo.getAvailableMoves()) {
             final GameInfo virtualGameInfo = gameInfo.copy(move);
@@ -65,7 +65,7 @@ public class MinMaxBot extends VBot {
 
     int minBot(final GameInfo gameInfo,
                final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
         int minScore = Integer.MAX_VALUE;
         for (final MoveInfo move : gameInfo.getAvailableMoves()) {
             final GameInfo virtualGameInfo = gameInfo.copy(move);

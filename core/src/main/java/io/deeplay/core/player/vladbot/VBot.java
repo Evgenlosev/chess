@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,25 +44,33 @@ public abstract class VBot extends Player {
     public abstract MoveInfo getAnswer(GameInfo gameInfo);
 
     public static List<MoveInfo> sortWithMVVLVA(final GameInfo gameInfo) {
-        Comparator<Figure> figureComparator = new VBot.SortByMVVLVA();
-        final ArrayList<MoveInfo> moves = new ArrayList<>(gameInfo.getAvailableMoves());
-        final List<MoveInfo> sortedMoves = new ArrayList<>();
-        for (MoveInfo move : moves) {
-            if (MapsStorage.ATTACKS.contains(move.getMoveType())) {
-                sortedMoves.add(move);
-            }
-        }
+        final List<MoveInfo> moves = new ArrayList<>(gameInfo.getAvailableMoves());
+        final List<MoveInfo> sortedMoves = filterAndSortAttackMovesWithMVVLVA(moves, gameInfo);
         moves.removeAll(sortedMoves);
-        sortedMoves.sort(Comparator.comparingInt(move -> figureComparator.compare(move.getFigure(),
-                gameInfo.getChessBoard()[move.getCellTo().getRow()][move.getCellTo().getColumn()].getFigure())));
-        sortedMoves.addAll(moves);
+        sortedMoves.addAll(moves); // добавляем остальные виды ходов в конец списка
         return sortedMoves;
+    }
+
+    /**
+     * @param moves    список ходов
+     * @param gameInfo
+     * @return оставляет в списке только атаки, сортирует и возвращает их
+     */
+    private static List<MoveInfo> filterAndSortAttackMovesWithMVVLVA(final Collection<MoveInfo> moves,
+                                                                     final GameInfo gameInfo) {
+        final Comparator<Figure> figureComparator = new VBot.SortByMVVLVA();
+        return moves.stream()
+                .filter(move -> MapsStorage.ATTACKS.contains(move.getMoveType()))
+                .sorted(Comparator.comparingInt(move -> figureComparator
+                        .compare(move.getFigure(),
+                                gameInfo.getChessBoard()[move.getCellTo().getRow()][move.getCellTo().getColumn()].getFigure())))
+                .collect(Collectors.toList());
     }
 
     @Override
     public abstract String getName();
 
-    protected MoveInfo getGreedyDecision(final List<EvaluatedMove> evaluatedMoves) {
+    protected MoveInfo getGreedyDecision(final Collection<EvaluatedMove> evaluatedMoves) {
         return evaluatedMoves.stream().max(Comparator.comparingInt(e -> e.score)).orElseThrow().moveInfo;
     }
 
@@ -78,24 +87,23 @@ public abstract class VBot extends Player {
     public int evaluate(final GameInfo gameInfo, final int depthLeft) {
         final int sideCoeff = getSide() == Side.WHITE ? 1 : -1;
         if (MapsStorage.END_GAME_BY_RULES.contains(gameInfo.getGameStatus())) {
-            return evaluateByEndGameStatus(gameInfo.getGameStatus(), depthLeft);
+            return sideCoeff * evaluateByEndGameStatus(gameInfo.getGameStatus(), depthLeft);
         }
         return sideCoeff * getEvaluation().evaluateBoard(gameInfo.getBoard());
     }
 
     protected int evaluateByEndGameStatus(final GameStatus gameStatus, final int depthLeft) {
-        if (isMateByBot(gameStatus)) {
+        if (gameStatus == GameStatus.WHITE_WON) {
             return Integer.MAX_VALUE - (getMaxDepth() - depthLeft); // отнимаем оставшуюся глубину, чтобы кратчайшие маты ценились больше
         }
-        if (isMateByOpponent(gameStatus)) {
-            return Integer.MIN_VALUE;
+        if (gameStatus == GameStatus.BLACK_WON) {
+            return Integer.MIN_VALUE + 1 + (getMaxDepth() - depthLeft); // + 1 - чтобы при отрицании не было переполнения типа
         }
         if (gameStatus == GameStatus.STALEMATE
                 || gameStatus == GameStatus.INSUFFICIENT_MATING_MATERIAL
                 || gameStatus == GameStatus.THREEFOLD_REPETITION
                 || gameStatus == GameStatus.FIFTY_MOVES_RULE) {
-            // Пат лучше, чем проигрыш, поэтому он ценнее на 1
-            return Integer.MIN_VALUE + 1;
+            return 0;
         }
         throw new IllegalArgumentException("Impossible end game reason by rules: " + gameStatus);
     }
@@ -115,9 +123,7 @@ public abstract class VBot extends Player {
         if (score > alpha)
             alpha = score;
 
-        final List<MoveInfo> attackMoves =
-                gameInfo.getAvailableMoves().stream()
-                        .filter(x -> MapsStorage.ATTACKS.contains(x.getMoveType())).collect(Collectors.toList());
+        final List<MoveInfo> attackMoves = filterAndSortAttackMovesWithMVVLVA(gameInfo.getAvailableMoves(), gameInfo);
         for (MoveInfo attackMove : attackMoves) {
             final GameInfo virtualGameInfo = gameInfo.copy(attackMove);
             score = -quiesce(virtualGameInfo, -beta, -alpha, depthLeft);
@@ -136,6 +142,14 @@ public abstract class VBot extends Player {
         public EvaluatedMove(final MoveInfo moveInfo, final int score) {
             this.moveInfo = moveInfo;
             this.score = score;
+        }
+
+        public MoveInfo getMoveInfo() {
+            return moveInfo;
+        }
+
+        public int getScore() {
+            return score;
         }
     }
 

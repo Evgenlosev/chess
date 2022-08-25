@@ -16,7 +16,7 @@ import java.util.Set;
  * Для оценки, по умолчанию, используется Песто.
  */
 public class EvaluationBot extends VBot {
-    private final static String PLAYER_NAME = "EvaluationBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(EvaluationBot.class);
 
     public EvaluationBot(final Side side) {
@@ -30,6 +30,11 @@ public class EvaluationBot extends VBot {
     @Override
     public MoveInfo getAnswer(final GameInfo gameInfo) {
         return evaluateBestMove(gameInfo);
+    }
+
+    @Override
+    public String getName() {
+        return PLAYER_NAME + "Evaluation=" + getEvaluation().getName();
     }
 
     private MoveInfo evaluateBestMove(final GameInfo gameInfo) { // Этот бот не увидит, то что через ход оппонента будет ничья
@@ -58,10 +63,5 @@ public class EvaluationBot extends VBot {
         }
         Objects.requireNonNull(bestMove);
         return bestMove;
-    }
-
-    @Override
-    public String getName() {
-        return PLAYER_NAME + "Evaluation=" + getEvaluation().getName();
     }
 }

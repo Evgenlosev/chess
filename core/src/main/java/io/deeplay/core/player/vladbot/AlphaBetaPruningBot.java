@@ -11,7 +11,7 @@ import java.util.List;
 
 // with MVVLVA move ordering
 public class AlphaBetaPruningBot extends VBot {
-    private final static String PLAYER_NAME = "AlphaBetaPruningBot";
+    private final String PLAYER_NAME = this.getClass().getSimpleName();
 
     public AlphaBetaPruningBot(final Side side, final Evaluation evaluation, final int maxDepth) {
         super(side, evaluation, maxDepth);
@@ -43,7 +43,7 @@ public class AlphaBetaPruningBot extends VBot {
         final int alpha = Integer.MIN_VALUE;
         final int beta = Integer.MAX_VALUE;
         final List<EvaluatedMove> evaluatedMoves = new ArrayList<>();
-        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
+        for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
             final GameInfo virtualGameInfo = gameInfo.copy(move);
             evaluatedMoves
                     .add(new EvaluatedMove(move, alphaBetaMin(virtualGameInfo, alpha, beta, getMaxDepth() - 1)));
@@ -55,7 +55,7 @@ public class AlphaBetaPruningBot extends VBot {
                                      int alpha,
                                      final int beta,
                                      final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
 //        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
 //        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
@@ -72,7 +72,7 @@ public class AlphaBetaPruningBot extends VBot {
                                      final int alpha,
                                      int beta,
                                      final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
 //        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
 //        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
@@ -84,5 +84,4 @@ public class AlphaBetaPruningBot extends VBot {
         }
         return beta;
     }
-
 }
