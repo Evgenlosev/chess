@@ -90,7 +90,7 @@ public class DepthAlphaBetaPruningBot extends AlphaBetaPruningBot {
                                      int alpha,
                                      final int beta,
                                      final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
         if (beta != Integer.MAX_VALUE && Thread.interrupted()) {
             bestMovesUnderTimeLimit.add(new EvaluatedMove(moveInfo, beta));
         }
@@ -111,7 +111,7 @@ public class DepthAlphaBetaPruningBot extends AlphaBetaPruningBot {
                                      final int alpha,
                                      int beta,
                                      final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
         if (alpha != Integer.MIN_VALUE && Thread.interrupted()) {
             bestMovesUnderTimeLimit.add(new EvaluatedMove(moveInfo, alpha));
         }

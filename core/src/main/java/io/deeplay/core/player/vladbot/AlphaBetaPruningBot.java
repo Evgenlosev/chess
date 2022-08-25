@@ -55,7 +55,7 @@ public class AlphaBetaPruningBot extends VBot {
                                      int alpha,
                                      final int beta,
                                      final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
 //        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
 //        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
@@ -72,7 +72,7 @@ public class AlphaBetaPruningBot extends VBot {
                                      final int alpha,
                                      int beta,
                                      final int depthLeft) {
-        if (depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
 //        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
 //        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
@@ -84,5 +84,4 @@ public class AlphaBetaPruningBot extends VBot {
         }
         return beta;
     }
-
 }

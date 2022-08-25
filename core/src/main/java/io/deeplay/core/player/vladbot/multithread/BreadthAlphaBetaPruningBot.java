@@ -121,7 +121,7 @@ public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
         if (beta != Integer.MAX_VALUE && currentTime >= endTime - TIME_FOR_EVALUATION_MILLISECONDS) {
             isTimeout = true;
         }
-        if (isTimeout || depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (isTimeout || depthLeft == 0) return evaluate(gameInfo, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
             final int currentScore = alphaBetaMinThreaded(bestMovesUnderTimeLimit,
                     gameInfo.copy(move), moveInfo, alpha, beta, depthLeft - 1, endTime, isTimeout);
@@ -145,7 +145,7 @@ public class BreadthAlphaBetaPruningBot extends AlphaBetaPruningBot {
         if (alpha != Integer.MIN_VALUE && currentTime >= endTime - TIME_FOR_EVALUATION_MILLISECONDS) {
             isTimeout = true;
         }
-        if (isTimeout || depthLeft == 0 || gameInfo.isGameOver()) return evaluate(gameInfo, depthLeft);
+        if (isTimeout || depthLeft == 0) return evaluate(gameInfo, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
             final int currentScore = alphaBetaMaxThreaded(bestMovesUnderTimeLimit,
                     gameInfo.copy(move), moveInfo, alpha, beta, depthLeft - 1, endTime, isTimeout);
