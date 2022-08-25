@@ -2,6 +2,7 @@ package io.deeplay.core.model;
 
 import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
+import io.deeplay.core.api.SimpleLogicCache;
 import io.deeplay.core.listener.ChessAdapter;
 
 import java.util.ArrayList;
@@ -164,16 +165,6 @@ public class GameInfo extends ChessAdapter {
 
     public boolean isGameOver() {
         return gameStatus == GameStatus.ACTIVE;
-    }
-
-    /**
-     * Проверка удовлетворяет ли ход правилам шахмат.
-     *
-     * @param moveInfo информация о ходе
-     * @return true если ход корректный
-     */
-    public boolean isMoveValid(final MoveInfo moveInfo) {
-        return logic.getMoves(board.getFEN()).contains(moveInfo);
     }
 
     /**
