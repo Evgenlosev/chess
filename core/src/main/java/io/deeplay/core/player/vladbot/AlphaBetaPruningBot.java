@@ -56,9 +56,7 @@ public class AlphaBetaPruningBot extends VBot {
                                      final int beta,
                                      final int depthLeft) {
         if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
-//        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
-//        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
             final int currentScore = alphaBetaMin(gameInfo.copy(move), alpha, beta, depthLeft - 1);
             if (currentScore >= beta)
                 return beta;   // fail hard beta-cutoff
@@ -73,9 +71,7 @@ public class AlphaBetaPruningBot extends VBot {
                                      int beta,
                                      final int depthLeft) {
         if (depthLeft == 0) return evaluate(gameInfo, depthLeft);
-//        if (depthLeft == 0) return quiesce(gameInfo, alpha, beta, depthLeft);
         for (final MoveInfo move : sortWithMVVLVA(gameInfo)) {
-//        for (final MoveInfo move : gameInfo.getAvailableMoves()) {
             final int currentScore = alphaBetaMax(gameInfo.copy(move), alpha, beta, depthLeft - 1);
             if (currentScore <= alpha)
                 return alpha; // fail hard alpha-cutoff
