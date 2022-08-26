@@ -1,5 +1,6 @@
 package io.deeplay.core.model;
 
+import io.deeplay.core.api.SimpleLogic;
 import io.deeplay.core.api.SimpleLogicAppeal;
 import io.deeplay.core.api.SimpleLogicCache;
 import io.deeplay.core.listener.ChessAdapter;
@@ -15,6 +16,7 @@ public class GameInfo extends ChessAdapter {
     SimpleLogicAppeal logic;
     boolean whiteIsPresent;
     boolean blackIsPresent;
+    final boolean clearCacheAfterGame;
 
     /**
      * Стандартный конструктор
@@ -29,8 +31,27 @@ public class GameInfo extends ChessAdapter {
      * @param fen стартовая позиция
      */
     public GameInfo(final String fen) {
+        this(fen, false, false);
+    }
+
+    /**
+     * Конструктор для заданного расположения фигур с возможностью отключить кэширование вычислений логики.
+     *
+     * @param fen                 стартовая позиция
+     * @param cacheLogic          флаг установки кэширования вычислений логики, кэширование будет влиять на скорость работы ботов.
+     * @param clearCacheAfterGame флаг обновления кэширования после каждой игры.
+     */
+    public GameInfo(final String fen, final boolean cacheLogic, final boolean clearCacheAfterGame) {
         gameStatus = GameStatus.INACTIVE;
-        logic = new SimpleLogicCache();
+        if (cacheLogic) {
+            logic = new SimpleLogicCache();
+            this.clearCacheAfterGame = clearCacheAfterGame;
+        } else {
+            logic = new SimpleLogic();
+            if (clearCacheAfterGame)
+                throw new IllegalArgumentException("Cant clear cache of non-cacheable logic");
+            this.clearCacheAfterGame = false;
+        }
         board = new ChessBoard(fen);
         whiteIsPresent = false;
         blackIsPresent = false;
@@ -42,6 +63,14 @@ public class GameInfo extends ChessAdapter {
         this.logic = gameInfo.logic;
         this.whiteIsPresent = gameInfo.whiteIsPresent;
         this.blackIsPresent = gameInfo.blackIsPresent;
+        this.clearCacheAfterGame = gameInfo.clearCacheAfterGame;
+    }
+
+    public void resetGame() {
+        gameStatus = GameStatus.INACTIVE;
+        board = new ChessBoard(ChessBoard.DEFAULT_FEN_STRING);
+        if (clearCacheAfterGame)
+            logic = new SimpleLogicCache();
     }
 
     @Override
@@ -53,32 +82,40 @@ public class GameInfo extends ChessAdapter {
         }
     }
 
+    public BoardCell[][] getChessBoard() {
+        return board.getBoard();
+    }
+
     public ChessBoard getBoard() {
         return board;
     }
 
-    public boolean isMate(final ChessBoard chessBoard) {
-        return logic.isMate(chessBoard.getFEN());
+    public boolean isMate() {
+        return logic.isMate(board.getFEN());
     }
 
-    public boolean isStalemate(final ChessBoard chessBoard) {
-        return logic.isStalemate(chessBoard.getFEN());
+    public boolean isStalemate() {
+        return logic.isStalemate(board.getFEN());
     }
 
-    public boolean isDrawByPieceShortage(final ChessBoard chessBoard) {
-        return logic.isDrawByPieceShortage(chessBoard.getFEN());
+    public boolean isDrawByPieceShortage() {
+        return logic.isDrawByPieceShortage(board.getFEN());
     }
 
-    public boolean isThreefoldRepetition(final ChessBoard chessBoard) {
-        return chessBoard.isThreefoldRepetition();
+    public boolean isThreefoldRepetition() {
+        return board.isThreefoldRepetition();
     }
 
-    public boolean isMovesWithoutAttackOrPawnMove(final ChessBoard chessBoard) {
-        return chessBoard.getMovesWithoutAttackOrPawnMove() > 99;
+    public boolean isMovesWithoutAttackOrPawnMove() {
+        return board.getMovesWithoutAttackOrPawnMove() > 99;
     }
 
     public GameStatus getGameStatus() {
         return gameStatus;
+    }
+
+    public void setGameStatus(final GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
     }
 
     public String getFenBoard() {
@@ -131,30 +168,12 @@ public class GameInfo extends ChessAdapter {
     }
 
     /**
-     * Проверка удовлетворяет ли ход правилам шахмат.
-     *
-     * @param moveInfo информация о ходе
-     * @return true если ход корректный
-     */
-    public boolean isMoveValid(final MoveInfo moveInfo) {
-        return logic.getMoves(board.getFEN()).contains(moveInfo);
-    }
-
-    /**
      * Возвращает список всех возможных ходов для конкретной стороны side.
      *
      * @return возможные ходы
      */
     public Set<MoveInfo> getAvailableMoves() {
-        Set<MoveInfo> moves = logic.getMoves(board.getFEN());
-        if (moves == null || moves.size() < 1) {
-            if (logic.isMate(board.getFEN())) {
-                gameStatus = whoseMove() == Side.WHITE ? GameStatus.BLACK_WON : GameStatus.WHITE_WON;
-            } else {
-                gameStatus = GameStatus.STALEMATE;
-            }
-        }
-        return moves;
+        return logic.getMoves(board.getFEN());
     }
 
     /**
@@ -227,5 +246,15 @@ public class GameInfo extends ChessAdapter {
                 gameStatus = GameStatus.WHITE_WON;
                 break;
         }
+    }
+
+    public GameInfo copy() {
+        return new GameInfo(this);
+    }
+
+    public GameInfo copy(final MoveInfo moveInfo) {
+        final GameInfo newGameInfo = copy();
+        newGameInfo.updateBoard(moveInfo);
+        return newGameInfo;
     }
 }

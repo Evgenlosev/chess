@@ -1,28 +1,28 @@
 package io.deeplay.server.handlers;
 
+import io.deeplay.core.model.GameStatus;
 import io.deeplay.core.model.MoveInfo;
-import io.deeplay.core.model.Side;
 import io.deeplay.interaction.Command;
-import io.deeplay.interaction.CommandType;
 import io.deeplay.interaction.clientToServer.GameOverRequest;
 import io.deeplay.interaction.clientToServer.MoveRequest;
+import io.deeplay.interaction.clientToServer.StartGameRequest;
 import io.deeplay.server.client.Client;
+import io.deeplay.server.session.HumanSessionStorage;
+import io.deeplay.server.session.GameSession;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
 
 public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> {
     private static final Logger LOGGER = LoggerFactory.getLogger(InboundCommandHandler.class);
     private final Client client;
-    // TODO: gameInfo с chessBoard нужен здесь
+    private GameSession gameSession;
 
-
-    public InboundCommandHandler(final Client client) {
+    public InboundCommandHandler(final Client client, final GameSession gameSession) {
         this.client = client;
+        this.gameSession = gameSession;
     }
 
     @Override
@@ -36,8 +36,20 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
                 }
                 break;
             case GAME_OVER_REQUEST:
-                resignHandler(ctx, command);
+                GameOverRequest gameOverRequest = (GameOverRequest) command;
+                gameSession.stopSession(gameOverRequest.getGameStatus());
+                ctx.channel().pipeline().remove(this);
+                ctx.channel().pipeline().addLast(new StartGameHandler());
                 break;
+            case START_GAME_REQUEST:
+                gameSession.stopSession(GameStatus.INTERRUPTED);
+                HumanSessionStorage.stopClientSessions(ctx, GameStatus.INTERRUPTED);
+                StartGameRequest startGameRequest = (StartGameRequest) command;
+                client.setSide(startGameRequest.getSide());
+                gameSession = GameSession.createGameSession(client, startGameRequest.getEnemyType());
+                break;
+            default:
+                LOGGER.info("Некорректная команда: {}", command);
         }
     }
 
@@ -45,26 +57,5 @@ public class InboundCommandHandler extends SimpleChannelInboundHandler<Command> 
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
         LOGGER.error("Соединение с клиентом прервано", cause);
         ctx.close();
-    }
-
-    // Метод обработки события когда игрок сдался
-    private void resignHandler(final ChannelHandlerContext ctx, final Command command) { // Как отправить ответ обоим игрокам?
-        if (command.getCommandType() == CommandType.GAME_OVER_REQUEST) {
-            final GameOverRequest gameOverRequest = (GameOverRequest) command;
-            if (gameOverRequest.getSide() != null) {
-                final Side gameOverInitiator = gameOverRequest.getSide();
-                LOGGER.info("Сторона " + gameOverInitiator + " - сдалась.");
-                client.playerResigned(gameOverInitiator); // Уведомляем сами себя о конце игры, а надо бы обоих клиентов
-                client.gameOver(gameOverRequest.getGameStatus()); // TODO: игра окончена
-                ctx.channel().pipeline().remove(this);
-                ctx.channel().pipeline().close(); // TODO: Пересоздаем игру (по хорошему должен быть хэндлер настройки игры перед стартом игры)
-            }
-            // Если все же null, то мы не знаем какая сторона вышла, кто победил
-            // Ping должен предупредить, что определенный клиент пропал и тогда статус игры
-            // с победой оставшегося игрока надо передать только одному (ну либо выйдет время на ход)
-
-            // TODO: кто то должен инициировать конец игры в случае если игра закончилась по правилам
-            // Нету GameInfo как понять что игра закончилась по правилам? После каждого MoveRequest проверять на конец игры
-        }
     }
 }

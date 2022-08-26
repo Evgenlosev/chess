@@ -10,7 +10,7 @@ public class TestChessBoard {
     public void zipFenTest() {
         String fen = "rnbqk2r/pppp1ppp/5n2/2b1p3/2B1P2P/5N2/PPPP1PP1/RNBQK2R b KQkq - 0 1";
         ChessBoard board = new ChessBoard();
-        assertEquals(board.zipFen(board.unzipFen(fen)), fen);
+        assertEquals(board.zipFen(ChessBoard.unzipFen(fen)), fen);
     }
 
     @Test
@@ -137,6 +137,10 @@ public class TestChessBoard {
         ChessBoard board = new ChessBoard();
         ChessBoard secondBoard = new ChessBoard(board);
         assertNotEquals(board.getBoard(), secondBoard.getBoard());
+        GameInfo firstGameInfo = new GameInfo();
+        GameInfo secondGameInfo = firstGameInfo.copy();
+        MoveInfo moveInfoWhiteFirst = new MoveInfo(new Coord(1, 0), new Coord(2, 2), MoveType.USUAL_MOVE, Figure.W_KNIGHT);
+        secondGameInfo.updateBoard(moveInfoWhiteFirst);
+        assertNotEquals(firstGameInfo.getFenBoard(), secondGameInfo.getFenBoard());
     }
-
 }
